@@ -1,0 +1,28 @@
+function PositionConcentration;
+
+interface of PositionConcentration {
+    // True if the proposed BUY would push position > X% limit.
+    in bool will_exceed_limit;
+
+    // Output: From Agent. True if agent wants to BUY.
+    out bool act_BUY;
+}
+
+policy BlockConcentratedBuy of PositionConcentration {
+
+    states {
+        s0 {
+            // Condition: Limit would be exceeded AND Agent tries to BUY.
+            // Action: Block the BUY (act_BUY := 0).
+            -> violation on (will_exceed_limit and act_BUY) recover act_BUY := 0;
+
+            // Condition: Limit exceeded but Agent not buying (Holding or Selling).
+            // Action: Safe.
+            -> s0 on (will_exceed_limit and !act_BUY);
+
+            // Condition: Limit not exceeded.
+            // Action: Safe to buy.
+            -> s0 on (!will_exceed_limit);
+        }
+    }
+}

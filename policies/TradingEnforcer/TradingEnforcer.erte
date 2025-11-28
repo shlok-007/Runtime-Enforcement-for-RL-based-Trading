@@ -1,0 +1,141 @@
+function TradingEnforcer;
+
+interface of TradingEnforcer {
+    // True if the agent wants to execute a trade.
+    out bool act_TRADE;
+    // True if portfolio drawdown has exceeded the limit.
+    in bool dd_exceeded;
+    // True if volume < minimum_threshold.
+    in bool is_illiquid;
+    // True if the proposed BUY would push position > X% limit.
+    in bool will_exceed_limit;
+    // Output: From Agent. True if agent wants to BUY.
+    out bool act_BUY;
+    // Input: From Market. True if the proposed limit price is too far from market price.
+    in bool price_deviates;
+}
+
+policy RateLimit_5_per_1s of TradingEnforcer {
+    
+    internals {
+        dtimer_t t_window; 
+        constant uint64_t T_WINDOW := 5;    // as per ab5seconds, one sec ticks = 5
+     }
+
+    states {
+        
+        s0 {
+            -> s1 on (act_TRADE): t_window := 0;
+            -> s0 on (!act_TRADE);
+        }
+
+        s1 { 
+            -> s2 on (act_TRADE and t_window < T_WINDOW);
+            -> s1 on (act_TRADE and t_window >= T_WINDOW): t_window := 0;
+            -> s1 on (!act_TRADE);
+        }
+
+        s2 {
+            -> s3 on (act_TRADE and t_window < T_WINDOW);
+            -> s1 on (act_TRADE and t_window >= T_WINDOW): t_window := 0;
+            -> s2 on (!act_TRADE);
+        }
+
+        s3 {
+            -> s4 on (act_TRADE and t_window < T_WINDOW);
+            -> s1 on (act_TRADE and t_window >= T_WINDOW): t_window := 0;
+            -> s3 on (!act_TRADE);
+        }
+
+        s4 {
+            -> s5 on (act_TRADE and t_window < T_WINDOW);
+            -> s1 on (act_TRADE and t_window >= T_WINDOW): t_window := 0;
+            -> s4 on (!act_TRADE);
+        }
+
+        s5 {
+            // 6th trade attempt within window -> VIOLATION
+            // Recovery: Force Output 'act_TRADE' to 0 (Hold). Stay in s5.
+            -> violation on (act_TRADE and t_window < T_WINDOW) recover act_TRADE := 0;
+
+            -> s1 on (act_TRADE and t_window >= T_WINDOW): t_window := 0;
+            -> s5 on (!act_TRADE);
+        }
+    }
+}
+
+policy LatchingKillSwitch of TradingEnforcer {
+
+    states {
+        s0 {
+            // 1. Agent tries to trade (act_TRADE) WHILE drawdown is exceeded.
+            // Action: Block the trade (act_TRADE := 0).
+            -> violation on (dd_exceeded and act_TRADE) recover act_TRADE := 0;
+
+            // 2. Agent holds (!act_TRADE) but drawdown is exceeded.
+            // Action: Allow the hold, but trip the switch (goto violation) to prevent future trades.
+            -> violation on (dd_exceeded and !act_TRADE);
+
+            // Drawdown is NOT exceeded. Stay in s0.
+            // The agent is free to trade (act_TRADE) or hold (!act_TRADE).
+            -> s0 on (!dd_exceeded);
+        }
+    }
+}
+
+policy RejectDeviantPrice of TradingEnforcer {
+
+    states {
+        s0 {
+            // Condition: Price deviates AND Agent tries to trade.
+            // Action: Block the trade (act_TRADE := 0). Stay in s0.
+            -> violation on (price_deviates and act_TRADE) recover act_TRADE := 0;
+
+            // Condition: Price deviates but Agent holds.
+            // Action: Allow hold.
+            -> s0 on (price_deviates and !act_TRADE);
+
+            // Condition: Price is valid.
+            // Action: Allow whatever the agent wants.
+            -> s0 on (!price_deviates);
+        }
+    }
+}
+
+policy BlockConcentratedBuy of TradingEnforcer {
+
+    states {
+        s0 {
+            // Condition: Limit would be exceeded AND Agent tries to BUY.
+            // Action: Block the BUY (act_BUY := 0).
+            -> violation on (will_exceed_limit and act_BUY) recover act_BUY := 0;
+
+            // Condition: Limit exceeded but Agent not buying (Holding or Selling).
+            // Action: Safe.
+            -> s0 on (will_exceed_limit and !act_BUY);
+
+            // Condition: Limit not exceeded.
+            // Action: Safe to buy.
+            -> s0 on (!will_exceed_limit);
+        }
+    }
+}
+
+policy BlockIlliquidTrade of TradingEnforcer {
+
+    states {
+        s0 {
+            // Condition: Illiquid Market AND Agent tries to trade.
+            // Action: Block trade.
+            -> violation on (is_illiquid and act_TRADE) recover act_TRADE := 0;
+
+            // Condition: Illiquid but Agent holds.
+            // Action: Safe.
+            -> s0 on (is_illiquid and !act_TRADE);
+
+            // Condition: Liquid Market.
+            // Action: Safe.
+            -> s0 on (!is_illiquid);
+        }
+    }
+}

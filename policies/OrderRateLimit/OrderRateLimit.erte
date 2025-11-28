@@ -1,0 +1,55 @@
+function OrderRateLimit;
+
+interface of OrderRateLimit {
+    // True if the agent wants to execute a trade.
+    out bool act_TRADE; 
+}
+
+policy RateLimit_5_per_1s of OrderRateLimit {
+    
+    internals {
+        dtimer_t t_window; 
+        constant uint64_t T_WINDOW := 5;    // as per ab5seconds, one sec ticks = 5
+     }
+
+    states {
+        
+        s0 {
+            -> s1 on (act_TRADE): t_window := 0;
+            -> s0 on (!act_TRADE);
+        }
+
+        s1 { 
+            -> s2 on (act_TRADE and t_window < T_WINDOW);
+            -> s1 on (act_TRADE and t_window >= T_WINDOW): t_window := 0;
+            -> s1 on (!act_TRADE);
+        }
+
+        s2 {
+            -> s3 on (act_TRADE and t_window < T_WINDOW);
+            -> s1 on (act_TRADE and t_window >= T_WINDOW): t_window := 0;
+            -> s2 on (!act_TRADE);
+        }
+
+        s3 {
+            -> s4 on (act_TRADE and t_window < T_WINDOW);
+            -> s1 on (act_TRADE and t_window >= T_WINDOW): t_window := 0;
+            -> s3 on (!act_TRADE);
+        }
+
+        s4 {
+            -> s5 on (act_TRADE and t_window < T_WINDOW);
+            -> s1 on (act_TRADE and t_window >= T_WINDOW): t_window := 0;
+            -> s4 on (!act_TRADE);
+        }
+
+        s5 {
+            // 6th trade attempt within window -> VIOLATION
+            // Recovery: Force Output 'act_TRADE' to 0 (Hold). Stay in s5.
+            -> violation on (act_TRADE and t_window < T_WINDOW) recover act_TRADE := 0;
+
+            -> s1 on (act_TRADE and t_window >= T_WINDOW): t_window := 0;
+            -> s5 on (!act_TRADE);
+        }
+    }
+}

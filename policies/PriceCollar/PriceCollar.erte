@@ -1,0 +1,28 @@
+function PriceCollar;
+
+interface of PriceCollar {
+    // Input: From Market. True if the proposed limit price is too far from market price.
+    in bool price_deviates;
+
+    // Output: From Agent. True if agent wants to trade.
+    out bool act_TRADE;
+}
+
+policy RejectDeviantPrice of PriceCollar {
+
+    states {
+        s0 {
+            // Condition: Price deviates AND Agent tries to trade.
+            // Action: Block the trade (act_TRADE := 0). Stay in s0.
+            -> violation on (price_deviates and act_TRADE) recover act_TRADE := 0;
+
+            // Condition: Price deviates but Agent holds.
+            // Action: Allow hold.
+            -> s0 on (price_deviates and !act_TRADE);
+
+            // Condition: Price is valid.
+            // Action: Allow whatever the agent wants.
+            -> s0 on (!price_deviates);
+        }
+    }
+}

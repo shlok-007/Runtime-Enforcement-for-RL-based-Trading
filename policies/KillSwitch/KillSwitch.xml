@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EnforcedFunction Name="KillSwitch">
+	<Interface>
+		<Input Name="dd_exceeded" Type="bool" Constant="false" Comment=""></Input>
+		<Output Name="act_TRADE" Type="bool" Constant="false" Comment=""></Output>
+	</Interface>
+	<Policy Name="LatchingKillSwitch">
+		<InternalVars></InternalVars>
+		<Machine>
+			<PState>s0</PState>
+			<PTransition>
+				<Source>s0</Source>
+				<Destination>s0</Destination>
+				<Condition>( !dd_exceeded )</Condition>
+			</PTransition>
+			<PTransition>
+				<Source>s0</Source>
+				<Destination>violation</Destination>
+				<Condition>( dd_exceeded and act_TRADE )</Condition>
+				<Recover>
+					<VarName>act_TRADE</VarName>
+					<Value>0</Value>
+				</Recover>
+			</PTransition>
+			<PTransition>
+				<Source>s0</Source>
+				<Destination>violation</Destination>
+				<Condition>( dd_exceeded and !act_TRADE )</Condition>
+			</PTransition>
+		</Machine>
+	</Policy>
+</EnforcedFunction>

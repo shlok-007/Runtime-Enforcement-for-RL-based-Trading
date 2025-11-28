@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EnforcedFunction Name="Liquidity">
+	<Interface>
+		<Input Name="is_illiquid" Type="bool" Constant="false" Comment=""></Input>
+		<Output Name="act_TRADE" Type="bool" Constant="false" Comment=""></Output>
+	</Interface>
+	<Policy Name="BlockIlliquidTrade">
+		<InternalVars></InternalVars>
+		<Machine>
+			<PState>s0</PState>
+			<PTransition>
+				<Source>s0</Source>
+				<Destination>s0</Destination>
+				<Condition>( is_illiquid and !act_TRADE )</Condition>
+			</PTransition>
+			<PTransition>
+				<Source>s0</Source>
+				<Destination>s0</Destination>
+				<Condition>( !is_illiquid )</Condition>
+			</PTransition>
+			<PTransition>
+				<Source>s0</Source>
+				<Destination>violation</Destination>
+				<Condition>( is_illiquid and act_TRADE )</Condition>
+				<Recover>
+					<VarName>act_TRADE</VarName>
+					<Value>0</Value>
+				</Recover>
+			</PTransition>
+		</Machine>
+	</Policy>
+</EnforcedFunction>

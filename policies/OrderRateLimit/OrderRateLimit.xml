@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EnforcedFunction Name="OrderRateLimit">
+	<Interface>
+		<Output Name="act_TRADE" Type="bool" Constant="false" Comment=""></Output>
+	</Interface>
+	<Policy Name="RateLimit_5_per_1s">
+		<InternalVars>
+			<VarDeclaration Name="t_window" Type="dtimer_t" Constant="false" Comment=""></VarDeclaration>
+			<VarDeclaration Name="T_WINDOW" Type="uint64_t" Constant="true" InitialValue="5" Comment=""></VarDeclaration>
+		</InternalVars>
+		<Machine>
+			<PState>s0</PState>
+			<PState>s1</PState>
+			<PState>s2</PState>
+			<PState>s3</PState>
+			<PState>s4</PState>
+			<PState>s5</PState>
+			<PTransition>
+				<Source>s0</Source>
+				<Destination>s1</Destination>
+				<Condition>( act_TRADE )</Condition>
+				<Expressions>
+					<VarName>t_window</VarName>
+					<Value>0</Value>
+				</Expressions>
+			</PTransition>
+			<PTransition>
+				<Source>s0</Source>
+				<Destination>s0</Destination>
+				<Condition>( !act_TRADE )</Condition>
+			</PTransition>
+			<PTransition>
+				<Source>s1</Source>
+				<Destination>s2</Destination>
+				<Condition>( act_TRADE and t_window &lt; T_WINDOW )</Condition>
+			</PTransition>
+			<PTransition>
+				<Source>s1</Source>
+				<Destination>s1</Destination>
+				<Condition>( act_TRADE and t_window &gt;= T_WINDOW )</Condition>
+				<Expressions>
+					<VarName>t_window</VarName>
+					<Value>0</Value>
+				</Expressions>
+			</PTransition>
+			<PTransition>
+				<Source>s1</Source>
+				<Destination>s1</Destination>
+				<Condition>( !act_TRADE )</Condition>
+			</PTransition>
+			<PTransition>
+				<Source>s2</Source>
+				<Destination>s3</Destination>
+				<Condition>( act_TRADE and t_window &lt; T_WINDOW )</Condition>
+			</PTransition>
+			<PTransition>
+				<Source>s2</Source>
+				<Destination>s1</Destination>
+				<Condition>( act_TRADE and t_window &gt;= T_WINDOW )</Condition>
+				<Expressions>
+					<VarName>t_window</VarName>
+					<Value>0</Value>
+				</Expressions>
+			</PTransition>
+			<PTransition>
+				<Source>s2</Source>
+				<Destination>s2</Destination>
+				<Condition>( !act_TRADE )</Condition>
+			</PTransition>
+			<PTransition>
+				<Source>s3</Source>
+				<Destination>s4</Destination>
+				<Condition>( act_TRADE and t_window &lt; T_WINDOW )</Condition>
+			</PTransition>
+			<PTransition>
+				<Source>s3</Source>
+				<Destination>s1</Destination>
+				<Condition>( act_TRADE and t_window &gt;= T_WINDOW )</Condition>
+				<Expressions>
+					<VarName>t_window</VarName>
+					<Value>0</Value>
+				</Expressions>
+			</PTransition>
+			<PTransition>
+				<Source>s3</Source>
+				<Destination>s3</Destination>
+				<Condition>( !act_TRADE )</Condition>
+			</PTransition>
+			<PTransition>
+				<Source>s4</Source>
+				<Destination>s5</Destination>
+				<Condition>( act_TRADE and t_window &lt; T_WINDOW )</Condition>
+			</PTransition>
+			<PTransition>
+				<Source>s4</Source>
+				<Destination>s1</Destination>
+				<Condition>( act_TRADE and t_window &gt;= T_WINDOW )</Condition>
+				<Expressions>
+					<VarName>t_window</VarName>
+					<Value>0</Value>
+				</Expressions>
+			</PTransition>
+			<PTransition>
+				<Source>s4</Source>
+				<Destination>s4</Destination>
+				<Condition>( !act_TRADE )</Condition>
+			</PTransition>
+			<PTransition>
+				<Source>s5</Source>
+				<Destination>s1</Destination>
+				<Condition>( act_TRADE and t_window &gt;= T_WINDOW )</Condition>
+				<Expressions>
+					<VarName>t_window</VarName>
+					<Value>0</Value>
+				</Expressions>
+			</PTransition>
+			<PTransition>
+				<Source>s5</Source>
+				<Destination>s5</Destination>
+				<Condition>( !act_TRADE )</Condition>
+			</PTransition>
+			<PTransition>
+				<Source>s5</Source>
+				<Destination>violation</Destination>
+				<Condition>( act_TRADE and t_window &lt; T_WINDOW )</Condition>
+				<Recover>
+					<VarName>act_TRADE</VarName>
+					<Value>0</Value>
+				</Recover>
+			</PTransition>
+		</Machine>
+	</Policy>
+</EnforcedFunction>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EnforcedFunction Name="PositionConcentration">
+	<Interface>
+		<Input Name="will_exceed_limit" Type="bool" Constant="false" Comment=""></Input>
+		<Output Name="act_BUY" Type="bool" Constant="false" Comment=""></Output>
+	</Interface>
+	<Policy Name="BlockConcentratedBuy">
+		<InternalVars></InternalVars>
+		<Machine>
+			<PState>s0</PState>
+			<PTransition>
+				<Source>s0</Source>
+				<Destination>s0</Destination>
+				<Condition>( will_exceed_limit and !act_BUY )</Condition>
+			</PTransition>
+			<PTransition>
+				<Source>s0</Source>
+				<Destination>s0</Destination>
+				<Condition>( !will_exceed_limit )</Condition>
+			</PTransition>
+			<PTransition>
+				<Source>s0</Source>
+				<Destination>violation</Destination>
+				<Condition>( will_exceed_limit and act_BUY )</Condition>
+				<Recover>
+					<VarName>act_BUY</VarName>
+					<Value>0</Value>
+				</Recover>
+			</PTransition>
+		</Machine>
+	</Policy>
+</EnforcedFunction>

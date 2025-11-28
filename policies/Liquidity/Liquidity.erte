@@ -1,0 +1,28 @@
+function Liquidity;
+
+interface of Liquidity {
+    // True if volume < minimum_threshold.
+    in bool is_illiquid;
+
+    // Output: From Agent.
+    out bool act_TRADE;
+}
+
+policy BlockIlliquidTrade of Liquidity {
+
+    states {
+        s0 {
+            // Condition: Illiquid Market AND Agent tries to trade.
+            // Action: Block trade.
+            -> violation on (is_illiquid and act_TRADE) recover act_TRADE := 0;
+
+            // Condition: Illiquid but Agent holds.
+            // Action: Safe.
+            -> s0 on (is_illiquid and !act_TRADE);
+
+            // Condition: Liquid Market.
+            // Action: Safe.
+            -> s0 on (!is_illiquid);
+        }
+    }
+}

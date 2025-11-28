@@ -1,0 +1,28 @@
+function VolatilityHalt;
+
+interface of VolatilityHalt {
+    // Input: From Market. True if short-term volatility > threshold.
+    in bool vol_high;
+
+    // Output: From Agent.
+    out bool act_TRADE;
+}
+
+policy VolatilityCircuitBreaker of VolatilityHalt {
+
+    states {
+        s0 {
+            // Condition: High Volatility AND Agent tries to trade.
+            // Action: Block trade.
+            -> violation on (vol_high and act_TRADE) recover act_TRADE := 0;
+
+            // Condition: High Volatility but Agent holds.
+            // Action: Safe.
+            -> s0 on (vol_high and !act_TRADE);
+
+            // Condition: Low Volatility.
+            // Action: Safe.
+            -> s0 on (!vol_high);
+        }
+    }
+}

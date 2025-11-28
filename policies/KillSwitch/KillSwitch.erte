@@ -1,0 +1,28 @@
+function KillSwitch;
+
+interface of KillSwitch {
+    // True if portfolio drawdown has exceeded the limit.
+    in bool dd_exceeded;
+
+    // True if the agent wants to execute a trade.
+    out bool act_TRADE;
+}
+
+policy LatchingKillSwitch of KillSwitch {
+
+    states {
+        s0 {
+            // 1. Agent tries to trade (act_TRADE) WHILE drawdown is exceeded.
+            // Action: Block the trade (act_TRADE := 0).
+            -> violation on (dd_exceeded and act_TRADE) recover act_TRADE := 0;
+
+            // 2. Agent holds (!act_TRADE) but drawdown is exceeded.
+            // Action: Allow the hold, but trip the switch (goto violation) to prevent future trades.
+            -> violation on (dd_exceeded and !act_TRADE);
+
+            // Drawdown is NOT exceeded. Stay in s0.
+            // The agent is free to trade (act_TRADE) or hold (!act_TRADE).
+            -> s0 on (!dd_exceeded);
+        }
+    }
+}
