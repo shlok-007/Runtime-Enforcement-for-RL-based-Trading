@@ -73,8 +73,8 @@ policy LatchingKillSwitch of TradingEnforcer {
             -> violation on (dd_exceeded and act_TRADE) recover act_TRADE := 0;
 
             // 2. Agent holds (!act_TRADE) but drawdown is exceeded.
-            // Action: Allow the hold, but trip the switch (goto violation) to prevent future trades.
-            -> violation on (dd_exceeded and !act_TRADE);
+            // Action: Allow the hold.
+            -> s0 on (dd_exceeded and !act_TRADE);
 
             // Drawdown is NOT exceeded. Stay in s0.
             // The agent is free to trade (act_TRADE) or hold (!act_TRADE).
