@@ -1,0 +1,33 @@
+function MQL;
+interface of MQL {
+    out bool act_PLACE;
+    out bool act_CANCEL;
+}
+
+policy MQL_Policy of MQL {
+    internals {
+        dtimer_t c_age;
+        constant int64_t T_MQL := 100; // Minimum life in ticks
+    }
+
+    states {
+        empty {
+            // New order placed, start timer
+            -> resting on act_PLACE: c_age := 0;
+            
+            // Stay empty
+            -> empty on !act_PLACE;
+        }
+
+        resting {
+            // Block cancel if order is too young
+            -> violation on act_CANCEL and c_age < T_MQL recover act_CANCEL := 0;
+
+            // Allow cancel if order is old enough
+            -> empty on act_CANCEL and c_age >= T_MQL;
+
+            // Order remains resting (timer increments automatically)
+            -> resting on !act_CANCEL;
+        }
+    }
+}

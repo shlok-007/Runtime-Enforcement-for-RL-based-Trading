@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EnforcedFunction Name="WashTrading">
+	<Interface>
+		<Output Name="act_BUY" Type="bool" Constant="false" Comment=""></Output>
+		<Output Name="act_SELL" Type="bool" Constant="false" Comment=""></Output>
+		<Output Name="price" Type="int32_t" Constant="false" Comment=""></Output>
+	</Interface>
+	<Policy Name="NoWash">
+		<InternalVars>
+			<VarDeclaration Name="last_bid" Type="int32_t" Constant="false" InitialValue="0" Comment=""></VarDeclaration>
+			<VarDeclaration Name="last_ask" Type="int32_t" Constant="false" InitialValue="4000000000" Comment=""></VarDeclaration>
+		</InternalVars>
+		<Machine>
+			<PState>s0</PState>
+			<PState>s1</PState>
+			<PState>s2</PState>
+			<PTransition>
+				<Source>s0</Source>
+				<Destination>s1</Destination>
+				<Condition>act_BUY</Condition>
+				<Expressions>
+					<VarName>last_bid</VarName>
+					<Value>price</Value>
+				</Expressions>
+			</PTransition>
+			<PTransition>
+				<Source>s0</Source>
+				<Destination>s2</Destination>
+				<Condition>act_SELL</Condition>
+				<Expressions>
+					<VarName>last_ask</VarName>
+					<Value>price</Value>
+				</Expressions>
+			</PTransition>
+			<PTransition>
+				<Source>s0</Source>
+				<Destination>s0</Destination>
+				<Condition>( !act_BUY and !act_SELL )</Condition>
+			</PTransition>
+			<PTransition>
+				<Source>s1</Source>
+				<Destination>s1</Destination>
+				<Condition>act_BUY</Condition>
+				<Expressions>
+					<VarName>last_bid</VarName>
+					<Value>price</Value>
+				</Expressions>
+			</PTransition>
+			<PTransition>
+				<Source>s1</Source>
+				<Destination>s2</Destination>
+				<Condition>( act_SELL and price &gt; last_bid )</Condition>
+				<Expressions>
+					<VarName>last_ask</VarName>
+					<Value>price</Value>
+				</Expressions>
+			</PTransition>
+			<PTransition>
+				<Source>s1</Source>
+				<Destination>s1</Destination>
+				<Condition>( !act_BUY and !act_SELL )</Condition>
+			</PTransition>
+			<PTransition>
+				<Source>s2</Source>
+				<Destination>s2</Destination>
+				<Condition>act_SELL</Condition>
+				<Expressions>
+					<VarName>last_ask</VarName>
+					<Value>price</Value>
+				</Expressions>
+			</PTransition>
+			<PTransition>
+				<Source>s2</Source>
+				<Destination>s1</Destination>
+				<Condition>( act_BUY and price &lt; last_ask )</Condition>
+				<Expressions>
+					<VarName>last_bid</VarName>
+					<Value>price</Value>
+				</Expressions>
+			</PTransition>
+			<PTransition>
+				<Source>s2</Source>
+				<Destination>s2</Destination>
+				<Condition>( !act_BUY and !act_SELL )</Condition>
+			</PTransition>
+			<PTransition>
+				<Source>s1</Source>
+				<Destination>violation</Destination>
+				<Condition>( act_SELL and price &lt;= last_bid )</Condition>
+				<Recover>
+					<VarName>act_SELL</VarName>
+					<Value>0</Value>
+				</Recover>
+			</PTransition>
+			<PTransition>
+				<Source>s2</Source>
+				<Destination>violation</Destination>
+				<Condition>( act_BUY and price &gt;= last_ask )</Condition>
+				<Recover>
+					<VarName>act_BUY</VarName>
+					<Value>0</Value>
+				</Recover>
+			</PTransition>
+		</Machine>
+	</Policy>
+</EnforcedFunction>

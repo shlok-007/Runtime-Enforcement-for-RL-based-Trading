@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EnforcedFunction Name="OTR">
+	<Interface>
+		<Input Name="act_EXEC" Type="bool" Constant="false" Comment=""></Input>
+		<Output Name="act_MSG" Type="bool" Constant="false" Comment=""></Output>
+	</Interface>
+	<Policy Name="OTR_Policy">
+		<InternalVars>
+			<VarDeclaration Name="tokens" Type="int32_t" Constant="false" InitialValue="500" Comment=""></VarDeclaration>
+			<VarDeclaration Name="Max_Cap" Type="int32_t" Constant="true" InitialValue="500" Comment=""></VarDeclaration>
+			<VarDeclaration Name="Reward" Type="int32_t" Constant="true" InitialValue="50" Comment=""></VarDeclaration>
+			<VarDeclaration Name="Cost" Type="int32_t" Constant="true" InitialValue="1" Comment=""></VarDeclaration>
+			<VarDeclaration Name="Resume_Threshold" Type="int32_t" Constant="true" InitialValue="10" Comment=""></VarDeclaration>
+		</InternalVars>
+		<Machine>
+			<PState>s_normal</PState>
+			<PState>s_throttled</PState>
+			<PTransition>
+				<Source>s_normal</Source>
+				<Destination>s_normal</Destination>
+				<Condition>act_EXEC and !act_MSG and ( tokens + Reward &lt;= Max_Cap )</Condition>
+				<Expressions>
+					<VarName>tokens</VarName>
+					<Value>tokens + Reward</Value>
+				</Expressions>
+			</PTransition>
+			<PTransition>
+				<Source>s_normal</Source>
+				<Destination>s_normal</Destination>
+				<Condition>act_EXEC and !act_MSG and ( tokens + Reward &gt; Max_Cap )</Condition>
+				<Expressions>
+					<VarName>tokens</VarName>
+					<Value>Max_Cap</Value>
+				</Expressions>
+			</PTransition>
+			<PTransition>
+				<Source>s_normal</Source>
+				<Destination>s_normal</Destination>
+				<Condition>act_EXEC and act_MSG and ( tokens + Reward - Cost &lt;= Max_Cap )</Condition>
+				<Expressions>
+					<VarName>tokens</VarName>
+					<Value>tokens + Reward - Cost</Value>
+				</Expressions>
+			</PTransition>
+			<PTransition>
+				<Source>s_normal</Source>
+				<Destination>s_normal</Destination>
+				<Condition>act_EXEC and act_MSG and ( tokens + Reward - Cost &gt; Max_Cap )</Condition>
+				<Expressions>
+					<VarName>tokens</VarName>
+					<Value>Max_Cap</Value>
+				</Expressions>
+			</PTransition>
+			<PTransition>
+				<Source>s_normal</Source>
+				<Destination>s_normal</Destination>
+				<Condition>!act_EXEC and act_MSG and ( tokens - Cost &gt; 0 )</Condition>
+				<Expressions>
+					<VarName>tokens</VarName>
+					<Value>tokens - Cost</Value>
+				</Expressions>
+			</PTransition>
+			<PTransition>
+				<Source>s_normal</Source>
+				<Destination>s_throttled</Destination>
+				<Condition>!act_EXEC and act_MSG and ( tokens - Cost &lt;= 0 )</Condition>
+				<Expressions>
+					<VarName>tokens</VarName>
+					<Value>tokens - Cost</Value>
+				</Expressions>
+			</PTransition>
+			<PTransition>
+				<Source>s_normal</Source>
+				<Destination>s_normal</Destination>
+				<Condition>!act_EXEC and !act_MSG</Condition>
+			</PTransition>
+			<PTransition>
+				<Source>s_throttled</Source>
+				<Destination>s_throttled</Destination>
+				<Condition>act_EXEC and ( tokens + Reward &lt;= Resume_Threshold )</Condition>
+				<Expressions>
+					<VarName>tokens</VarName>
+					<Value>tokens + Reward</Value>
+				</Expressions>
+			</PTransition>
+			<PTransition>
+				<Source>s_throttled</Source>
+				<Destination>s_normal</Destination>
+				<Condition>act_EXEC and ( tokens + Reward &gt; Resume_Threshold )</Condition>
+				<Expressions>
+					<VarName>tokens</VarName>
+					<Value>tokens + Reward</Value>
+				</Expressions>
+			</PTransition>
+			<PTransition>
+				<Source>s_throttled</Source>
+				<Destination>s_throttled</Destination>
+				<Condition>!act_EXEC</Condition>
+			</PTransition>
+			<PTransition>
+				<Source>s_throttled</Source>
+				<Destination>violation</Destination>
+				<Condition>act_MSG</Condition>
+				<Recover>
+					<VarName>act_MSG</VarName>
+					<Value>0</Value>
+				</Recover>
+			</PTransition>
+		</Machine>
+	</Policy>
+</EnforcedFunction>

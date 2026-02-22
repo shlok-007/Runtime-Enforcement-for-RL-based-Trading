@@ -1,0 +1,43 @@
+function OTR;
+interface of OTR {
+    in bool act_EXEC;   // Trade executed (Reward)
+    out bool act_MSG;   // Order message (Cost)
+}
+
+policy OTR_Policy of OTR {
+    internals {
+        int32_t tokens := 500;
+        constant int32_t Max_Cap := 500;
+        constant int32_t Reward := 50;
+        constant int32_t Cost := 1;
+        constant int32_t Resume_Threshold := 10;
+    }
+
+    states {
+        s_normal {
+
+
+            -> s_normal on act_EXEC and !act_MSG and (tokens + Reward <= Max_Cap): tokens := tokens + Reward;
+            -> s_normal on act_EXEC and !act_MSG and (tokens + Reward > Max_Cap): tokens := Max_Cap;
+
+            -> s_normal on act_EXEC and act_MSG and (tokens + Reward - Cost <= Max_Cap): tokens := tokens + Reward - Cost;
+            -> s_normal on act_EXEC and act_MSG and (tokens + Reward - Cost > Max_Cap): tokens := Max_Cap;
+
+            -> s_normal on !act_EXEC and act_MSG and (tokens - Cost > 0): tokens := tokens - Cost;
+
+            -> s_throttled on !act_EXEC and act_MSG and (tokens - Cost <= 0): tokens := tokens - Cost;
+
+            -> s_normal on !act_EXEC and !act_MSG;
+        }
+
+        s_throttled {
+            -> violation on act_MSG recover act_MSG := 0;
+
+            -> s_throttled on act_EXEC and (tokens + Reward <= Resume_Threshold): tokens := tokens + Reward;
+
+            -> s_normal on act_EXEC and (tokens + Reward > Resume_Threshold): tokens := tokens + Reward;
+
+            -> s_throttled on !act_EXEC;
+        }
+    }
+}

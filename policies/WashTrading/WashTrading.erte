@@ -1,0 +1,35 @@
+function WashTrading;
+interface of WashTrading {
+    out bool act_BUY;
+    out bool act_SELL;
+    out int32_t price;
+}
+
+policy NoWash of WashTrading {
+    internals {
+        int32_t last_bid := 0;
+        int32_t last_ask := 4000000000; // very large number to represent no ask
+    }
+
+    states {
+        s0 {
+            -> s1 on act_BUY : last_bid := price;
+            -> s2 on act_SELL : last_ask := price;
+            -> s0 on (!act_BUY and !act_SELL);
+        }
+
+        s1 {
+            -> s1 on act_BUY : last_bid := price;
+            -> s2 on (act_SELL and price > last_bid) : last_ask := price;
+            -> violation on (act_SELL and price <= last_bid) recover act_SELL := 0;
+            -> s1 on (!act_BUY and !act_SELL);
+        }
+
+        s2 {
+            -> s2 on act_SELL : last_ask := price;
+            -> s1 on (act_BUY and price < last_ask) : last_bid := price;
+            -> violation on (act_BUY and price >= last_ask) recover act_BUY := 0;
+            -> s2 on (!act_BUY and !act_SELL);
+        }
+    }
+}

@@ -1,2 +1,4 @@
-.venv
+**/.venv
 easy-rte/
+market_simulator/abides
+**.txt
