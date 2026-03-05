@@ -11,14 +11,53 @@ typedef uint64_t dtimer_t;
 
 //For each policy, we need an enum type for the state machine
 
-enum TradingEnforcer_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_states { 
-	POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s0_comma_s0_comma_s0_comma_s0_comma_s0, 
-	POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0, 
-	POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s2_comma_s0_comma_s0_comma_s0_comma_s0, 
-	POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s3_comma_s0_comma_s0_comma_s0_comma_s0, 
-	POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s4_comma_s0_comma_s0_comma_s0_comma_s0, 
-	POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s5_comma_s0_comma_s0_comma_s0_comma_s0,
-	POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_violation 
+enum TradingEnforcer_policy_RateLimit_5_per_1s_states { 
+	POLICY_STATE_TradingEnforcer_RateLimit_5_per_1s_s0, 
+	POLICY_STATE_TradingEnforcer_RateLimit_5_per_1s_s1, 
+	POLICY_STATE_TradingEnforcer_RateLimit_5_per_1s_s2, 
+	POLICY_STATE_TradingEnforcer_RateLimit_5_per_1s_s3, 
+	POLICY_STATE_TradingEnforcer_RateLimit_5_per_1s_s4, 
+	POLICY_STATE_TradingEnforcer_RateLimit_5_per_1s_s5,
+	POLICY_STATE_TradingEnforcer_RateLimit_5_per_1s_violation 
+};
+
+enum TradingEnforcer_policy_LatchingKillSwitch_states { 
+	POLICY_STATE_TradingEnforcer_LatchingKillSwitch_s0,
+	POLICY_STATE_TradingEnforcer_LatchingKillSwitch_violation 
+};
+
+enum TradingEnforcer_policy_RejectDeviantPrice_states { 
+	POLICY_STATE_TradingEnforcer_RejectDeviantPrice_s0,
+	POLICY_STATE_TradingEnforcer_RejectDeviantPrice_violation 
+};
+
+enum TradingEnforcer_policy_BlockConcentratedBuy_states { 
+	POLICY_STATE_TradingEnforcer_BlockConcentratedBuy_s0,
+	POLICY_STATE_TradingEnforcer_BlockConcentratedBuy_violation 
+};
+
+enum TradingEnforcer_policy_BlockIlliquidTrade_states { 
+	POLICY_STATE_TradingEnforcer_BlockIlliquidTrade_s0,
+	POLICY_STATE_TradingEnforcer_BlockIlliquidTrade_violation 
+};
+
+enum TradingEnforcer_policy_OTR_Policy_states { 
+	POLICY_STATE_TradingEnforcer_OTR_Policy_s_normal, 
+	POLICY_STATE_TradingEnforcer_OTR_Policy_s_throttled,
+	POLICY_STATE_TradingEnforcer_OTR_Policy_violation 
+};
+
+enum TradingEnforcer_policy_MQL_Policy_states { 
+	POLICY_STATE_TradingEnforcer_MQL_Policy_empty, 
+	POLICY_STATE_TradingEnforcer_MQL_Policy_resting,
+	POLICY_STATE_TradingEnforcer_MQL_Policy_violation 
+};
+
+enum TradingEnforcer_policy_NoWash_states { 
+	POLICY_STATE_TradingEnforcer_NoWash_s0, 
+	POLICY_STATE_TradingEnforcer_NoWash_s1, 
+	POLICY_STATE_TradingEnforcer_NoWash_s2,
+	POLICY_STATE_TradingEnforcer_NoWash_violation 
 };
 
 
@@ -28,28 +67,74 @@ typedef struct {
 	bool is_illiquid;
 	bool will_exceed_limit;
 	bool price_deviates;
+	bool act_EXEC;
 	
 } inputs_TradingEnforcer_t;
 
 //Outputs from the function TradingEnforcer
 typedef struct {
-	bool act_TRADE;
+	bool act_PLACE;
 	bool act_BUY;
+	bool act_MSG;
+	bool act_CANCEL;
+	bool act_SELL;
+	int32_t price;
 	
 } outputs_TradingEnforcer_t;
 
 //enforcer state and vars:
 typedef struct {
-	enum TradingEnforcer_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_states _policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state;
+	enum TradingEnforcer_policy_RateLimit_5_per_1s_states _policy_RateLimit_5_per_1s_state;
 	//internal vars
 	dtimer_t t_window;
+	
+	
+	enum TradingEnforcer_policy_LatchingKillSwitch_states _policy_LatchingKillSwitch_state;
+	//internal vars
+	
+	
+	enum TradingEnforcer_policy_RejectDeviantPrice_states _policy_RejectDeviantPrice_state;
+	//internal vars
+	
+	
+	enum TradingEnforcer_policy_BlockConcentratedBuy_states _policy_BlockConcentratedBuy_state;
+	//internal vars
+	
+	
+	enum TradingEnforcer_policy_BlockIlliquidTrade_states _policy_BlockIlliquidTrade_state;
+	//internal vars
+	
+	
+	enum TradingEnforcer_policy_OTR_Policy_states _policy_OTR_Policy_state;
+	//internal vars
+	int32_t tokens;
+	
+	
+	enum TradingEnforcer_policy_MQL_Policy_states _policy_MQL_Policy_state;
+	//internal vars
+	dtimer_t c_age;
+	
+	
+	enum TradingEnforcer_policy_NoWash_states _policy_NoWash_state;
+	//internal vars
+	int32_t last_bid;
+	int32_t last_ask;
 	
 	
 	
 } enforcervars_TradingEnforcer_t;
 
 
-#define CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW 5
+#define CONST_RateLimit_5_per_1s_T_WINDOW 5
+
+#define CONST_OTR_Policy_Max_Cap 500
+#define CONST_OTR_Policy_Reward 50
+#define CONST_OTR_Policy_Cost 1
+#define CONST_OTR_Policy_Resume_Threshold 10
+
+#define CONST_MQL_Policy_T_MQL 100
+
+
 
 
 //This function is provided in "F_TradingEnforcer.c"
@@ -62,18 +147,18 @@ void TradingEnforcer_run_via_enforcer(enforcervars_TradingEnforcer_t* me, inputs
 
 //This function is provided from the user
 //It is the controller function
-extern void TradingEnforcer_run(inputs_TradingEnforcer_t* inputs, outputs_TradingEnforcer_t* outputs);
+void TradingEnforcer_run(inputs_TradingEnforcer_t* inputs, outputs_TradingEnforcer_t* outputs){};
 
 //enforcer functions
 
 
 //This function is provided in "F_TradingEnforcer.c"
-//It will run the input enforcer for TradingEnforcer's policy Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade
-void TradingEnforcer_run_input_enforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade(enforcervars_TradingEnforcer_t* me, inputs_TradingEnforcer_t* inputs);
+//It will run the input enforcer for TradingEnforcer's policy RateLimit_5_per_1s
+void TradingEnforcer_run_input_enforcer_RateLimit_5_per_1s(enforcervars_TradingEnforcer_t* me, inputs_TradingEnforcer_t* inputs);
 
 //This function is provided in "F_TradingEnforcer.c"
-//It will run the input enforcer for TradingEnforcer's policy Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade
-void TradingEnforcer_run_output_enforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade(enforcervars_TradingEnforcer_t* me, inputs_TradingEnforcer_t* inputs, outputs_TradingEnforcer_t* outputs);
+//It will run the input enforcer for TradingEnforcer's policy RateLimit_5_per_1s
+void TradingEnforcer_run_output_enforcer_RateLimit_5_per_1s(enforcervars_TradingEnforcer_t* me, inputs_TradingEnforcer_t* inputs, outputs_TradingEnforcer_t* outputs);
 
 //This function is provided in "F_TradingEnforcer.c"
 //It will check the state of the enforcer monitor code
@@ -83,6 +168,139 @@ void TradingEnforcer_run_output_enforcer_Product_of_Product_of_Product_of_Produc
 //-1: currently false (unsafe)
 //-2: always false (unsafe)
 //It will need to do some reachability analysis to achieve this
-int TradingEnforcer_check_rv_status_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade(enforcervars_TradingEnforcer_t* me);
+int TradingEnforcer_check_rv_status_RateLimit_5_per_1s(enforcervars_TradingEnforcer_t* me);
+
+
+//This function is provided in "F_TradingEnforcer.c"
+//It will run the input enforcer for TradingEnforcer's policy LatchingKillSwitch
+void TradingEnforcer_run_input_enforcer_LatchingKillSwitch(enforcervars_TradingEnforcer_t* me, inputs_TradingEnforcer_t* inputs);
+
+//This function is provided in "F_TradingEnforcer.c"
+//It will run the input enforcer for TradingEnforcer's policy LatchingKillSwitch
+void TradingEnforcer_run_output_enforcer_LatchingKillSwitch(enforcervars_TradingEnforcer_t* me, inputs_TradingEnforcer_t* inputs, outputs_TradingEnforcer_t* outputs);
+
+//This function is provided in "F_TradingEnforcer.c"
+//It will check the state of the enforcer monitor code
+//It returns one of the following:
+//0: currently true (safe)
+//1: always true (safe)
+//-1: currently false (unsafe)
+//-2: always false (unsafe)
+//It will need to do some reachability analysis to achieve this
+int TradingEnforcer_check_rv_status_LatchingKillSwitch(enforcervars_TradingEnforcer_t* me);
+
+
+//This function is provided in "F_TradingEnforcer.c"
+//It will run the input enforcer for TradingEnforcer's policy RejectDeviantPrice
+void TradingEnforcer_run_input_enforcer_RejectDeviantPrice(enforcervars_TradingEnforcer_t* me, inputs_TradingEnforcer_t* inputs);
+
+//This function is provided in "F_TradingEnforcer.c"
+//It will run the input enforcer for TradingEnforcer's policy RejectDeviantPrice
+void TradingEnforcer_run_output_enforcer_RejectDeviantPrice(enforcervars_TradingEnforcer_t* me, inputs_TradingEnforcer_t* inputs, outputs_TradingEnforcer_t* outputs);
+
+//This function is provided in "F_TradingEnforcer.c"
+//It will check the state of the enforcer monitor code
+//It returns one of the following:
+//0: currently true (safe)
+//1: always true (safe)
+//-1: currently false (unsafe)
+//-2: always false (unsafe)
+//It will need to do some reachability analysis to achieve this
+int TradingEnforcer_check_rv_status_RejectDeviantPrice(enforcervars_TradingEnforcer_t* me);
+
+
+//This function is provided in "F_TradingEnforcer.c"
+//It will run the input enforcer for TradingEnforcer's policy BlockConcentratedBuy
+void TradingEnforcer_run_input_enforcer_BlockConcentratedBuy(enforcervars_TradingEnforcer_t* me, inputs_TradingEnforcer_t* inputs);
+
+//This function is provided in "F_TradingEnforcer.c"
+//It will run the input enforcer for TradingEnforcer's policy BlockConcentratedBuy
+void TradingEnforcer_run_output_enforcer_BlockConcentratedBuy(enforcervars_TradingEnforcer_t* me, inputs_TradingEnforcer_t* inputs, outputs_TradingEnforcer_t* outputs);
+
+//This function is provided in "F_TradingEnforcer.c"
+//It will check the state of the enforcer monitor code
+//It returns one of the following:
+//0: currently true (safe)
+//1: always true (safe)
+//-1: currently false (unsafe)
+//-2: always false (unsafe)
+//It will need to do some reachability analysis to achieve this
+int TradingEnforcer_check_rv_status_BlockConcentratedBuy(enforcervars_TradingEnforcer_t* me);
+
+
+//This function is provided in "F_TradingEnforcer.c"
+//It will run the input enforcer for TradingEnforcer's policy BlockIlliquidTrade
+void TradingEnforcer_run_input_enforcer_BlockIlliquidTrade(enforcervars_TradingEnforcer_t* me, inputs_TradingEnforcer_t* inputs);
+
+//This function is provided in "F_TradingEnforcer.c"
+//It will run the input enforcer for TradingEnforcer's policy BlockIlliquidTrade
+void TradingEnforcer_run_output_enforcer_BlockIlliquidTrade(enforcervars_TradingEnforcer_t* me, inputs_TradingEnforcer_t* inputs, outputs_TradingEnforcer_t* outputs);
+
+//This function is provided in "F_TradingEnforcer.c"
+//It will check the state of the enforcer monitor code
+//It returns one of the following:
+//0: currently true (safe)
+//1: always true (safe)
+//-1: currently false (unsafe)
+//-2: always false (unsafe)
+//It will need to do some reachability analysis to achieve this
+int TradingEnforcer_check_rv_status_BlockIlliquidTrade(enforcervars_TradingEnforcer_t* me);
+
+
+//This function is provided in "F_TradingEnforcer.c"
+//It will run the input enforcer for TradingEnforcer's policy OTR_Policy
+void TradingEnforcer_run_input_enforcer_OTR_Policy(enforcervars_TradingEnforcer_t* me, inputs_TradingEnforcer_t* inputs);
+
+//This function is provided in "F_TradingEnforcer.c"
+//It will run the input enforcer for TradingEnforcer's policy OTR_Policy
+void TradingEnforcer_run_output_enforcer_OTR_Policy(enforcervars_TradingEnforcer_t* me, inputs_TradingEnforcer_t* inputs, outputs_TradingEnforcer_t* outputs);
+
+//This function is provided in "F_TradingEnforcer.c"
+//It will check the state of the enforcer monitor code
+//It returns one of the following:
+//0: currently true (safe)
+//1: always true (safe)
+//-1: currently false (unsafe)
+//-2: always false (unsafe)
+//It will need to do some reachability analysis to achieve this
+int TradingEnforcer_check_rv_status_OTR_Policy(enforcervars_TradingEnforcer_t* me);
+
+
+//This function is provided in "F_TradingEnforcer.c"
+//It will run the input enforcer for TradingEnforcer's policy MQL_Policy
+void TradingEnforcer_run_input_enforcer_MQL_Policy(enforcervars_TradingEnforcer_t* me, inputs_TradingEnforcer_t* inputs);
+
+//This function is provided in "F_TradingEnforcer.c"
+//It will run the input enforcer for TradingEnforcer's policy MQL_Policy
+void TradingEnforcer_run_output_enforcer_MQL_Policy(enforcervars_TradingEnforcer_t* me, inputs_TradingEnforcer_t* inputs, outputs_TradingEnforcer_t* outputs);
+
+//This function is provided in "F_TradingEnforcer.c"
+//It will check the state of the enforcer monitor code
+//It returns one of the following:
+//0: currently true (safe)
+//1: always true (safe)
+//-1: currently false (unsafe)
+//-2: always false (unsafe)
+//It will need to do some reachability analysis to achieve this
+int TradingEnforcer_check_rv_status_MQL_Policy(enforcervars_TradingEnforcer_t* me);
+
+
+//This function is provided in "F_TradingEnforcer.c"
+//It will run the input enforcer for TradingEnforcer's policy NoWash
+void TradingEnforcer_run_input_enforcer_NoWash(enforcervars_TradingEnforcer_t* me, inputs_TradingEnforcer_t* inputs);
+
+//This function is provided in "F_TradingEnforcer.c"
+//It will run the input enforcer for TradingEnforcer's policy NoWash
+void TradingEnforcer_run_output_enforcer_NoWash(enforcervars_TradingEnforcer_t* me, inputs_TradingEnforcer_t* inputs, outputs_TradingEnforcer_t* outputs);
+
+//This function is provided in "F_TradingEnforcer.c"
+//It will check the state of the enforcer monitor code
+//It returns one of the following:
+//0: currently true (safe)
+//1: always true (safe)
+//-1: currently false (unsafe)
+//-2: always false (unsafe)
+//It will need to do some reachability analysis to achieve this
+int TradingEnforcer_check_rv_status_NoWash(enforcervars_TradingEnforcer_t* me);
 
 

@@ -29,13 +29,37 @@ int main() {
 	inputs_TradingEnforcer.is_illiquid = nondet_TradingEnforcer_input_1();
 	inputs_TradingEnforcer.will_exceed_limit = nondet_TradingEnforcer_input_2();
 	inputs_TradingEnforcer.price_deviates = nondet_TradingEnforcer_input_3();
+	inputs_TradingEnforcer.act_EXEC = nondet_TradingEnforcer_input_4();
 	
 
 	//randomise enforcer state, i.e. clock values and position (excepting violation state)
-	enf_TradingEnforcer.t_window = nondet_TradingEnforcer_enf_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_0();
+	enf_TradingEnforcer.t_window = nondet_TradingEnforcer_enf_RateLimit_5_per_1s_0();
 	
 	
-	enf_TradingEnforcer._policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = nondet_TradingEnforcer_enf_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state() % 6;
+	enf_TradingEnforcer._policy_RateLimit_5_per_1s_state = nondet_TradingEnforcer_enf_RateLimit_5_per_1s_state() % 6;
+	
+	enf_TradingEnforcer._policy_LatchingKillSwitch_state = nondet_TradingEnforcer_enf_LatchingKillSwitch_state() % 1;
+	
+	enf_TradingEnforcer._policy_RejectDeviantPrice_state = nondet_TradingEnforcer_enf_RejectDeviantPrice_state() % 1;
+	
+	enf_TradingEnforcer._policy_BlockConcentratedBuy_state = nondet_TradingEnforcer_enf_BlockConcentratedBuy_state() % 1;
+	
+	enf_TradingEnforcer._policy_BlockIlliquidTrade_state = nondet_TradingEnforcer_enf_BlockIlliquidTrade_state() % 1;
+	enf_TradingEnforcer.tokens = nondet_TradingEnforcer_enf_OTR_Policy_0();
+	
+	
+	
+	
+	
+	enf_TradingEnforcer._policy_OTR_Policy_state = nondet_TradingEnforcer_enf_OTR_Policy_state() % 2;
+	enf_TradingEnforcer.c_age = nondet_TradingEnforcer_enf_MQL_Policy_0();
+	
+	
+	enf_TradingEnforcer._policy_MQL_Policy_state = nondet_TradingEnforcer_enf_MQL_Policy_state() % 2;
+	enf_TradingEnforcer.last_bid = nondet_TradingEnforcer_enf_NoWash_0();
+	enf_TradingEnforcer.last_ask = nondet_TradingEnforcer_enf_NoWash_1();
+	
+	enf_TradingEnforcer._policy_NoWash_state = nondet_TradingEnforcer_enf_NoWash_state() % 3;
 	
 
     //run the enforcer (i.e. tell CBMC to check this out)
@@ -47,8 +71,12 @@ int main() {
 void TradingEnforcer_run(inputs_TradingEnforcer_t *inputs, outputs_TradingEnforcer_t *outputs) {
     //randomise controller
 
-    outputs->act_TRADE = nondet_TradingEnforcer_output_0();
+    outputs->act_PLACE = nondet_TradingEnforcer_output_0();
 	outputs->act_BUY = nondet_TradingEnforcer_output_1();
+	outputs->act_MSG = nondet_TradingEnforcer_output_2();
+	outputs->act_CANCEL = nondet_TradingEnforcer_output_3();
+	outputs->act_SELL = nondet_TradingEnforcer_output_4();
+	outputs->price = nondet_TradingEnforcer_output_5();
 	 
 }
 

@@ -31,7 +31,7 @@ policy OTR_Policy of OTR {
         }
 
         s_throttled {
-            -> violation on act_MSG recover act_MSG := 0;
+            -> violation on act_MSG recover act_MSG := 0; act_EXEC := 0;
 
             -> s_throttled on act_EXEC and (tokens + Reward <= Resume_Threshold): tokens := tokens + Reward;
 

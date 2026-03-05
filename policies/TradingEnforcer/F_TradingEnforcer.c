@@ -10,10 +10,46 @@ void TradingEnforcer_init_all_vars(enforcervars_TradingEnforcer_t* me, inputs_Tr
 	
 
 	
-	me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s0_comma_s0_comma_s0_comma_s0_comma_s0;
+	me->_policy_RateLimit_5_per_1s_state = POLICY_STATE_TradingEnforcer_RateLimit_5_per_1s_s0;
 	//input policy internal vars
 	
 	me->t_window = 0;
+	
+	
+	me->_policy_LatchingKillSwitch_state = POLICY_STATE_TradingEnforcer_LatchingKillSwitch_s0;
+	//input policy internal vars
+	
+	
+	me->_policy_RejectDeviantPrice_state = POLICY_STATE_TradingEnforcer_RejectDeviantPrice_s0;
+	//input policy internal vars
+	
+	
+	me->_policy_BlockConcentratedBuy_state = POLICY_STATE_TradingEnforcer_BlockConcentratedBuy_s0;
+	//input policy internal vars
+	
+	
+	me->_policy_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_BlockIlliquidTrade_s0;
+	//input policy internal vars
+	
+	
+	me->_policy_OTR_Policy_state = POLICY_STATE_TradingEnforcer_OTR_Policy_s_normal;
+	//input policy internal vars
+	
+	me->tokens = 500;
+	
+	
+	me->_policy_MQL_Policy_state = POLICY_STATE_TradingEnforcer_MQL_Policy_empty;
+	//input policy internal vars
+	
+	me->c_age = 0;
+	
+	
+	me->_policy_NoWash_state = POLICY_STATE_TradingEnforcer_NoWash_s0;
+	//input policy internal vars
+	
+	me->last_bid = 0;
+	
+	me->last_ask = 4000000000;
 	
 	
 }
@@ -21,220 +57,66 @@ void TradingEnforcer_init_all_vars(enforcervars_TradingEnforcer_t* me, inputs_Tr
 void TradingEnforcer_run_via_enforcer(enforcervars_TradingEnforcer_t* me, inputs_TradingEnforcer_t* inputs, outputs_TradingEnforcer_t* outputs) {
 	//run the policies in reverse order for the inputs (last policies have highest priority)
 	
-	 TradingEnforcer_run_input_enforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade(me, inputs);
+	 TradingEnforcer_run_input_enforcer_NoWash(me, inputs);
+	 TradingEnforcer_run_input_enforcer_MQL_Policy(me, inputs);
+	 TradingEnforcer_run_input_enforcer_OTR_Policy(me, inputs);
+	 TradingEnforcer_run_input_enforcer_BlockIlliquidTrade(me, inputs);
+	 TradingEnforcer_run_input_enforcer_BlockConcentratedBuy(me, inputs);
+	 TradingEnforcer_run_input_enforcer_RejectDeviantPrice(me, inputs);
+	 TradingEnforcer_run_input_enforcer_LatchingKillSwitch(me, inputs);
+	 TradingEnforcer_run_input_enforcer_RateLimit_5_per_1s(me, inputs);
 	
 
 	TradingEnforcer_run(inputs, outputs);
 
 	//run policies in specified order for outputs
-	TradingEnforcer_run_output_enforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade(me, inputs,outputs);
+	TradingEnforcer_run_output_enforcer_RateLimit_5_per_1s(me, inputs,outputs);
+	TradingEnforcer_run_output_enforcer_LatchingKillSwitch(me, inputs,outputs);
+	TradingEnforcer_run_output_enforcer_RejectDeviantPrice(me, inputs,outputs);
+	TradingEnforcer_run_output_enforcer_BlockConcentratedBuy(me, inputs,outputs);
+	TradingEnforcer_run_output_enforcer_BlockIlliquidTrade(me, inputs,outputs);
+	TradingEnforcer_run_output_enforcer_OTR_Policy(me, inputs,outputs);
+	TradingEnforcer_run_output_enforcer_MQL_Policy(me, inputs,outputs);
+	TradingEnforcer_run_output_enforcer_NoWash(me, inputs,outputs);
 	
 }
 
 
 //input policies
 
-//INPUT POLICY Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade BEGIN
-//This will run the input enforcer for TradingEnforcer's policy Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade
-void TradingEnforcer_run_input_enforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade(enforcervars_TradingEnforcer_t* me, inputs_TradingEnforcer_t* inputs) {
-	switch(me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state) {
-		case POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s0_comma_s0_comma_s0_comma_s0_comma_s0:
+//INPUT POLICY RateLimit_5_per_1s BEGIN
+//This will run the input enforcer for TradingEnforcer's policy RateLimit_5_per_1s
+void TradingEnforcer_run_input_enforcer_RateLimit_5_per_1s(enforcervars_TradingEnforcer_t* me, inputs_TradingEnforcer_t* inputs) {
+	switch(me->_policy_RateLimit_5_per_1s_state) {
+		case POLICY_STATE_TradingEnforcer_RateLimit_5_per_1s_s0:
 			
-			if(inputs->is_illiquid) {
-				//transition s0_comma_s0_comma_s0_comma_s0_comma_s0 -> violation on is_illiquid
-				//select a transition to solve the problem
-				
-				//Recovery instructions manually provided.
-				
-			} 
-			if(inputs->will_exceed_limit) {
-				//transition s0_comma_s0_comma_s0_comma_s0_comma_s0 -> violation on will_exceed_limit
-				//select a transition to solve the problem
-				
-				//Recovery instructions manually provided.
-				
-			} 
-			if(inputs->price_deviates) {
-				//transition s0_comma_s0_comma_s0_comma_s0_comma_s0 -> violation on price_deviates
-				//select a transition to solve the problem
-				
-				//Recovery instructions manually provided.
-				
-			} 
-			if(inputs->dd_exceeded) {
-				//transition s0_comma_s0_comma_s0_comma_s0_comma_s0 -> violation on dd_exceeded
-				//select a transition to solve the problem
-				
-				//Recovery instructions manually provided.
-				
-			} 
 			
 			break;
 
-		case POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0:
+		case POLICY_STATE_TradingEnforcer_RateLimit_5_per_1s_s1:
 			
-			if(inputs->is_illiquid) {
-				//transition s1_comma_s0_comma_s0_comma_s0_comma_s0 -> violation on is_illiquid
-				//select a transition to solve the problem
-				
-				//Recovery instructions manually provided.
-				
-			} 
-			if(inputs->will_exceed_limit) {
-				//transition s1_comma_s0_comma_s0_comma_s0_comma_s0 -> violation on will_exceed_limit
-				//select a transition to solve the problem
-				
-				//Recovery instructions manually provided.
-				
-			} 
-			if(inputs->price_deviates) {
-				//transition s1_comma_s0_comma_s0_comma_s0_comma_s0 -> violation on price_deviates
-				//select a transition to solve the problem
-				
-				//Recovery instructions manually provided.
-				
-			} 
-			if(inputs->dd_exceeded) {
-				//transition s1_comma_s0_comma_s0_comma_s0_comma_s0 -> violation on dd_exceeded
-				//select a transition to solve the problem
-				
-				//Recovery instructions manually provided.
-				
-			} 
 			
 			break;
 
-		case POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s2_comma_s0_comma_s0_comma_s0_comma_s0:
+		case POLICY_STATE_TradingEnforcer_RateLimit_5_per_1s_s2:
 			
-			if(inputs->is_illiquid) {
-				//transition s2_comma_s0_comma_s0_comma_s0_comma_s0 -> violation on is_illiquid
-				//select a transition to solve the problem
-				
-				//Recovery instructions manually provided.
-				
-			} 
-			if(inputs->will_exceed_limit) {
-				//transition s2_comma_s0_comma_s0_comma_s0_comma_s0 -> violation on will_exceed_limit
-				//select a transition to solve the problem
-				
-				//Recovery instructions manually provided.
-				
-			} 
-			if(inputs->price_deviates) {
-				//transition s2_comma_s0_comma_s0_comma_s0_comma_s0 -> violation on price_deviates
-				//select a transition to solve the problem
-				
-				//Recovery instructions manually provided.
-				
-			} 
-			if(inputs->dd_exceeded) {
-				//transition s2_comma_s0_comma_s0_comma_s0_comma_s0 -> violation on dd_exceeded
-				//select a transition to solve the problem
-				
-				//Recovery instructions manually provided.
-				
-			} 
 			
 			break;
 
-		case POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s3_comma_s0_comma_s0_comma_s0_comma_s0:
+		case POLICY_STATE_TradingEnforcer_RateLimit_5_per_1s_s3:
 			
-			if(inputs->is_illiquid) {
-				//transition s3_comma_s0_comma_s0_comma_s0_comma_s0 -> violation on is_illiquid
-				//select a transition to solve the problem
-				
-				//Recovery instructions manually provided.
-				
-			} 
-			if(inputs->will_exceed_limit) {
-				//transition s3_comma_s0_comma_s0_comma_s0_comma_s0 -> violation on will_exceed_limit
-				//select a transition to solve the problem
-				
-				//Recovery instructions manually provided.
-				
-			} 
-			if(inputs->price_deviates) {
-				//transition s3_comma_s0_comma_s0_comma_s0_comma_s0 -> violation on price_deviates
-				//select a transition to solve the problem
-				
-				//Recovery instructions manually provided.
-				
-			} 
-			if(inputs->dd_exceeded) {
-				//transition s3_comma_s0_comma_s0_comma_s0_comma_s0 -> violation on dd_exceeded
-				//select a transition to solve the problem
-				
-				//Recovery instructions manually provided.
-				
-			} 
 			
 			break;
 
-		case POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s4_comma_s0_comma_s0_comma_s0_comma_s0:
+		case POLICY_STATE_TradingEnforcer_RateLimit_5_per_1s_s4:
 			
-			if(inputs->is_illiquid) {
-				//transition s4_comma_s0_comma_s0_comma_s0_comma_s0 -> violation on is_illiquid
-				//select a transition to solve the problem
-				
-				//Recovery instructions manually provided.
-				
-			} 
-			if(inputs->will_exceed_limit) {
-				//transition s4_comma_s0_comma_s0_comma_s0_comma_s0 -> violation on will_exceed_limit
-				//select a transition to solve the problem
-				
-				//Recovery instructions manually provided.
-				
-			} 
-			if(inputs->price_deviates) {
-				//transition s4_comma_s0_comma_s0_comma_s0_comma_s0 -> violation on price_deviates
-				//select a transition to solve the problem
-				
-				//Recovery instructions manually provided.
-				
-			} 
-			if(inputs->dd_exceeded) {
-				//transition s4_comma_s0_comma_s0_comma_s0_comma_s0 -> violation on dd_exceeded
-				//select a transition to solve the problem
-				
-				//Recovery instructions manually provided.
-				
-			} 
 			
 			break;
 
-		case POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s5_comma_s0_comma_s0_comma_s0_comma_s0:
+		case POLICY_STATE_TradingEnforcer_RateLimit_5_per_1s_s5:
 			
-			if(inputs->is_illiquid) {
-				//transition s5_comma_s0_comma_s0_comma_s0_comma_s0 -> violation on is_illiquid
-				//select a transition to solve the problem
-				
-				//Recovery instructions manually provided.
-				
-			} 
-			if(inputs->will_exceed_limit) {
-				//transition s5_comma_s0_comma_s0_comma_s0_comma_s0 -> violation on will_exceed_limit
-				//select a transition to solve the problem
-				
-				//Recovery instructions manually provided.
-				
-			} 
-			if(inputs->price_deviates) {
-				//transition s5_comma_s0_comma_s0_comma_s0_comma_s0 -> violation on price_deviates
-				//select a transition to solve the problem
-				
-				//Recovery instructions manually provided.
-				
-			} 
-			if(inputs->dd_exceeded) {
-				//transition s5_comma_s0_comma_s0_comma_s0_comma_s0 -> violation on dd_exceeded
-				//select a transition to solve the problem
-				
-				//Recovery instructions manually provided.
-				
-			} 
-			if(me->t_window < CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s5_comma_s0_comma_s0_comma_s0_comma_s0 -> violation on t_window < T_WINDOW
+			if(me->t_window < CONST_RateLimit_5_per_1s_T_WINDOW) {
+				//transition s5 -> violation on t_window < T_WINDOW
 				//select a transition to solve the problem
 				
 				//Recovery instructions manually provided.
@@ -247,246 +129,214 @@ void TradingEnforcer_run_input_enforcer_Product_of_Product_of_Product_of_Product
 	}
 }
 
-//INPUT POLICY Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade END
+//INPUT POLICY RateLimit_5_per_1s END
+
+//INPUT POLICY LatchingKillSwitch BEGIN
+//This will run the input enforcer for TradingEnforcer's policy LatchingKillSwitch
+void TradingEnforcer_run_input_enforcer_LatchingKillSwitch(enforcervars_TradingEnforcer_t* me, inputs_TradingEnforcer_t* inputs) {
+	switch(me->_policy_LatchingKillSwitch_state) {
+		case POLICY_STATE_TradingEnforcer_LatchingKillSwitch_s0:
+			
+			if(inputs->dd_exceeded) {
+				//transition s0 -> violation on dd_exceeded
+				//select a transition to solve the problem
+				
+				//Selected non-violation transition "s0 -> s0 on dd_exceeded" which has an equivalent guard, so no action is required
+				
+			} 
+			
+			break;
+
+		
+	}
+}
+
+//INPUT POLICY LatchingKillSwitch END
+
+//INPUT POLICY RejectDeviantPrice BEGIN
+//This will run the input enforcer for TradingEnforcer's policy RejectDeviantPrice
+void TradingEnforcer_run_input_enforcer_RejectDeviantPrice(enforcervars_TradingEnforcer_t* me, inputs_TradingEnforcer_t* inputs) {
+	switch(me->_policy_RejectDeviantPrice_state) {
+		case POLICY_STATE_TradingEnforcer_RejectDeviantPrice_s0:
+			
+			if(inputs->price_deviates) {
+				//transition s0 -> violation on price_deviates
+				//select a transition to solve the problem
+				
+				//Selected non-violation transition "s0 -> s0 on price_deviates" which has an equivalent guard, so no action is required
+				
+			} 
+			
+			break;
+
+		
+	}
+}
+
+//INPUT POLICY RejectDeviantPrice END
+
+//INPUT POLICY BlockConcentratedBuy BEGIN
+//This will run the input enforcer for TradingEnforcer's policy BlockConcentratedBuy
+void TradingEnforcer_run_input_enforcer_BlockConcentratedBuy(enforcervars_TradingEnforcer_t* me, inputs_TradingEnforcer_t* inputs) {
+	switch(me->_policy_BlockConcentratedBuy_state) {
+		case POLICY_STATE_TradingEnforcer_BlockConcentratedBuy_s0:
+			
+			if(inputs->will_exceed_limit) {
+				//transition s0 -> violation on will_exceed_limit
+				//select a transition to solve the problem
+				
+				//Selected non-violation transition "s0 -> s0 on will_exceed_limit" which has an equivalent guard, so no action is required
+				
+			} 
+			
+			break;
+
+		
+	}
+}
+
+//INPUT POLICY BlockConcentratedBuy END
+
+//INPUT POLICY BlockIlliquidTrade BEGIN
+//This will run the input enforcer for TradingEnforcer's policy BlockIlliquidTrade
+void TradingEnforcer_run_input_enforcer_BlockIlliquidTrade(enforcervars_TradingEnforcer_t* me, inputs_TradingEnforcer_t* inputs) {
+	switch(me->_policy_BlockIlliquidTrade_state) {
+		case POLICY_STATE_TradingEnforcer_BlockIlliquidTrade_s0:
+			
+			if(inputs->is_illiquid) {
+				//transition s0 -> violation on is_illiquid
+				//select a transition to solve the problem
+				
+				//Selected non-violation transition "s0 -> s0 on is_illiquid" which has an equivalent guard, so no action is required
+				
+			} 
+			
+			break;
+
+		
+	}
+}
+
+//INPUT POLICY BlockIlliquidTrade END
+
+//INPUT POLICY OTR_Policy BEGIN
+//This will run the input enforcer for TradingEnforcer's policy OTR_Policy
+void TradingEnforcer_run_input_enforcer_OTR_Policy(enforcervars_TradingEnforcer_t* me, inputs_TradingEnforcer_t* inputs) {
+	switch(me->_policy_OTR_Policy_state) {
+		case POLICY_STATE_TradingEnforcer_OTR_Policy_s_normal:
+			
+			
+			break;
+
+		case POLICY_STATE_TradingEnforcer_OTR_Policy_s_throttled:
+			
+			
+			break;
+
+		
+	}
+}
+
+//INPUT POLICY OTR_Policy END
+
+//INPUT POLICY MQL_Policy BEGIN
+//This will run the input enforcer for TradingEnforcer's policy MQL_Policy
+void TradingEnforcer_run_input_enforcer_MQL_Policy(enforcervars_TradingEnforcer_t* me, inputs_TradingEnforcer_t* inputs) {
+	switch(me->_policy_MQL_Policy_state) {
+		case POLICY_STATE_TradingEnforcer_MQL_Policy_empty:
+			
+			
+			break;
+
+		case POLICY_STATE_TradingEnforcer_MQL_Policy_resting:
+			
+			if(me->c_age < CONST_MQL_Policy_T_MQL) {
+				//transition resting -> violation on c_age < T_MQL
+				//select a transition to solve the problem
+				
+				//Recovery instructions manually provided.
+				
+			} 
+			
+			break;
+
+		
+	}
+}
+
+//INPUT POLICY MQL_Policy END
+
+//INPUT POLICY NoWash BEGIN
+//This will run the input enforcer for TradingEnforcer's policy NoWash
+void TradingEnforcer_run_input_enforcer_NoWash(enforcervars_TradingEnforcer_t* me, inputs_TradingEnforcer_t* inputs) {
+	switch(me->_policy_NoWash_state) {
+		case POLICY_STATE_TradingEnforcer_NoWash_s0:
+			
+			
+			break;
+
+		case POLICY_STATE_TradingEnforcer_NoWash_s1:
+			
+			
+			break;
+
+		case POLICY_STATE_TradingEnforcer_NoWash_s2:
+			
+			
+			break;
+
+		
+	}
+}
+
+//INPUT POLICY NoWash END
 
 
 
 //output policies
 
-//OUTPUT POLICY Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade BEGIN
-//This will run the input enforcer for TradingEnforcer's policy Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade
-void TradingEnforcer_run_output_enforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade(enforcervars_TradingEnforcer_t* me, inputs_TradingEnforcer_t* inputs, outputs_TradingEnforcer_t* outputs) {
+//OUTPUT POLICY RateLimit_5_per_1s BEGIN
+//This will run the input enforcer for TradingEnforcer's policy RateLimit_5_per_1s
+void TradingEnforcer_run_output_enforcer_RateLimit_5_per_1s(enforcervars_TradingEnforcer_t* me, inputs_TradingEnforcer_t* inputs, outputs_TradingEnforcer_t* outputs) {
 	//advance timers
 	
 	me->t_window++;
 	
 	//run enforcer
-	switch(me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state) {
-		case POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s0_comma_s0_comma_s0_comma_s0_comma_s0:
+	switch(me->_policy_RateLimit_5_per_1s_state) {
+		case POLICY_STATE_TradingEnforcer_RateLimit_5_per_1s_s0:
 			
-			if(inputs->is_illiquid && outputs->act_TRADE) {
-				//transition s0_comma_s0_comma_s0_comma_s0_comma_s0 -> violation on is_illiquid and act_TRADE
-				//select a transition to solve the problem
-				
-				//Recovery instructions manually provided.
-				outputs->act_TRADE = 0;
-				
-			} 
-			if(inputs->will_exceed_limit && outputs->act_BUY) {
-				//transition s0_comma_s0_comma_s0_comma_s0_comma_s0 -> violation on will_exceed_limit and act_BUY
-				//select a transition to solve the problem
-				
-				//Recovery instructions manually provided.
-				outputs->act_BUY = 0;
-				
-			} 
-			if(inputs->price_deviates && outputs->act_TRADE) {
-				//transition s0_comma_s0_comma_s0_comma_s0_comma_s0 -> violation on price_deviates and act_TRADE
-				//select a transition to solve the problem
-				
-				//Recovery instructions manually provided.
-				outputs->act_TRADE = 0;
-				
-			} 
-			if(inputs->dd_exceeded && outputs->act_TRADE) {
-				//transition s0_comma_s0_comma_s0_comma_s0_comma_s0 -> violation on dd_exceeded and act_TRADE
-				//select a transition to solve the problem
-				
-				//Recovery instructions manually provided.
-				outputs->act_TRADE = 0;
-				
-			} 
 
 			break;
 
-		case POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0:
+		case POLICY_STATE_TradingEnforcer_RateLimit_5_per_1s_s1:
 			
-			if(inputs->is_illiquid && outputs->act_TRADE) {
-				//transition s1_comma_s0_comma_s0_comma_s0_comma_s0 -> violation on is_illiquid and act_TRADE
-				//select a transition to solve the problem
-				
-				//Recovery instructions manually provided.
-				outputs->act_TRADE = 0;
-				
-			} 
-			if(inputs->will_exceed_limit && outputs->act_BUY) {
-				//transition s1_comma_s0_comma_s0_comma_s0_comma_s0 -> violation on will_exceed_limit and act_BUY
-				//select a transition to solve the problem
-				
-				//Recovery instructions manually provided.
-				outputs->act_BUY = 0;
-				
-			} 
-			if(inputs->price_deviates && outputs->act_TRADE) {
-				//transition s1_comma_s0_comma_s0_comma_s0_comma_s0 -> violation on price_deviates and act_TRADE
-				//select a transition to solve the problem
-				
-				//Recovery instructions manually provided.
-				outputs->act_TRADE = 0;
-				
-			} 
-			if(inputs->dd_exceeded && outputs->act_TRADE) {
-				//transition s1_comma_s0_comma_s0_comma_s0_comma_s0 -> violation on dd_exceeded and act_TRADE
-				//select a transition to solve the problem
-				
-				//Recovery instructions manually provided.
-				outputs->act_TRADE = 0;
-				
-			} 
 
 			break;
 
-		case POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s2_comma_s0_comma_s0_comma_s0_comma_s0:
+		case POLICY_STATE_TradingEnforcer_RateLimit_5_per_1s_s2:
 			
-			if(inputs->is_illiquid && outputs->act_TRADE) {
-				//transition s2_comma_s0_comma_s0_comma_s0_comma_s0 -> violation on is_illiquid and act_TRADE
-				//select a transition to solve the problem
-				
-				//Recovery instructions manually provided.
-				outputs->act_TRADE = 0;
-				
-			} 
-			if(inputs->will_exceed_limit && outputs->act_BUY) {
-				//transition s2_comma_s0_comma_s0_comma_s0_comma_s0 -> violation on will_exceed_limit and act_BUY
-				//select a transition to solve the problem
-				
-				//Recovery instructions manually provided.
-				outputs->act_BUY = 0;
-				
-			} 
-			if(inputs->price_deviates && outputs->act_TRADE) {
-				//transition s2_comma_s0_comma_s0_comma_s0_comma_s0 -> violation on price_deviates and act_TRADE
-				//select a transition to solve the problem
-				
-				//Recovery instructions manually provided.
-				outputs->act_TRADE = 0;
-				
-			} 
-			if(inputs->dd_exceeded && outputs->act_TRADE) {
-				//transition s2_comma_s0_comma_s0_comma_s0_comma_s0 -> violation on dd_exceeded and act_TRADE
-				//select a transition to solve the problem
-				
-				//Recovery instructions manually provided.
-				outputs->act_TRADE = 0;
-				
-			} 
 
 			break;
 
-		case POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s3_comma_s0_comma_s0_comma_s0_comma_s0:
+		case POLICY_STATE_TradingEnforcer_RateLimit_5_per_1s_s3:
 			
-			if(inputs->is_illiquid && outputs->act_TRADE) {
-				//transition s3_comma_s0_comma_s0_comma_s0_comma_s0 -> violation on is_illiquid and act_TRADE
-				//select a transition to solve the problem
-				
-				//Recovery instructions manually provided.
-				outputs->act_TRADE = 0;
-				
-			} 
-			if(inputs->will_exceed_limit && outputs->act_BUY) {
-				//transition s3_comma_s0_comma_s0_comma_s0_comma_s0 -> violation on will_exceed_limit and act_BUY
-				//select a transition to solve the problem
-				
-				//Recovery instructions manually provided.
-				outputs->act_BUY = 0;
-				
-			} 
-			if(inputs->price_deviates && outputs->act_TRADE) {
-				//transition s3_comma_s0_comma_s0_comma_s0_comma_s0 -> violation on price_deviates and act_TRADE
-				//select a transition to solve the problem
-				
-				//Recovery instructions manually provided.
-				outputs->act_TRADE = 0;
-				
-			} 
-			if(inputs->dd_exceeded && outputs->act_TRADE) {
-				//transition s3_comma_s0_comma_s0_comma_s0_comma_s0 -> violation on dd_exceeded and act_TRADE
-				//select a transition to solve the problem
-				
-				//Recovery instructions manually provided.
-				outputs->act_TRADE = 0;
-				
-			} 
 
 			break;
 
-		case POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s4_comma_s0_comma_s0_comma_s0_comma_s0:
+		case POLICY_STATE_TradingEnforcer_RateLimit_5_per_1s_s4:
 			
-			if(inputs->is_illiquid && outputs->act_TRADE) {
-				//transition s4_comma_s0_comma_s0_comma_s0_comma_s0 -> violation on is_illiquid and act_TRADE
-				//select a transition to solve the problem
-				
-				//Recovery instructions manually provided.
-				outputs->act_TRADE = 0;
-				
-			} 
-			if(inputs->will_exceed_limit && outputs->act_BUY) {
-				//transition s4_comma_s0_comma_s0_comma_s0_comma_s0 -> violation on will_exceed_limit and act_BUY
-				//select a transition to solve the problem
-				
-				//Recovery instructions manually provided.
-				outputs->act_BUY = 0;
-				
-			} 
-			if(inputs->price_deviates && outputs->act_TRADE) {
-				//transition s4_comma_s0_comma_s0_comma_s0_comma_s0 -> violation on price_deviates and act_TRADE
-				//select a transition to solve the problem
-				
-				//Recovery instructions manually provided.
-				outputs->act_TRADE = 0;
-				
-			} 
-			if(inputs->dd_exceeded && outputs->act_TRADE) {
-				//transition s4_comma_s0_comma_s0_comma_s0_comma_s0 -> violation on dd_exceeded and act_TRADE
-				//select a transition to solve the problem
-				
-				//Recovery instructions manually provided.
-				outputs->act_TRADE = 0;
-				
-			} 
 
 			break;
 
-		case POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s5_comma_s0_comma_s0_comma_s0_comma_s0:
+		case POLICY_STATE_TradingEnforcer_RateLimit_5_per_1s_s5:
 			
-			if(inputs->is_illiquid && outputs->act_TRADE) {
-				//transition s5_comma_s0_comma_s0_comma_s0_comma_s0 -> violation on is_illiquid and act_TRADE
+			if(outputs->act_PLACE && me->t_window < CONST_RateLimit_5_per_1s_T_WINDOW) {
+				//transition s5 -> violation on ( act_PLACE and t_window < T_WINDOW )
 				//select a transition to solve the problem
 				
 				//Recovery instructions manually provided.
-				outputs->act_TRADE = 0;
-				
-			} 
-			if(inputs->will_exceed_limit && outputs->act_BUY) {
-				//transition s5_comma_s0_comma_s0_comma_s0_comma_s0 -> violation on will_exceed_limit and act_BUY
-				//select a transition to solve the problem
-				
-				//Recovery instructions manually provided.
-				outputs->act_BUY = 0;
-				
-			} 
-			if(inputs->price_deviates && outputs->act_TRADE) {
-				//transition s5_comma_s0_comma_s0_comma_s0_comma_s0 -> violation on price_deviates and act_TRADE
-				//select a transition to solve the problem
-				
-				//Recovery instructions manually provided.
-				outputs->act_TRADE = 0;
-				
-			} 
-			if(inputs->dd_exceeded && outputs->act_TRADE) {
-				//transition s5_comma_s0_comma_s0_comma_s0_comma_s0 -> violation on dd_exceeded and act_TRADE
-				//select a transition to solve the problem
-				
-				//Recovery instructions manually provided.
-				outputs->act_TRADE = 0;
-				
-			} 
-			if(outputs->act_TRADE && me->t_window < CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s5_comma_s0_comma_s0_comma_s0_comma_s0 -> violation on act_TRADE and t_window < T_WINDOW
-				//select a transition to solve the problem
-				
-				//Recovery instructions manually provided.
-				outputs->act_TRADE = 0;
+				outputs->act_PLACE = 0;
 				
 			} 
 
@@ -496,2115 +346,177 @@ void TradingEnforcer_run_output_enforcer_Product_of_Product_of_Product_of_Produc
 	}
 
 	//select transition to advance state
-	switch(me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state) {
-		case POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s0_comma_s0_comma_s0_comma_s0_comma_s0:
+	switch(me->_policy_RateLimit_5_per_1s_state) {
+		case POLICY_STATE_TradingEnforcer_RateLimit_5_per_1s_s0:
 			
-			if((((((((inputs->is_illiquid && !(outputs->act_TRADE)) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && inputs->price_deviates) && !(outputs->act_TRADE)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && outputs->act_TRADE) {
-				//transition s0_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and will_exceed_limit and not (act_BUY) and price_deviates and not (act_TRADE) and dd_exceeded and not (act_TRADE) and act_TRADE
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
+			if(outputs->act_PLACE) {
+				//transition s0 -> s1 on ( act_PLACE )
+				me->_policy_RateLimit_5_per_1s_state = POLICY_STATE_TradingEnforcer_RateLimit_5_per_1s_s1;
 				//set expressions
 				
 				me->t_window = 0;
 				break;
 			} 
-			if((((((( !(inputs->is_illiquid) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && inputs->price_deviates) && !(outputs->act_TRADE)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && outputs->act_TRADE) {
-				//transition s0_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and will_exceed_limit and not (act_BUY) and price_deviates and not (act_TRADE) and dd_exceeded and not (act_TRADE) and act_TRADE
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if(inputs->is_illiquid && outputs->act_TRADE) {
-				//transition s0_comma_s0_comma_s0_comma_s0_comma_s0 -> violation on is_illiquid and act_TRADE
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_violation;
-				//set expressions
-				
-				break;
-			} 
-			if(((((((inputs->is_illiquid && !(outputs->act_TRADE)) && !(inputs->will_exceed_limit)) && inputs->price_deviates) && !(outputs->act_TRADE)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && outputs->act_TRADE) {
-				//transition s0_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and not (will_exceed_limit) and price_deviates and not (act_TRADE) and dd_exceeded and not (act_TRADE) and act_TRADE
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if(((((( !(inputs->is_illiquid) && !(inputs->will_exceed_limit)) && inputs->price_deviates) && !(outputs->act_TRADE)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && outputs->act_TRADE) {
-				//transition s0_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and not (will_exceed_limit) and price_deviates and not (act_TRADE) and dd_exceeded and not (act_TRADE) and act_TRADE
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if(inputs->will_exceed_limit && outputs->act_BUY) {
-				//transition s0_comma_s0_comma_s0_comma_s0_comma_s0 -> violation on will_exceed_limit and act_BUY
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_violation;
-				//set expressions
-				
-				break;
-			} 
-			if(((((((inputs->is_illiquid && !(outputs->act_TRADE)) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && !(inputs->price_deviates)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && outputs->act_TRADE) {
-				//transition s0_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and will_exceed_limit and not (act_BUY) and not (price_deviates) and dd_exceeded and not (act_TRADE) and act_TRADE
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if(((((( !(inputs->is_illiquid) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && !(inputs->price_deviates)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && outputs->act_TRADE) {
-				//transition s0_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and will_exceed_limit and not (act_BUY) and not (price_deviates) and dd_exceeded and not (act_TRADE) and act_TRADE
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if((((((inputs->is_illiquid && !(outputs->act_TRADE)) && !(inputs->will_exceed_limit)) && !(inputs->price_deviates)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && outputs->act_TRADE) {
-				//transition s0_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and not (will_exceed_limit) and not (price_deviates) and dd_exceeded and not (act_TRADE) and act_TRADE
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if((((( !(inputs->is_illiquid) && !(inputs->will_exceed_limit)) && !(inputs->price_deviates)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && outputs->act_TRADE) {
-				//transition s0_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and not (will_exceed_limit) and not (price_deviates) and dd_exceeded and not (act_TRADE) and act_TRADE
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if(inputs->price_deviates && outputs->act_TRADE) {
-				//transition s0_comma_s0_comma_s0_comma_s0_comma_s0 -> violation on price_deviates and act_TRADE
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_violation;
-				//set expressions
-				
-				break;
-			} 
-			if(((((((inputs->is_illiquid && !(outputs->act_TRADE)) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && inputs->price_deviates) && !(outputs->act_TRADE)) && !(inputs->dd_exceeded)) && outputs->act_TRADE) {
-				//transition s0_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and will_exceed_limit and not (act_BUY) and price_deviates and not (act_TRADE) and not (dd_exceeded) and act_TRADE
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if(((((( !(inputs->is_illiquid) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && inputs->price_deviates) && !(outputs->act_TRADE)) && !(inputs->dd_exceeded)) && outputs->act_TRADE) {
-				//transition s0_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and will_exceed_limit and not (act_BUY) and price_deviates and not (act_TRADE) and not (dd_exceeded) and act_TRADE
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if((((((inputs->is_illiquid && !(outputs->act_TRADE)) && !(inputs->will_exceed_limit)) && inputs->price_deviates) && !(outputs->act_TRADE)) && !(inputs->dd_exceeded)) && outputs->act_TRADE) {
-				//transition s0_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and not (will_exceed_limit) and price_deviates and not (act_TRADE) and not (dd_exceeded) and act_TRADE
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if((((( !(inputs->is_illiquid) && !(inputs->will_exceed_limit)) && inputs->price_deviates) && !(outputs->act_TRADE)) && !(inputs->dd_exceeded)) && outputs->act_TRADE) {
-				//transition s0_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and not (will_exceed_limit) and price_deviates and not (act_TRADE) and not (dd_exceeded) and act_TRADE
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if((((((inputs->is_illiquid && !(outputs->act_TRADE)) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && !(inputs->price_deviates)) && !(inputs->dd_exceeded)) && outputs->act_TRADE) {
-				//transition s0_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and will_exceed_limit and not (act_BUY) and not (price_deviates) and not (dd_exceeded) and act_TRADE
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if((((( !(inputs->is_illiquid) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && !(inputs->price_deviates)) && !(inputs->dd_exceeded)) && outputs->act_TRADE) {
-				//transition s0_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and will_exceed_limit and not (act_BUY) and not (price_deviates) and not (dd_exceeded) and act_TRADE
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if(((((inputs->is_illiquid && !(outputs->act_TRADE)) && !(inputs->will_exceed_limit)) && !(inputs->price_deviates)) && !(inputs->dd_exceeded)) && outputs->act_TRADE) {
-				//transition s0_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and not (will_exceed_limit) and not (price_deviates) and not (dd_exceeded) and act_TRADE
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if(((( !(inputs->is_illiquid) && !(inputs->will_exceed_limit)) && !(inputs->price_deviates)) && !(inputs->dd_exceeded)) && outputs->act_TRADE) {
-				//transition s0_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and not (will_exceed_limit) and not (price_deviates) and not (dd_exceeded) and act_TRADE
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if(inputs->dd_exceeded && outputs->act_TRADE) {
-				//transition s0_comma_s0_comma_s0_comma_s0_comma_s0 -> violation on dd_exceeded and act_TRADE
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_violation;
-				//set expressions
-				
-				break;
-			} 
-			if((((((((inputs->is_illiquid && !(outputs->act_TRADE)) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && inputs->price_deviates) && !(outputs->act_TRADE)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && !(outputs->act_TRADE)) {
-				//transition s0_comma_s0_comma_s0_comma_s0_comma_s0 -> s0_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and will_exceed_limit and not (act_BUY) and price_deviates and not (act_TRADE) and dd_exceeded and not (act_TRADE) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s0_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if((((((( !(inputs->is_illiquid) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && inputs->price_deviates) && !(outputs->act_TRADE)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && !(outputs->act_TRADE)) {
-				//transition s0_comma_s0_comma_s0_comma_s0_comma_s0 -> s0_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and will_exceed_limit and not (act_BUY) and price_deviates and not (act_TRADE) and dd_exceeded and not (act_TRADE) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s0_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if(((((((inputs->is_illiquid && !(outputs->act_TRADE)) && !(inputs->will_exceed_limit)) && inputs->price_deviates) && !(outputs->act_TRADE)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && !(outputs->act_TRADE)) {
-				//transition s0_comma_s0_comma_s0_comma_s0_comma_s0 -> s0_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and not (will_exceed_limit) and price_deviates and not (act_TRADE) and dd_exceeded and not (act_TRADE) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s0_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if(((((( !(inputs->is_illiquid) && !(inputs->will_exceed_limit)) && inputs->price_deviates) && !(outputs->act_TRADE)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && !(outputs->act_TRADE)) {
-				//transition s0_comma_s0_comma_s0_comma_s0_comma_s0 -> s0_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and not (will_exceed_limit) and price_deviates and not (act_TRADE) and dd_exceeded and not (act_TRADE) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s0_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if(((((((inputs->is_illiquid && !(outputs->act_TRADE)) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && !(inputs->price_deviates)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && !(outputs->act_TRADE)) {
-				//transition s0_comma_s0_comma_s0_comma_s0_comma_s0 -> s0_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and will_exceed_limit and not (act_BUY) and not (price_deviates) and dd_exceeded and not (act_TRADE) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s0_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if(((((( !(inputs->is_illiquid) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && !(inputs->price_deviates)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && !(outputs->act_TRADE)) {
-				//transition s0_comma_s0_comma_s0_comma_s0_comma_s0 -> s0_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and will_exceed_limit and not (act_BUY) and not (price_deviates) and dd_exceeded and not (act_TRADE) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s0_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if((((((inputs->is_illiquid && !(outputs->act_TRADE)) && !(inputs->will_exceed_limit)) && !(inputs->price_deviates)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && !(outputs->act_TRADE)) {
-				//transition s0_comma_s0_comma_s0_comma_s0_comma_s0 -> s0_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and not (will_exceed_limit) and not (price_deviates) and dd_exceeded and not (act_TRADE) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s0_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if((((( !(inputs->is_illiquid) && !(inputs->will_exceed_limit)) && !(inputs->price_deviates)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && !(outputs->act_TRADE)) {
-				//transition s0_comma_s0_comma_s0_comma_s0_comma_s0 -> s0_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and not (will_exceed_limit) and not (price_deviates) and dd_exceeded and not (act_TRADE) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s0_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if(((((((inputs->is_illiquid && !(outputs->act_TRADE)) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && inputs->price_deviates) && !(outputs->act_TRADE)) && !(inputs->dd_exceeded)) && !(outputs->act_TRADE)) {
-				//transition s0_comma_s0_comma_s0_comma_s0_comma_s0 -> s0_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and will_exceed_limit and not (act_BUY) and price_deviates and not (act_TRADE) and not (dd_exceeded) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s0_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if(((((( !(inputs->is_illiquid) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && inputs->price_deviates) && !(outputs->act_TRADE)) && !(inputs->dd_exceeded)) && !(outputs->act_TRADE)) {
-				//transition s0_comma_s0_comma_s0_comma_s0_comma_s0 -> s0_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and will_exceed_limit and not (act_BUY) and price_deviates and not (act_TRADE) and not (dd_exceeded) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s0_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if((((((inputs->is_illiquid && !(outputs->act_TRADE)) && !(inputs->will_exceed_limit)) && inputs->price_deviates) && !(outputs->act_TRADE)) && !(inputs->dd_exceeded)) && !(outputs->act_TRADE)) {
-				//transition s0_comma_s0_comma_s0_comma_s0_comma_s0 -> s0_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and not (will_exceed_limit) and price_deviates and not (act_TRADE) and not (dd_exceeded) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s0_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if((((( !(inputs->is_illiquid) && !(inputs->will_exceed_limit)) && inputs->price_deviates) && !(outputs->act_TRADE)) && !(inputs->dd_exceeded)) && !(outputs->act_TRADE)) {
-				//transition s0_comma_s0_comma_s0_comma_s0_comma_s0 -> s0_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and not (will_exceed_limit) and price_deviates and not (act_TRADE) and not (dd_exceeded) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s0_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if((((((inputs->is_illiquid && !(outputs->act_TRADE)) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && !(inputs->price_deviates)) && !(inputs->dd_exceeded)) && !(outputs->act_TRADE)) {
-				//transition s0_comma_s0_comma_s0_comma_s0_comma_s0 -> s0_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and will_exceed_limit and not (act_BUY) and not (price_deviates) and not (dd_exceeded) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s0_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if((((( !(inputs->is_illiquid) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && !(inputs->price_deviates)) && !(inputs->dd_exceeded)) && !(outputs->act_TRADE)) {
-				//transition s0_comma_s0_comma_s0_comma_s0_comma_s0 -> s0_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and will_exceed_limit and not (act_BUY) and not (price_deviates) and not (dd_exceeded) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s0_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if(((((inputs->is_illiquid && !(outputs->act_TRADE)) && !(inputs->will_exceed_limit)) && !(inputs->price_deviates)) && !(inputs->dd_exceeded)) && !(outputs->act_TRADE)) {
-				//transition s0_comma_s0_comma_s0_comma_s0_comma_s0 -> s0_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and not (will_exceed_limit) and not (price_deviates) and not (dd_exceeded) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s0_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if(((( !(inputs->is_illiquid) && !(inputs->will_exceed_limit)) && !(inputs->price_deviates)) && !(inputs->dd_exceeded)) && !(outputs->act_TRADE)) {
-				//transition s0_comma_s0_comma_s0_comma_s0_comma_s0 -> s0_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and not (will_exceed_limit) and not (price_deviates) and not (dd_exceeded) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s0_comma_s0_comma_s0_comma_s0_comma_s0;
+			if( !(outputs->act_PLACE)) {
+				//transition s0 -> s0 on ( !act_PLACE )
+				me->_policy_RateLimit_5_per_1s_state = POLICY_STATE_TradingEnforcer_RateLimit_5_per_1s_s0;
 				//set expressions
 				
 				break;
 			} 
 			
 			//ensure a transition was taken in this state
-			assert(false && "TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s0_comma_s0_comma_s0_comma_s0_comma_s0 must take a transition"); //if we are still here, then no transition was taken and we are no longer satisfying liveness
+			assert(false && "TradingEnforcer_RateLimit_5_per_1s_s0 must take a transition"); //if we are still here, then no transition was taken and we are no longer satisfying liveness
 
 			break;
 
-		case POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0:
+		case POLICY_STATE_TradingEnforcer_RateLimit_5_per_1s_s1:
 			
-			if(((((((((inputs->is_illiquid && !(outputs->act_TRADE)) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && inputs->price_deviates) && !(outputs->act_TRADE)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && outputs->act_TRADE) && me->t_window < CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s1_comma_s0_comma_s0_comma_s0_comma_s0 -> s2_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and will_exceed_limit and not (act_BUY) and price_deviates and not (act_TRADE) and dd_exceeded and not (act_TRADE) and act_TRADE and t_window < T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s2_comma_s0_comma_s0_comma_s0_comma_s0;
+			if(outputs->act_PLACE && me->t_window < CONST_RateLimit_5_per_1s_T_WINDOW) {
+				//transition s1 -> s2 on ( act_PLACE and t_window < T_WINDOW )
+				me->_policy_RateLimit_5_per_1s_state = POLICY_STATE_TradingEnforcer_RateLimit_5_per_1s_s2;
 				//set expressions
 				
 				break;
 			} 
-			if(((((((( !(inputs->is_illiquid) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && inputs->price_deviates) && !(outputs->act_TRADE)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && outputs->act_TRADE) && me->t_window < CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s1_comma_s0_comma_s0_comma_s0_comma_s0 -> s2_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and will_exceed_limit and not (act_BUY) and price_deviates and not (act_TRADE) and dd_exceeded and not (act_TRADE) and act_TRADE and t_window < T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s2_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if(inputs->is_illiquid && outputs->act_TRADE) {
-				//transition s1_comma_s0_comma_s0_comma_s0_comma_s0 -> violation on is_illiquid and act_TRADE
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_violation;
-				//set expressions
-				
-				break;
-			} 
-			if((((((((inputs->is_illiquid && !(outputs->act_TRADE)) && !(inputs->will_exceed_limit)) && inputs->price_deviates) && !(outputs->act_TRADE)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && outputs->act_TRADE) && me->t_window < CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s1_comma_s0_comma_s0_comma_s0_comma_s0 -> s2_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and not (will_exceed_limit) and price_deviates and not (act_TRADE) and dd_exceeded and not (act_TRADE) and act_TRADE and t_window < T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s2_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if((((((( !(inputs->is_illiquid) && !(inputs->will_exceed_limit)) && inputs->price_deviates) && !(outputs->act_TRADE)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && outputs->act_TRADE) && me->t_window < CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s1_comma_s0_comma_s0_comma_s0_comma_s0 -> s2_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and not (will_exceed_limit) and price_deviates and not (act_TRADE) and dd_exceeded and not (act_TRADE) and act_TRADE and t_window < T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s2_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if(inputs->will_exceed_limit && outputs->act_BUY) {
-				//transition s1_comma_s0_comma_s0_comma_s0_comma_s0 -> violation on will_exceed_limit and act_BUY
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_violation;
-				//set expressions
-				
-				break;
-			} 
-			if((((((((inputs->is_illiquid && !(outputs->act_TRADE)) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && !(inputs->price_deviates)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && outputs->act_TRADE) && me->t_window < CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s1_comma_s0_comma_s0_comma_s0_comma_s0 -> s2_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and will_exceed_limit and not (act_BUY) and not (price_deviates) and dd_exceeded and not (act_TRADE) and act_TRADE and t_window < T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s2_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if((((((( !(inputs->is_illiquid) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && !(inputs->price_deviates)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && outputs->act_TRADE) && me->t_window < CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s1_comma_s0_comma_s0_comma_s0_comma_s0 -> s2_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and will_exceed_limit and not (act_BUY) and not (price_deviates) and dd_exceeded and not (act_TRADE) and act_TRADE and t_window < T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s2_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if(((((((inputs->is_illiquid && !(outputs->act_TRADE)) && !(inputs->will_exceed_limit)) && !(inputs->price_deviates)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && outputs->act_TRADE) && me->t_window < CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s1_comma_s0_comma_s0_comma_s0_comma_s0 -> s2_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and not (will_exceed_limit) and not (price_deviates) and dd_exceeded and not (act_TRADE) and act_TRADE and t_window < T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s2_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if(((((( !(inputs->is_illiquid) && !(inputs->will_exceed_limit)) && !(inputs->price_deviates)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && outputs->act_TRADE) && me->t_window < CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s1_comma_s0_comma_s0_comma_s0_comma_s0 -> s2_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and not (will_exceed_limit) and not (price_deviates) and dd_exceeded and not (act_TRADE) and act_TRADE and t_window < T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s2_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if(inputs->price_deviates && outputs->act_TRADE) {
-				//transition s1_comma_s0_comma_s0_comma_s0_comma_s0 -> violation on price_deviates and act_TRADE
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_violation;
-				//set expressions
-				
-				break;
-			} 
-			if((((((((inputs->is_illiquid && !(outputs->act_TRADE)) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && inputs->price_deviates) && !(outputs->act_TRADE)) && !(inputs->dd_exceeded)) && outputs->act_TRADE) && me->t_window < CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s1_comma_s0_comma_s0_comma_s0_comma_s0 -> s2_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and will_exceed_limit and not (act_BUY) and price_deviates and not (act_TRADE) and not (dd_exceeded) and act_TRADE and t_window < T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s2_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if((((((( !(inputs->is_illiquid) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && inputs->price_deviates) && !(outputs->act_TRADE)) && !(inputs->dd_exceeded)) && outputs->act_TRADE) && me->t_window < CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s1_comma_s0_comma_s0_comma_s0_comma_s0 -> s2_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and will_exceed_limit and not (act_BUY) and price_deviates and not (act_TRADE) and not (dd_exceeded) and act_TRADE and t_window < T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s2_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if(((((((inputs->is_illiquid && !(outputs->act_TRADE)) && !(inputs->will_exceed_limit)) && inputs->price_deviates) && !(outputs->act_TRADE)) && !(inputs->dd_exceeded)) && outputs->act_TRADE) && me->t_window < CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s1_comma_s0_comma_s0_comma_s0_comma_s0 -> s2_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and not (will_exceed_limit) and price_deviates and not (act_TRADE) and not (dd_exceeded) and act_TRADE and t_window < T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s2_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if(((((( !(inputs->is_illiquid) && !(inputs->will_exceed_limit)) && inputs->price_deviates) && !(outputs->act_TRADE)) && !(inputs->dd_exceeded)) && outputs->act_TRADE) && me->t_window < CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s1_comma_s0_comma_s0_comma_s0_comma_s0 -> s2_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and not (will_exceed_limit) and price_deviates and not (act_TRADE) and not (dd_exceeded) and act_TRADE and t_window < T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s2_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if(((((((inputs->is_illiquid && !(outputs->act_TRADE)) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && !(inputs->price_deviates)) && !(inputs->dd_exceeded)) && outputs->act_TRADE) && me->t_window < CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s1_comma_s0_comma_s0_comma_s0_comma_s0 -> s2_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and will_exceed_limit and not (act_BUY) and not (price_deviates) and not (dd_exceeded) and act_TRADE and t_window < T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s2_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if(((((( !(inputs->is_illiquid) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && !(inputs->price_deviates)) && !(inputs->dd_exceeded)) && outputs->act_TRADE) && me->t_window < CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s1_comma_s0_comma_s0_comma_s0_comma_s0 -> s2_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and will_exceed_limit and not (act_BUY) and not (price_deviates) and not (dd_exceeded) and act_TRADE and t_window < T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s2_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if((((((inputs->is_illiquid && !(outputs->act_TRADE)) && !(inputs->will_exceed_limit)) && !(inputs->price_deviates)) && !(inputs->dd_exceeded)) && outputs->act_TRADE) && me->t_window < CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s1_comma_s0_comma_s0_comma_s0_comma_s0 -> s2_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and not (will_exceed_limit) and not (price_deviates) and not (dd_exceeded) and act_TRADE and t_window < T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s2_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if((((( !(inputs->is_illiquid) && !(inputs->will_exceed_limit)) && !(inputs->price_deviates)) && !(inputs->dd_exceeded)) && outputs->act_TRADE) && me->t_window < CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s1_comma_s0_comma_s0_comma_s0_comma_s0 -> s2_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and not (will_exceed_limit) and not (price_deviates) and not (dd_exceeded) and act_TRADE and t_window < T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s2_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if(inputs->dd_exceeded && outputs->act_TRADE) {
-				//transition s1_comma_s0_comma_s0_comma_s0_comma_s0 -> violation on dd_exceeded and act_TRADE
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_violation;
-				//set expressions
-				
-				break;
-			} 
-			if(((((((((inputs->is_illiquid && !(outputs->act_TRADE)) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && inputs->price_deviates) && !(outputs->act_TRADE)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && outputs->act_TRADE) && me->t_window >= CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s1_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and will_exceed_limit and not (act_BUY) and price_deviates and not (act_TRADE) and dd_exceeded and not (act_TRADE) and act_TRADE and t_window >= T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
+			if(outputs->act_PLACE && me->t_window >= CONST_RateLimit_5_per_1s_T_WINDOW) {
+				//transition s1 -> s1 on ( act_PLACE and t_window >= T_WINDOW )
+				me->_policy_RateLimit_5_per_1s_state = POLICY_STATE_TradingEnforcer_RateLimit_5_per_1s_s1;
 				//set expressions
 				
 				me->t_window = 0;
 				break;
 			} 
-			if(((((((( !(inputs->is_illiquid) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && inputs->price_deviates) && !(outputs->act_TRADE)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && outputs->act_TRADE) && me->t_window >= CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s1_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and will_exceed_limit and not (act_BUY) and price_deviates and not (act_TRADE) and dd_exceeded and not (act_TRADE) and act_TRADE and t_window >= T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if((((((((inputs->is_illiquid && !(outputs->act_TRADE)) && !(inputs->will_exceed_limit)) && inputs->price_deviates) && !(outputs->act_TRADE)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && outputs->act_TRADE) && me->t_window >= CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s1_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and not (will_exceed_limit) and price_deviates and not (act_TRADE) and dd_exceeded and not (act_TRADE) and act_TRADE and t_window >= T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if((((((( !(inputs->is_illiquid) && !(inputs->will_exceed_limit)) && inputs->price_deviates) && !(outputs->act_TRADE)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && outputs->act_TRADE) && me->t_window >= CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s1_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and not (will_exceed_limit) and price_deviates and not (act_TRADE) and dd_exceeded and not (act_TRADE) and act_TRADE and t_window >= T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if((((((((inputs->is_illiquid && !(outputs->act_TRADE)) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && !(inputs->price_deviates)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && outputs->act_TRADE) && me->t_window >= CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s1_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and will_exceed_limit and not (act_BUY) and not (price_deviates) and dd_exceeded and not (act_TRADE) and act_TRADE and t_window >= T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if((((((( !(inputs->is_illiquid) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && !(inputs->price_deviates)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && outputs->act_TRADE) && me->t_window >= CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s1_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and will_exceed_limit and not (act_BUY) and not (price_deviates) and dd_exceeded and not (act_TRADE) and act_TRADE and t_window >= T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if(((((((inputs->is_illiquid && !(outputs->act_TRADE)) && !(inputs->will_exceed_limit)) && !(inputs->price_deviates)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && outputs->act_TRADE) && me->t_window >= CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s1_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and not (will_exceed_limit) and not (price_deviates) and dd_exceeded and not (act_TRADE) and act_TRADE and t_window >= T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if(((((( !(inputs->is_illiquid) && !(inputs->will_exceed_limit)) && !(inputs->price_deviates)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && outputs->act_TRADE) && me->t_window >= CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s1_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and not (will_exceed_limit) and not (price_deviates) and dd_exceeded and not (act_TRADE) and act_TRADE and t_window >= T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if((((((((inputs->is_illiquid && !(outputs->act_TRADE)) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && inputs->price_deviates) && !(outputs->act_TRADE)) && !(inputs->dd_exceeded)) && outputs->act_TRADE) && me->t_window >= CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s1_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and will_exceed_limit and not (act_BUY) and price_deviates and not (act_TRADE) and not (dd_exceeded) and act_TRADE and t_window >= T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if((((((( !(inputs->is_illiquid) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && inputs->price_deviates) && !(outputs->act_TRADE)) && !(inputs->dd_exceeded)) && outputs->act_TRADE) && me->t_window >= CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s1_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and will_exceed_limit and not (act_BUY) and price_deviates and not (act_TRADE) and not (dd_exceeded) and act_TRADE and t_window >= T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if(((((((inputs->is_illiquid && !(outputs->act_TRADE)) && !(inputs->will_exceed_limit)) && inputs->price_deviates) && !(outputs->act_TRADE)) && !(inputs->dd_exceeded)) && outputs->act_TRADE) && me->t_window >= CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s1_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and not (will_exceed_limit) and price_deviates and not (act_TRADE) and not (dd_exceeded) and act_TRADE and t_window >= T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if(((((( !(inputs->is_illiquid) && !(inputs->will_exceed_limit)) && inputs->price_deviates) && !(outputs->act_TRADE)) && !(inputs->dd_exceeded)) && outputs->act_TRADE) && me->t_window >= CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s1_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and not (will_exceed_limit) and price_deviates and not (act_TRADE) and not (dd_exceeded) and act_TRADE and t_window >= T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if(((((((inputs->is_illiquid && !(outputs->act_TRADE)) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && !(inputs->price_deviates)) && !(inputs->dd_exceeded)) && outputs->act_TRADE) && me->t_window >= CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s1_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and will_exceed_limit and not (act_BUY) and not (price_deviates) and not (dd_exceeded) and act_TRADE and t_window >= T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if(((((( !(inputs->is_illiquid) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && !(inputs->price_deviates)) && !(inputs->dd_exceeded)) && outputs->act_TRADE) && me->t_window >= CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s1_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and will_exceed_limit and not (act_BUY) and not (price_deviates) and not (dd_exceeded) and act_TRADE and t_window >= T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if((((((inputs->is_illiquid && !(outputs->act_TRADE)) && !(inputs->will_exceed_limit)) && !(inputs->price_deviates)) && !(inputs->dd_exceeded)) && outputs->act_TRADE) && me->t_window >= CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s1_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and not (will_exceed_limit) and not (price_deviates) and not (dd_exceeded) and act_TRADE and t_window >= T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if((((( !(inputs->is_illiquid) && !(inputs->will_exceed_limit)) && !(inputs->price_deviates)) && !(inputs->dd_exceeded)) && outputs->act_TRADE) && me->t_window >= CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s1_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and not (will_exceed_limit) and not (price_deviates) and not (dd_exceeded) and act_TRADE and t_window >= T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if((((((((inputs->is_illiquid && !(outputs->act_TRADE)) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && inputs->price_deviates) && !(outputs->act_TRADE)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && !(outputs->act_TRADE)) {
-				//transition s1_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and will_exceed_limit and not (act_BUY) and price_deviates and not (act_TRADE) and dd_exceeded and not (act_TRADE) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if((((((( !(inputs->is_illiquid) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && inputs->price_deviates) && !(outputs->act_TRADE)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && !(outputs->act_TRADE)) {
-				//transition s1_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and will_exceed_limit and not (act_BUY) and price_deviates and not (act_TRADE) and dd_exceeded and not (act_TRADE) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if(((((((inputs->is_illiquid && !(outputs->act_TRADE)) && !(inputs->will_exceed_limit)) && inputs->price_deviates) && !(outputs->act_TRADE)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && !(outputs->act_TRADE)) {
-				//transition s1_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and not (will_exceed_limit) and price_deviates and not (act_TRADE) and dd_exceeded and not (act_TRADE) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if(((((( !(inputs->is_illiquid) && !(inputs->will_exceed_limit)) && inputs->price_deviates) && !(outputs->act_TRADE)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && !(outputs->act_TRADE)) {
-				//transition s1_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and not (will_exceed_limit) and price_deviates and not (act_TRADE) and dd_exceeded and not (act_TRADE) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if(((((((inputs->is_illiquid && !(outputs->act_TRADE)) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && !(inputs->price_deviates)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && !(outputs->act_TRADE)) {
-				//transition s1_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and will_exceed_limit and not (act_BUY) and not (price_deviates) and dd_exceeded and not (act_TRADE) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if(((((( !(inputs->is_illiquid) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && !(inputs->price_deviates)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && !(outputs->act_TRADE)) {
-				//transition s1_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and will_exceed_limit and not (act_BUY) and not (price_deviates) and dd_exceeded and not (act_TRADE) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if((((((inputs->is_illiquid && !(outputs->act_TRADE)) && !(inputs->will_exceed_limit)) && !(inputs->price_deviates)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && !(outputs->act_TRADE)) {
-				//transition s1_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and not (will_exceed_limit) and not (price_deviates) and dd_exceeded and not (act_TRADE) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if((((( !(inputs->is_illiquid) && !(inputs->will_exceed_limit)) && !(inputs->price_deviates)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && !(outputs->act_TRADE)) {
-				//transition s1_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and not (will_exceed_limit) and not (price_deviates) and dd_exceeded and not (act_TRADE) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if(((((((inputs->is_illiquid && !(outputs->act_TRADE)) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && inputs->price_deviates) && !(outputs->act_TRADE)) && !(inputs->dd_exceeded)) && !(outputs->act_TRADE)) {
-				//transition s1_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and will_exceed_limit and not (act_BUY) and price_deviates and not (act_TRADE) and not (dd_exceeded) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if(((((( !(inputs->is_illiquid) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && inputs->price_deviates) && !(outputs->act_TRADE)) && !(inputs->dd_exceeded)) && !(outputs->act_TRADE)) {
-				//transition s1_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and will_exceed_limit and not (act_BUY) and price_deviates and not (act_TRADE) and not (dd_exceeded) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if((((((inputs->is_illiquid && !(outputs->act_TRADE)) && !(inputs->will_exceed_limit)) && inputs->price_deviates) && !(outputs->act_TRADE)) && !(inputs->dd_exceeded)) && !(outputs->act_TRADE)) {
-				//transition s1_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and not (will_exceed_limit) and price_deviates and not (act_TRADE) and not (dd_exceeded) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if((((( !(inputs->is_illiquid) && !(inputs->will_exceed_limit)) && inputs->price_deviates) && !(outputs->act_TRADE)) && !(inputs->dd_exceeded)) && !(outputs->act_TRADE)) {
-				//transition s1_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and not (will_exceed_limit) and price_deviates and not (act_TRADE) and not (dd_exceeded) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if((((((inputs->is_illiquid && !(outputs->act_TRADE)) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && !(inputs->price_deviates)) && !(inputs->dd_exceeded)) && !(outputs->act_TRADE)) {
-				//transition s1_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and will_exceed_limit and not (act_BUY) and not (price_deviates) and not (dd_exceeded) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if((((( !(inputs->is_illiquid) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && !(inputs->price_deviates)) && !(inputs->dd_exceeded)) && !(outputs->act_TRADE)) {
-				//transition s1_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and will_exceed_limit and not (act_BUY) and not (price_deviates) and not (dd_exceeded) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if(((((inputs->is_illiquid && !(outputs->act_TRADE)) && !(inputs->will_exceed_limit)) && !(inputs->price_deviates)) && !(inputs->dd_exceeded)) && !(outputs->act_TRADE)) {
-				//transition s1_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and not (will_exceed_limit) and not (price_deviates) and not (dd_exceeded) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if(((( !(inputs->is_illiquid) && !(inputs->will_exceed_limit)) && !(inputs->price_deviates)) && !(inputs->dd_exceeded)) && !(outputs->act_TRADE)) {
-				//transition s1_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and not (will_exceed_limit) and not (price_deviates) and not (dd_exceeded) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
+			if( !(outputs->act_PLACE)) {
+				//transition s1 -> s1 on ( !act_PLACE )
+				me->_policy_RateLimit_5_per_1s_state = POLICY_STATE_TradingEnforcer_RateLimit_5_per_1s_s1;
 				//set expressions
 				
 				break;
 			} 
 			
 			//ensure a transition was taken in this state
-			assert(false && "TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0 must take a transition"); //if we are still here, then no transition was taken and we are no longer satisfying liveness
+			assert(false && "TradingEnforcer_RateLimit_5_per_1s_s1 must take a transition"); //if we are still here, then no transition was taken and we are no longer satisfying liveness
 
 			break;
 
-		case POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s2_comma_s0_comma_s0_comma_s0_comma_s0:
+		case POLICY_STATE_TradingEnforcer_RateLimit_5_per_1s_s2:
 			
-			if(((((((((inputs->is_illiquid && !(outputs->act_TRADE)) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && inputs->price_deviates) && !(outputs->act_TRADE)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && outputs->act_TRADE) && me->t_window < CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s2_comma_s0_comma_s0_comma_s0_comma_s0 -> s3_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and will_exceed_limit and not (act_BUY) and price_deviates and not (act_TRADE) and dd_exceeded and not (act_TRADE) and act_TRADE and t_window < T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s3_comma_s0_comma_s0_comma_s0_comma_s0;
+			if(outputs->act_PLACE && me->t_window < CONST_RateLimit_5_per_1s_T_WINDOW) {
+				//transition s2 -> s3 on ( act_PLACE and t_window < T_WINDOW )
+				me->_policy_RateLimit_5_per_1s_state = POLICY_STATE_TradingEnforcer_RateLimit_5_per_1s_s3;
 				//set expressions
 				
 				break;
 			} 
-			if(((((((( !(inputs->is_illiquid) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && inputs->price_deviates) && !(outputs->act_TRADE)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && outputs->act_TRADE) && me->t_window < CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s2_comma_s0_comma_s0_comma_s0_comma_s0 -> s3_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and will_exceed_limit and not (act_BUY) and price_deviates and not (act_TRADE) and dd_exceeded and not (act_TRADE) and act_TRADE and t_window < T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s3_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if(inputs->is_illiquid && outputs->act_TRADE) {
-				//transition s2_comma_s0_comma_s0_comma_s0_comma_s0 -> violation on is_illiquid and act_TRADE
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_violation;
-				//set expressions
-				
-				break;
-			} 
-			if((((((((inputs->is_illiquid && !(outputs->act_TRADE)) && !(inputs->will_exceed_limit)) && inputs->price_deviates) && !(outputs->act_TRADE)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && outputs->act_TRADE) && me->t_window < CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s2_comma_s0_comma_s0_comma_s0_comma_s0 -> s3_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and not (will_exceed_limit) and price_deviates and not (act_TRADE) and dd_exceeded and not (act_TRADE) and act_TRADE and t_window < T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s3_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if((((((( !(inputs->is_illiquid) && !(inputs->will_exceed_limit)) && inputs->price_deviates) && !(outputs->act_TRADE)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && outputs->act_TRADE) && me->t_window < CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s2_comma_s0_comma_s0_comma_s0_comma_s0 -> s3_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and not (will_exceed_limit) and price_deviates and not (act_TRADE) and dd_exceeded and not (act_TRADE) and act_TRADE and t_window < T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s3_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if(inputs->will_exceed_limit && outputs->act_BUY) {
-				//transition s2_comma_s0_comma_s0_comma_s0_comma_s0 -> violation on will_exceed_limit and act_BUY
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_violation;
-				//set expressions
-				
-				break;
-			} 
-			if((((((((inputs->is_illiquid && !(outputs->act_TRADE)) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && !(inputs->price_deviates)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && outputs->act_TRADE) && me->t_window < CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s2_comma_s0_comma_s0_comma_s0_comma_s0 -> s3_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and will_exceed_limit and not (act_BUY) and not (price_deviates) and dd_exceeded and not (act_TRADE) and act_TRADE and t_window < T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s3_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if((((((( !(inputs->is_illiquid) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && !(inputs->price_deviates)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && outputs->act_TRADE) && me->t_window < CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s2_comma_s0_comma_s0_comma_s0_comma_s0 -> s3_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and will_exceed_limit and not (act_BUY) and not (price_deviates) and dd_exceeded and not (act_TRADE) and act_TRADE and t_window < T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s3_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if(((((((inputs->is_illiquid && !(outputs->act_TRADE)) && !(inputs->will_exceed_limit)) && !(inputs->price_deviates)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && outputs->act_TRADE) && me->t_window < CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s2_comma_s0_comma_s0_comma_s0_comma_s0 -> s3_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and not (will_exceed_limit) and not (price_deviates) and dd_exceeded and not (act_TRADE) and act_TRADE and t_window < T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s3_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if(((((( !(inputs->is_illiquid) && !(inputs->will_exceed_limit)) && !(inputs->price_deviates)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && outputs->act_TRADE) && me->t_window < CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s2_comma_s0_comma_s0_comma_s0_comma_s0 -> s3_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and not (will_exceed_limit) and not (price_deviates) and dd_exceeded and not (act_TRADE) and act_TRADE and t_window < T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s3_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if(inputs->price_deviates && outputs->act_TRADE) {
-				//transition s2_comma_s0_comma_s0_comma_s0_comma_s0 -> violation on price_deviates and act_TRADE
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_violation;
-				//set expressions
-				
-				break;
-			} 
-			if((((((((inputs->is_illiquid && !(outputs->act_TRADE)) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && inputs->price_deviates) && !(outputs->act_TRADE)) && !(inputs->dd_exceeded)) && outputs->act_TRADE) && me->t_window < CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s2_comma_s0_comma_s0_comma_s0_comma_s0 -> s3_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and will_exceed_limit and not (act_BUY) and price_deviates and not (act_TRADE) and not (dd_exceeded) and act_TRADE and t_window < T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s3_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if((((((( !(inputs->is_illiquid) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && inputs->price_deviates) && !(outputs->act_TRADE)) && !(inputs->dd_exceeded)) && outputs->act_TRADE) && me->t_window < CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s2_comma_s0_comma_s0_comma_s0_comma_s0 -> s3_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and will_exceed_limit and not (act_BUY) and price_deviates and not (act_TRADE) and not (dd_exceeded) and act_TRADE and t_window < T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s3_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if(((((((inputs->is_illiquid && !(outputs->act_TRADE)) && !(inputs->will_exceed_limit)) && inputs->price_deviates) && !(outputs->act_TRADE)) && !(inputs->dd_exceeded)) && outputs->act_TRADE) && me->t_window < CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s2_comma_s0_comma_s0_comma_s0_comma_s0 -> s3_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and not (will_exceed_limit) and price_deviates and not (act_TRADE) and not (dd_exceeded) and act_TRADE and t_window < T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s3_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if(((((( !(inputs->is_illiquid) && !(inputs->will_exceed_limit)) && inputs->price_deviates) && !(outputs->act_TRADE)) && !(inputs->dd_exceeded)) && outputs->act_TRADE) && me->t_window < CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s2_comma_s0_comma_s0_comma_s0_comma_s0 -> s3_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and not (will_exceed_limit) and price_deviates and not (act_TRADE) and not (dd_exceeded) and act_TRADE and t_window < T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s3_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if(((((((inputs->is_illiquid && !(outputs->act_TRADE)) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && !(inputs->price_deviates)) && !(inputs->dd_exceeded)) && outputs->act_TRADE) && me->t_window < CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s2_comma_s0_comma_s0_comma_s0_comma_s0 -> s3_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and will_exceed_limit and not (act_BUY) and not (price_deviates) and not (dd_exceeded) and act_TRADE and t_window < T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s3_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if(((((( !(inputs->is_illiquid) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && !(inputs->price_deviates)) && !(inputs->dd_exceeded)) && outputs->act_TRADE) && me->t_window < CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s2_comma_s0_comma_s0_comma_s0_comma_s0 -> s3_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and will_exceed_limit and not (act_BUY) and not (price_deviates) and not (dd_exceeded) and act_TRADE and t_window < T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s3_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if((((((inputs->is_illiquid && !(outputs->act_TRADE)) && !(inputs->will_exceed_limit)) && !(inputs->price_deviates)) && !(inputs->dd_exceeded)) && outputs->act_TRADE) && me->t_window < CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s2_comma_s0_comma_s0_comma_s0_comma_s0 -> s3_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and not (will_exceed_limit) and not (price_deviates) and not (dd_exceeded) and act_TRADE and t_window < T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s3_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if((((( !(inputs->is_illiquid) && !(inputs->will_exceed_limit)) && !(inputs->price_deviates)) && !(inputs->dd_exceeded)) && outputs->act_TRADE) && me->t_window < CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s2_comma_s0_comma_s0_comma_s0_comma_s0 -> s3_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and not (will_exceed_limit) and not (price_deviates) and not (dd_exceeded) and act_TRADE and t_window < T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s3_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if(inputs->dd_exceeded && outputs->act_TRADE) {
-				//transition s2_comma_s0_comma_s0_comma_s0_comma_s0 -> violation on dd_exceeded and act_TRADE
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_violation;
-				//set expressions
-				
-				break;
-			} 
-			if(((((((((inputs->is_illiquid && !(outputs->act_TRADE)) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && inputs->price_deviates) && !(outputs->act_TRADE)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && outputs->act_TRADE) && me->t_window >= CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s2_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and will_exceed_limit and not (act_BUY) and price_deviates and not (act_TRADE) and dd_exceeded and not (act_TRADE) and act_TRADE and t_window >= T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
+			if(outputs->act_PLACE && me->t_window >= CONST_RateLimit_5_per_1s_T_WINDOW) {
+				//transition s2 -> s1 on ( act_PLACE and t_window >= T_WINDOW )
+				me->_policy_RateLimit_5_per_1s_state = POLICY_STATE_TradingEnforcer_RateLimit_5_per_1s_s1;
 				//set expressions
 				
 				me->t_window = 0;
 				break;
 			} 
-			if(((((((( !(inputs->is_illiquid) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && inputs->price_deviates) && !(outputs->act_TRADE)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && outputs->act_TRADE) && me->t_window >= CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s2_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and will_exceed_limit and not (act_BUY) and price_deviates and not (act_TRADE) and dd_exceeded and not (act_TRADE) and act_TRADE and t_window >= T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if((((((((inputs->is_illiquid && !(outputs->act_TRADE)) && !(inputs->will_exceed_limit)) && inputs->price_deviates) && !(outputs->act_TRADE)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && outputs->act_TRADE) && me->t_window >= CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s2_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and not (will_exceed_limit) and price_deviates and not (act_TRADE) and dd_exceeded and not (act_TRADE) and act_TRADE and t_window >= T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if((((((( !(inputs->is_illiquid) && !(inputs->will_exceed_limit)) && inputs->price_deviates) && !(outputs->act_TRADE)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && outputs->act_TRADE) && me->t_window >= CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s2_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and not (will_exceed_limit) and price_deviates and not (act_TRADE) and dd_exceeded and not (act_TRADE) and act_TRADE and t_window >= T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if((((((((inputs->is_illiquid && !(outputs->act_TRADE)) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && !(inputs->price_deviates)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && outputs->act_TRADE) && me->t_window >= CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s2_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and will_exceed_limit and not (act_BUY) and not (price_deviates) and dd_exceeded and not (act_TRADE) and act_TRADE and t_window >= T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if((((((( !(inputs->is_illiquid) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && !(inputs->price_deviates)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && outputs->act_TRADE) && me->t_window >= CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s2_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and will_exceed_limit and not (act_BUY) and not (price_deviates) and dd_exceeded and not (act_TRADE) and act_TRADE and t_window >= T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if(((((((inputs->is_illiquid && !(outputs->act_TRADE)) && !(inputs->will_exceed_limit)) && !(inputs->price_deviates)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && outputs->act_TRADE) && me->t_window >= CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s2_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and not (will_exceed_limit) and not (price_deviates) and dd_exceeded and not (act_TRADE) and act_TRADE and t_window >= T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if(((((( !(inputs->is_illiquid) && !(inputs->will_exceed_limit)) && !(inputs->price_deviates)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && outputs->act_TRADE) && me->t_window >= CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s2_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and not (will_exceed_limit) and not (price_deviates) and dd_exceeded and not (act_TRADE) and act_TRADE and t_window >= T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if((((((((inputs->is_illiquid && !(outputs->act_TRADE)) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && inputs->price_deviates) && !(outputs->act_TRADE)) && !(inputs->dd_exceeded)) && outputs->act_TRADE) && me->t_window >= CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s2_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and will_exceed_limit and not (act_BUY) and price_deviates and not (act_TRADE) and not (dd_exceeded) and act_TRADE and t_window >= T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if((((((( !(inputs->is_illiquid) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && inputs->price_deviates) && !(outputs->act_TRADE)) && !(inputs->dd_exceeded)) && outputs->act_TRADE) && me->t_window >= CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s2_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and will_exceed_limit and not (act_BUY) and price_deviates and not (act_TRADE) and not (dd_exceeded) and act_TRADE and t_window >= T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if(((((((inputs->is_illiquid && !(outputs->act_TRADE)) && !(inputs->will_exceed_limit)) && inputs->price_deviates) && !(outputs->act_TRADE)) && !(inputs->dd_exceeded)) && outputs->act_TRADE) && me->t_window >= CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s2_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and not (will_exceed_limit) and price_deviates and not (act_TRADE) and not (dd_exceeded) and act_TRADE and t_window >= T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if(((((( !(inputs->is_illiquid) && !(inputs->will_exceed_limit)) && inputs->price_deviates) && !(outputs->act_TRADE)) && !(inputs->dd_exceeded)) && outputs->act_TRADE) && me->t_window >= CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s2_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and not (will_exceed_limit) and price_deviates and not (act_TRADE) and not (dd_exceeded) and act_TRADE and t_window >= T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if(((((((inputs->is_illiquid && !(outputs->act_TRADE)) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && !(inputs->price_deviates)) && !(inputs->dd_exceeded)) && outputs->act_TRADE) && me->t_window >= CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s2_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and will_exceed_limit and not (act_BUY) and not (price_deviates) and not (dd_exceeded) and act_TRADE and t_window >= T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if(((((( !(inputs->is_illiquid) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && !(inputs->price_deviates)) && !(inputs->dd_exceeded)) && outputs->act_TRADE) && me->t_window >= CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s2_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and will_exceed_limit and not (act_BUY) and not (price_deviates) and not (dd_exceeded) and act_TRADE and t_window >= T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if((((((inputs->is_illiquid && !(outputs->act_TRADE)) && !(inputs->will_exceed_limit)) && !(inputs->price_deviates)) && !(inputs->dd_exceeded)) && outputs->act_TRADE) && me->t_window >= CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s2_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and not (will_exceed_limit) and not (price_deviates) and not (dd_exceeded) and act_TRADE and t_window >= T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if((((( !(inputs->is_illiquid) && !(inputs->will_exceed_limit)) && !(inputs->price_deviates)) && !(inputs->dd_exceeded)) && outputs->act_TRADE) && me->t_window >= CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s2_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and not (will_exceed_limit) and not (price_deviates) and not (dd_exceeded) and act_TRADE and t_window >= T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if((((((((inputs->is_illiquid && !(outputs->act_TRADE)) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && inputs->price_deviates) && !(outputs->act_TRADE)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && !(outputs->act_TRADE)) {
-				//transition s2_comma_s0_comma_s0_comma_s0_comma_s0 -> s2_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and will_exceed_limit and not (act_BUY) and price_deviates and not (act_TRADE) and dd_exceeded and not (act_TRADE) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s2_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if((((((( !(inputs->is_illiquid) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && inputs->price_deviates) && !(outputs->act_TRADE)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && !(outputs->act_TRADE)) {
-				//transition s2_comma_s0_comma_s0_comma_s0_comma_s0 -> s2_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and will_exceed_limit and not (act_BUY) and price_deviates and not (act_TRADE) and dd_exceeded and not (act_TRADE) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s2_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if(((((((inputs->is_illiquid && !(outputs->act_TRADE)) && !(inputs->will_exceed_limit)) && inputs->price_deviates) && !(outputs->act_TRADE)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && !(outputs->act_TRADE)) {
-				//transition s2_comma_s0_comma_s0_comma_s0_comma_s0 -> s2_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and not (will_exceed_limit) and price_deviates and not (act_TRADE) and dd_exceeded and not (act_TRADE) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s2_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if(((((( !(inputs->is_illiquid) && !(inputs->will_exceed_limit)) && inputs->price_deviates) && !(outputs->act_TRADE)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && !(outputs->act_TRADE)) {
-				//transition s2_comma_s0_comma_s0_comma_s0_comma_s0 -> s2_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and not (will_exceed_limit) and price_deviates and not (act_TRADE) and dd_exceeded and not (act_TRADE) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s2_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if(((((((inputs->is_illiquid && !(outputs->act_TRADE)) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && !(inputs->price_deviates)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && !(outputs->act_TRADE)) {
-				//transition s2_comma_s0_comma_s0_comma_s0_comma_s0 -> s2_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and will_exceed_limit and not (act_BUY) and not (price_deviates) and dd_exceeded and not (act_TRADE) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s2_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if(((((( !(inputs->is_illiquid) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && !(inputs->price_deviates)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && !(outputs->act_TRADE)) {
-				//transition s2_comma_s0_comma_s0_comma_s0_comma_s0 -> s2_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and will_exceed_limit and not (act_BUY) and not (price_deviates) and dd_exceeded and not (act_TRADE) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s2_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if((((((inputs->is_illiquid && !(outputs->act_TRADE)) && !(inputs->will_exceed_limit)) && !(inputs->price_deviates)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && !(outputs->act_TRADE)) {
-				//transition s2_comma_s0_comma_s0_comma_s0_comma_s0 -> s2_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and not (will_exceed_limit) and not (price_deviates) and dd_exceeded and not (act_TRADE) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s2_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if((((( !(inputs->is_illiquid) && !(inputs->will_exceed_limit)) && !(inputs->price_deviates)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && !(outputs->act_TRADE)) {
-				//transition s2_comma_s0_comma_s0_comma_s0_comma_s0 -> s2_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and not (will_exceed_limit) and not (price_deviates) and dd_exceeded and not (act_TRADE) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s2_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if(((((((inputs->is_illiquid && !(outputs->act_TRADE)) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && inputs->price_deviates) && !(outputs->act_TRADE)) && !(inputs->dd_exceeded)) && !(outputs->act_TRADE)) {
-				//transition s2_comma_s0_comma_s0_comma_s0_comma_s0 -> s2_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and will_exceed_limit and not (act_BUY) and price_deviates and not (act_TRADE) and not (dd_exceeded) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s2_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if(((((( !(inputs->is_illiquid) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && inputs->price_deviates) && !(outputs->act_TRADE)) && !(inputs->dd_exceeded)) && !(outputs->act_TRADE)) {
-				//transition s2_comma_s0_comma_s0_comma_s0_comma_s0 -> s2_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and will_exceed_limit and not (act_BUY) and price_deviates and not (act_TRADE) and not (dd_exceeded) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s2_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if((((((inputs->is_illiquid && !(outputs->act_TRADE)) && !(inputs->will_exceed_limit)) && inputs->price_deviates) && !(outputs->act_TRADE)) && !(inputs->dd_exceeded)) && !(outputs->act_TRADE)) {
-				//transition s2_comma_s0_comma_s0_comma_s0_comma_s0 -> s2_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and not (will_exceed_limit) and price_deviates and not (act_TRADE) and not (dd_exceeded) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s2_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if((((( !(inputs->is_illiquid) && !(inputs->will_exceed_limit)) && inputs->price_deviates) && !(outputs->act_TRADE)) && !(inputs->dd_exceeded)) && !(outputs->act_TRADE)) {
-				//transition s2_comma_s0_comma_s0_comma_s0_comma_s0 -> s2_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and not (will_exceed_limit) and price_deviates and not (act_TRADE) and not (dd_exceeded) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s2_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if((((((inputs->is_illiquid && !(outputs->act_TRADE)) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && !(inputs->price_deviates)) && !(inputs->dd_exceeded)) && !(outputs->act_TRADE)) {
-				//transition s2_comma_s0_comma_s0_comma_s0_comma_s0 -> s2_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and will_exceed_limit and not (act_BUY) and not (price_deviates) and not (dd_exceeded) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s2_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if((((( !(inputs->is_illiquid) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && !(inputs->price_deviates)) && !(inputs->dd_exceeded)) && !(outputs->act_TRADE)) {
-				//transition s2_comma_s0_comma_s0_comma_s0_comma_s0 -> s2_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and will_exceed_limit and not (act_BUY) and not (price_deviates) and not (dd_exceeded) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s2_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if(((((inputs->is_illiquid && !(outputs->act_TRADE)) && !(inputs->will_exceed_limit)) && !(inputs->price_deviates)) && !(inputs->dd_exceeded)) && !(outputs->act_TRADE)) {
-				//transition s2_comma_s0_comma_s0_comma_s0_comma_s0 -> s2_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and not (will_exceed_limit) and not (price_deviates) and not (dd_exceeded) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s2_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if(((( !(inputs->is_illiquid) && !(inputs->will_exceed_limit)) && !(inputs->price_deviates)) && !(inputs->dd_exceeded)) && !(outputs->act_TRADE)) {
-				//transition s2_comma_s0_comma_s0_comma_s0_comma_s0 -> s2_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and not (will_exceed_limit) and not (price_deviates) and not (dd_exceeded) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s2_comma_s0_comma_s0_comma_s0_comma_s0;
+			if( !(outputs->act_PLACE)) {
+				//transition s2 -> s2 on ( !act_PLACE )
+				me->_policy_RateLimit_5_per_1s_state = POLICY_STATE_TradingEnforcer_RateLimit_5_per_1s_s2;
 				//set expressions
 				
 				break;
 			} 
 			
 			//ensure a transition was taken in this state
-			assert(false && "TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s2_comma_s0_comma_s0_comma_s0_comma_s0 must take a transition"); //if we are still here, then no transition was taken and we are no longer satisfying liveness
+			assert(false && "TradingEnforcer_RateLimit_5_per_1s_s2 must take a transition"); //if we are still here, then no transition was taken and we are no longer satisfying liveness
 
 			break;
 
-		case POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s3_comma_s0_comma_s0_comma_s0_comma_s0:
+		case POLICY_STATE_TradingEnforcer_RateLimit_5_per_1s_s3:
 			
-			if(((((((((inputs->is_illiquid && !(outputs->act_TRADE)) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && inputs->price_deviates) && !(outputs->act_TRADE)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && outputs->act_TRADE) && me->t_window < CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s3_comma_s0_comma_s0_comma_s0_comma_s0 -> s4_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and will_exceed_limit and not (act_BUY) and price_deviates and not (act_TRADE) and dd_exceeded and not (act_TRADE) and act_TRADE and t_window < T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s4_comma_s0_comma_s0_comma_s0_comma_s0;
+			if(outputs->act_PLACE && me->t_window < CONST_RateLimit_5_per_1s_T_WINDOW) {
+				//transition s3 -> s4 on ( act_PLACE and t_window < T_WINDOW )
+				me->_policy_RateLimit_5_per_1s_state = POLICY_STATE_TradingEnforcer_RateLimit_5_per_1s_s4;
 				//set expressions
 				
 				break;
 			} 
-			if(((((((( !(inputs->is_illiquid) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && inputs->price_deviates) && !(outputs->act_TRADE)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && outputs->act_TRADE) && me->t_window < CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s3_comma_s0_comma_s0_comma_s0_comma_s0 -> s4_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and will_exceed_limit and not (act_BUY) and price_deviates and not (act_TRADE) and dd_exceeded and not (act_TRADE) and act_TRADE and t_window < T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s4_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if(inputs->is_illiquid && outputs->act_TRADE) {
-				//transition s3_comma_s0_comma_s0_comma_s0_comma_s0 -> violation on is_illiquid and act_TRADE
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_violation;
-				//set expressions
-				
-				break;
-			} 
-			if((((((((inputs->is_illiquid && !(outputs->act_TRADE)) && !(inputs->will_exceed_limit)) && inputs->price_deviates) && !(outputs->act_TRADE)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && outputs->act_TRADE) && me->t_window < CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s3_comma_s0_comma_s0_comma_s0_comma_s0 -> s4_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and not (will_exceed_limit) and price_deviates and not (act_TRADE) and dd_exceeded and not (act_TRADE) and act_TRADE and t_window < T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s4_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if((((((( !(inputs->is_illiquid) && !(inputs->will_exceed_limit)) && inputs->price_deviates) && !(outputs->act_TRADE)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && outputs->act_TRADE) && me->t_window < CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s3_comma_s0_comma_s0_comma_s0_comma_s0 -> s4_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and not (will_exceed_limit) and price_deviates and not (act_TRADE) and dd_exceeded and not (act_TRADE) and act_TRADE and t_window < T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s4_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if(inputs->will_exceed_limit && outputs->act_BUY) {
-				//transition s3_comma_s0_comma_s0_comma_s0_comma_s0 -> violation on will_exceed_limit and act_BUY
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_violation;
-				//set expressions
-				
-				break;
-			} 
-			if((((((((inputs->is_illiquid && !(outputs->act_TRADE)) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && !(inputs->price_deviates)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && outputs->act_TRADE) && me->t_window < CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s3_comma_s0_comma_s0_comma_s0_comma_s0 -> s4_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and will_exceed_limit and not (act_BUY) and not (price_deviates) and dd_exceeded and not (act_TRADE) and act_TRADE and t_window < T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s4_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if((((((( !(inputs->is_illiquid) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && !(inputs->price_deviates)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && outputs->act_TRADE) && me->t_window < CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s3_comma_s0_comma_s0_comma_s0_comma_s0 -> s4_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and will_exceed_limit and not (act_BUY) and not (price_deviates) and dd_exceeded and not (act_TRADE) and act_TRADE and t_window < T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s4_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if(((((((inputs->is_illiquid && !(outputs->act_TRADE)) && !(inputs->will_exceed_limit)) && !(inputs->price_deviates)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && outputs->act_TRADE) && me->t_window < CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s3_comma_s0_comma_s0_comma_s0_comma_s0 -> s4_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and not (will_exceed_limit) and not (price_deviates) and dd_exceeded and not (act_TRADE) and act_TRADE and t_window < T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s4_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if(((((( !(inputs->is_illiquid) && !(inputs->will_exceed_limit)) && !(inputs->price_deviates)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && outputs->act_TRADE) && me->t_window < CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s3_comma_s0_comma_s0_comma_s0_comma_s0 -> s4_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and not (will_exceed_limit) and not (price_deviates) and dd_exceeded and not (act_TRADE) and act_TRADE and t_window < T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s4_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if(inputs->price_deviates && outputs->act_TRADE) {
-				//transition s3_comma_s0_comma_s0_comma_s0_comma_s0 -> violation on price_deviates and act_TRADE
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_violation;
-				//set expressions
-				
-				break;
-			} 
-			if((((((((inputs->is_illiquid && !(outputs->act_TRADE)) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && inputs->price_deviates) && !(outputs->act_TRADE)) && !(inputs->dd_exceeded)) && outputs->act_TRADE) && me->t_window < CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s3_comma_s0_comma_s0_comma_s0_comma_s0 -> s4_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and will_exceed_limit and not (act_BUY) and price_deviates and not (act_TRADE) and not (dd_exceeded) and act_TRADE and t_window < T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s4_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if((((((( !(inputs->is_illiquid) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && inputs->price_deviates) && !(outputs->act_TRADE)) && !(inputs->dd_exceeded)) && outputs->act_TRADE) && me->t_window < CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s3_comma_s0_comma_s0_comma_s0_comma_s0 -> s4_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and will_exceed_limit and not (act_BUY) and price_deviates and not (act_TRADE) and not (dd_exceeded) and act_TRADE and t_window < T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s4_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if(((((((inputs->is_illiquid && !(outputs->act_TRADE)) && !(inputs->will_exceed_limit)) && inputs->price_deviates) && !(outputs->act_TRADE)) && !(inputs->dd_exceeded)) && outputs->act_TRADE) && me->t_window < CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s3_comma_s0_comma_s0_comma_s0_comma_s0 -> s4_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and not (will_exceed_limit) and price_deviates and not (act_TRADE) and not (dd_exceeded) and act_TRADE and t_window < T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s4_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if(((((( !(inputs->is_illiquid) && !(inputs->will_exceed_limit)) && inputs->price_deviates) && !(outputs->act_TRADE)) && !(inputs->dd_exceeded)) && outputs->act_TRADE) && me->t_window < CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s3_comma_s0_comma_s0_comma_s0_comma_s0 -> s4_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and not (will_exceed_limit) and price_deviates and not (act_TRADE) and not (dd_exceeded) and act_TRADE and t_window < T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s4_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if(((((((inputs->is_illiquid && !(outputs->act_TRADE)) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && !(inputs->price_deviates)) && !(inputs->dd_exceeded)) && outputs->act_TRADE) && me->t_window < CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s3_comma_s0_comma_s0_comma_s0_comma_s0 -> s4_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and will_exceed_limit and not (act_BUY) and not (price_deviates) and not (dd_exceeded) and act_TRADE and t_window < T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s4_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if(((((( !(inputs->is_illiquid) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && !(inputs->price_deviates)) && !(inputs->dd_exceeded)) && outputs->act_TRADE) && me->t_window < CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s3_comma_s0_comma_s0_comma_s0_comma_s0 -> s4_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and will_exceed_limit and not (act_BUY) and not (price_deviates) and not (dd_exceeded) and act_TRADE and t_window < T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s4_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if((((((inputs->is_illiquid && !(outputs->act_TRADE)) && !(inputs->will_exceed_limit)) && !(inputs->price_deviates)) && !(inputs->dd_exceeded)) && outputs->act_TRADE) && me->t_window < CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s3_comma_s0_comma_s0_comma_s0_comma_s0 -> s4_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and not (will_exceed_limit) and not (price_deviates) and not (dd_exceeded) and act_TRADE and t_window < T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s4_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if((((( !(inputs->is_illiquid) && !(inputs->will_exceed_limit)) && !(inputs->price_deviates)) && !(inputs->dd_exceeded)) && outputs->act_TRADE) && me->t_window < CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s3_comma_s0_comma_s0_comma_s0_comma_s0 -> s4_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and not (will_exceed_limit) and not (price_deviates) and not (dd_exceeded) and act_TRADE and t_window < T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s4_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if(inputs->dd_exceeded && outputs->act_TRADE) {
-				//transition s3_comma_s0_comma_s0_comma_s0_comma_s0 -> violation on dd_exceeded and act_TRADE
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_violation;
-				//set expressions
-				
-				break;
-			} 
-			if(((((((((inputs->is_illiquid && !(outputs->act_TRADE)) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && inputs->price_deviates) && !(outputs->act_TRADE)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && outputs->act_TRADE) && me->t_window >= CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s3_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and will_exceed_limit and not (act_BUY) and price_deviates and not (act_TRADE) and dd_exceeded and not (act_TRADE) and act_TRADE and t_window >= T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
+			if(outputs->act_PLACE && me->t_window >= CONST_RateLimit_5_per_1s_T_WINDOW) {
+				//transition s3 -> s1 on ( act_PLACE and t_window >= T_WINDOW )
+				me->_policy_RateLimit_5_per_1s_state = POLICY_STATE_TradingEnforcer_RateLimit_5_per_1s_s1;
 				//set expressions
 				
 				me->t_window = 0;
 				break;
 			} 
-			if(((((((( !(inputs->is_illiquid) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && inputs->price_deviates) && !(outputs->act_TRADE)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && outputs->act_TRADE) && me->t_window >= CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s3_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and will_exceed_limit and not (act_BUY) and price_deviates and not (act_TRADE) and dd_exceeded and not (act_TRADE) and act_TRADE and t_window >= T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if((((((((inputs->is_illiquid && !(outputs->act_TRADE)) && !(inputs->will_exceed_limit)) && inputs->price_deviates) && !(outputs->act_TRADE)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && outputs->act_TRADE) && me->t_window >= CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s3_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and not (will_exceed_limit) and price_deviates and not (act_TRADE) and dd_exceeded and not (act_TRADE) and act_TRADE and t_window >= T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if((((((( !(inputs->is_illiquid) && !(inputs->will_exceed_limit)) && inputs->price_deviates) && !(outputs->act_TRADE)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && outputs->act_TRADE) && me->t_window >= CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s3_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and not (will_exceed_limit) and price_deviates and not (act_TRADE) and dd_exceeded and not (act_TRADE) and act_TRADE and t_window >= T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if((((((((inputs->is_illiquid && !(outputs->act_TRADE)) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && !(inputs->price_deviates)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && outputs->act_TRADE) && me->t_window >= CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s3_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and will_exceed_limit and not (act_BUY) and not (price_deviates) and dd_exceeded and not (act_TRADE) and act_TRADE and t_window >= T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if((((((( !(inputs->is_illiquid) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && !(inputs->price_deviates)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && outputs->act_TRADE) && me->t_window >= CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s3_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and will_exceed_limit and not (act_BUY) and not (price_deviates) and dd_exceeded and not (act_TRADE) and act_TRADE and t_window >= T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if(((((((inputs->is_illiquid && !(outputs->act_TRADE)) && !(inputs->will_exceed_limit)) && !(inputs->price_deviates)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && outputs->act_TRADE) && me->t_window >= CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s3_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and not (will_exceed_limit) and not (price_deviates) and dd_exceeded and not (act_TRADE) and act_TRADE and t_window >= T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if(((((( !(inputs->is_illiquid) && !(inputs->will_exceed_limit)) && !(inputs->price_deviates)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && outputs->act_TRADE) && me->t_window >= CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s3_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and not (will_exceed_limit) and not (price_deviates) and dd_exceeded and not (act_TRADE) and act_TRADE and t_window >= T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if((((((((inputs->is_illiquid && !(outputs->act_TRADE)) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && inputs->price_deviates) && !(outputs->act_TRADE)) && !(inputs->dd_exceeded)) && outputs->act_TRADE) && me->t_window >= CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s3_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and will_exceed_limit and not (act_BUY) and price_deviates and not (act_TRADE) and not (dd_exceeded) and act_TRADE and t_window >= T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if((((((( !(inputs->is_illiquid) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && inputs->price_deviates) && !(outputs->act_TRADE)) && !(inputs->dd_exceeded)) && outputs->act_TRADE) && me->t_window >= CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s3_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and will_exceed_limit and not (act_BUY) and price_deviates and not (act_TRADE) and not (dd_exceeded) and act_TRADE and t_window >= T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if(((((((inputs->is_illiquid && !(outputs->act_TRADE)) && !(inputs->will_exceed_limit)) && inputs->price_deviates) && !(outputs->act_TRADE)) && !(inputs->dd_exceeded)) && outputs->act_TRADE) && me->t_window >= CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s3_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and not (will_exceed_limit) and price_deviates and not (act_TRADE) and not (dd_exceeded) and act_TRADE and t_window >= T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if(((((( !(inputs->is_illiquid) && !(inputs->will_exceed_limit)) && inputs->price_deviates) && !(outputs->act_TRADE)) && !(inputs->dd_exceeded)) && outputs->act_TRADE) && me->t_window >= CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s3_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and not (will_exceed_limit) and price_deviates and not (act_TRADE) and not (dd_exceeded) and act_TRADE and t_window >= T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if(((((((inputs->is_illiquid && !(outputs->act_TRADE)) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && !(inputs->price_deviates)) && !(inputs->dd_exceeded)) && outputs->act_TRADE) && me->t_window >= CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s3_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and will_exceed_limit and not (act_BUY) and not (price_deviates) and not (dd_exceeded) and act_TRADE and t_window >= T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if(((((( !(inputs->is_illiquid) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && !(inputs->price_deviates)) && !(inputs->dd_exceeded)) && outputs->act_TRADE) && me->t_window >= CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s3_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and will_exceed_limit and not (act_BUY) and not (price_deviates) and not (dd_exceeded) and act_TRADE and t_window >= T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if((((((inputs->is_illiquid && !(outputs->act_TRADE)) && !(inputs->will_exceed_limit)) && !(inputs->price_deviates)) && !(inputs->dd_exceeded)) && outputs->act_TRADE) && me->t_window >= CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s3_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and not (will_exceed_limit) and not (price_deviates) and not (dd_exceeded) and act_TRADE and t_window >= T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if((((( !(inputs->is_illiquid) && !(inputs->will_exceed_limit)) && !(inputs->price_deviates)) && !(inputs->dd_exceeded)) && outputs->act_TRADE) && me->t_window >= CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s3_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and not (will_exceed_limit) and not (price_deviates) and not (dd_exceeded) and act_TRADE and t_window >= T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if((((((((inputs->is_illiquid && !(outputs->act_TRADE)) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && inputs->price_deviates) && !(outputs->act_TRADE)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && !(outputs->act_TRADE)) {
-				//transition s3_comma_s0_comma_s0_comma_s0_comma_s0 -> s3_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and will_exceed_limit and not (act_BUY) and price_deviates and not (act_TRADE) and dd_exceeded and not (act_TRADE) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s3_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if((((((( !(inputs->is_illiquid) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && inputs->price_deviates) && !(outputs->act_TRADE)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && !(outputs->act_TRADE)) {
-				//transition s3_comma_s0_comma_s0_comma_s0_comma_s0 -> s3_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and will_exceed_limit and not (act_BUY) and price_deviates and not (act_TRADE) and dd_exceeded and not (act_TRADE) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s3_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if(((((((inputs->is_illiquid && !(outputs->act_TRADE)) && !(inputs->will_exceed_limit)) && inputs->price_deviates) && !(outputs->act_TRADE)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && !(outputs->act_TRADE)) {
-				//transition s3_comma_s0_comma_s0_comma_s0_comma_s0 -> s3_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and not (will_exceed_limit) and price_deviates and not (act_TRADE) and dd_exceeded and not (act_TRADE) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s3_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if(((((( !(inputs->is_illiquid) && !(inputs->will_exceed_limit)) && inputs->price_deviates) && !(outputs->act_TRADE)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && !(outputs->act_TRADE)) {
-				//transition s3_comma_s0_comma_s0_comma_s0_comma_s0 -> s3_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and not (will_exceed_limit) and price_deviates and not (act_TRADE) and dd_exceeded and not (act_TRADE) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s3_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if(((((((inputs->is_illiquid && !(outputs->act_TRADE)) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && !(inputs->price_deviates)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && !(outputs->act_TRADE)) {
-				//transition s3_comma_s0_comma_s0_comma_s0_comma_s0 -> s3_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and will_exceed_limit and not (act_BUY) and not (price_deviates) and dd_exceeded and not (act_TRADE) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s3_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if(((((( !(inputs->is_illiquid) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && !(inputs->price_deviates)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && !(outputs->act_TRADE)) {
-				//transition s3_comma_s0_comma_s0_comma_s0_comma_s0 -> s3_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and will_exceed_limit and not (act_BUY) and not (price_deviates) and dd_exceeded and not (act_TRADE) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s3_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if((((((inputs->is_illiquid && !(outputs->act_TRADE)) && !(inputs->will_exceed_limit)) && !(inputs->price_deviates)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && !(outputs->act_TRADE)) {
-				//transition s3_comma_s0_comma_s0_comma_s0_comma_s0 -> s3_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and not (will_exceed_limit) and not (price_deviates) and dd_exceeded and not (act_TRADE) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s3_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if((((( !(inputs->is_illiquid) && !(inputs->will_exceed_limit)) && !(inputs->price_deviates)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && !(outputs->act_TRADE)) {
-				//transition s3_comma_s0_comma_s0_comma_s0_comma_s0 -> s3_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and not (will_exceed_limit) and not (price_deviates) and dd_exceeded and not (act_TRADE) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s3_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if(((((((inputs->is_illiquid && !(outputs->act_TRADE)) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && inputs->price_deviates) && !(outputs->act_TRADE)) && !(inputs->dd_exceeded)) && !(outputs->act_TRADE)) {
-				//transition s3_comma_s0_comma_s0_comma_s0_comma_s0 -> s3_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and will_exceed_limit and not (act_BUY) and price_deviates and not (act_TRADE) and not (dd_exceeded) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s3_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if(((((( !(inputs->is_illiquid) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && inputs->price_deviates) && !(outputs->act_TRADE)) && !(inputs->dd_exceeded)) && !(outputs->act_TRADE)) {
-				//transition s3_comma_s0_comma_s0_comma_s0_comma_s0 -> s3_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and will_exceed_limit and not (act_BUY) and price_deviates and not (act_TRADE) and not (dd_exceeded) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s3_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if((((((inputs->is_illiquid && !(outputs->act_TRADE)) && !(inputs->will_exceed_limit)) && inputs->price_deviates) && !(outputs->act_TRADE)) && !(inputs->dd_exceeded)) && !(outputs->act_TRADE)) {
-				//transition s3_comma_s0_comma_s0_comma_s0_comma_s0 -> s3_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and not (will_exceed_limit) and price_deviates and not (act_TRADE) and not (dd_exceeded) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s3_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if((((( !(inputs->is_illiquid) && !(inputs->will_exceed_limit)) && inputs->price_deviates) && !(outputs->act_TRADE)) && !(inputs->dd_exceeded)) && !(outputs->act_TRADE)) {
-				//transition s3_comma_s0_comma_s0_comma_s0_comma_s0 -> s3_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and not (will_exceed_limit) and price_deviates and not (act_TRADE) and not (dd_exceeded) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s3_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if((((((inputs->is_illiquid && !(outputs->act_TRADE)) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && !(inputs->price_deviates)) && !(inputs->dd_exceeded)) && !(outputs->act_TRADE)) {
-				//transition s3_comma_s0_comma_s0_comma_s0_comma_s0 -> s3_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and will_exceed_limit and not (act_BUY) and not (price_deviates) and not (dd_exceeded) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s3_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if((((( !(inputs->is_illiquid) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && !(inputs->price_deviates)) && !(inputs->dd_exceeded)) && !(outputs->act_TRADE)) {
-				//transition s3_comma_s0_comma_s0_comma_s0_comma_s0 -> s3_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and will_exceed_limit and not (act_BUY) and not (price_deviates) and not (dd_exceeded) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s3_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if(((((inputs->is_illiquid && !(outputs->act_TRADE)) && !(inputs->will_exceed_limit)) && !(inputs->price_deviates)) && !(inputs->dd_exceeded)) && !(outputs->act_TRADE)) {
-				//transition s3_comma_s0_comma_s0_comma_s0_comma_s0 -> s3_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and not (will_exceed_limit) and not (price_deviates) and not (dd_exceeded) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s3_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if(((( !(inputs->is_illiquid) && !(inputs->will_exceed_limit)) && !(inputs->price_deviates)) && !(inputs->dd_exceeded)) && !(outputs->act_TRADE)) {
-				//transition s3_comma_s0_comma_s0_comma_s0_comma_s0 -> s3_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and not (will_exceed_limit) and not (price_deviates) and not (dd_exceeded) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s3_comma_s0_comma_s0_comma_s0_comma_s0;
+			if( !(outputs->act_PLACE)) {
+				//transition s3 -> s3 on ( !act_PLACE )
+				me->_policy_RateLimit_5_per_1s_state = POLICY_STATE_TradingEnforcer_RateLimit_5_per_1s_s3;
 				//set expressions
 				
 				break;
 			} 
 			
 			//ensure a transition was taken in this state
-			assert(false && "TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s3_comma_s0_comma_s0_comma_s0_comma_s0 must take a transition"); //if we are still here, then no transition was taken and we are no longer satisfying liveness
+			assert(false && "TradingEnforcer_RateLimit_5_per_1s_s3 must take a transition"); //if we are still here, then no transition was taken and we are no longer satisfying liveness
 
 			break;
 
-		case POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s4_comma_s0_comma_s0_comma_s0_comma_s0:
+		case POLICY_STATE_TradingEnforcer_RateLimit_5_per_1s_s4:
 			
-			if(((((((((inputs->is_illiquid && !(outputs->act_TRADE)) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && inputs->price_deviates) && !(outputs->act_TRADE)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && outputs->act_TRADE) && me->t_window < CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s4_comma_s0_comma_s0_comma_s0_comma_s0 -> s5_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and will_exceed_limit and not (act_BUY) and price_deviates and not (act_TRADE) and dd_exceeded and not (act_TRADE) and act_TRADE and t_window < T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s5_comma_s0_comma_s0_comma_s0_comma_s0;
+			if(outputs->act_PLACE && me->t_window < CONST_RateLimit_5_per_1s_T_WINDOW) {
+				//transition s4 -> s5 on ( act_PLACE and t_window < T_WINDOW )
+				me->_policy_RateLimit_5_per_1s_state = POLICY_STATE_TradingEnforcer_RateLimit_5_per_1s_s5;
 				//set expressions
 				
 				break;
 			} 
-			if(((((((( !(inputs->is_illiquid) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && inputs->price_deviates) && !(outputs->act_TRADE)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && outputs->act_TRADE) && me->t_window < CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s4_comma_s0_comma_s0_comma_s0_comma_s0 -> s5_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and will_exceed_limit and not (act_BUY) and price_deviates and not (act_TRADE) and dd_exceeded and not (act_TRADE) and act_TRADE and t_window < T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s5_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if(inputs->is_illiquid && outputs->act_TRADE) {
-				//transition s4_comma_s0_comma_s0_comma_s0_comma_s0 -> violation on is_illiquid and act_TRADE
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_violation;
-				//set expressions
-				
-				break;
-			} 
-			if((((((((inputs->is_illiquid && !(outputs->act_TRADE)) && !(inputs->will_exceed_limit)) && inputs->price_deviates) && !(outputs->act_TRADE)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && outputs->act_TRADE) && me->t_window < CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s4_comma_s0_comma_s0_comma_s0_comma_s0 -> s5_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and not (will_exceed_limit) and price_deviates and not (act_TRADE) and dd_exceeded and not (act_TRADE) and act_TRADE and t_window < T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s5_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if((((((( !(inputs->is_illiquid) && !(inputs->will_exceed_limit)) && inputs->price_deviates) && !(outputs->act_TRADE)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && outputs->act_TRADE) && me->t_window < CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s4_comma_s0_comma_s0_comma_s0_comma_s0 -> s5_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and not (will_exceed_limit) and price_deviates and not (act_TRADE) and dd_exceeded and not (act_TRADE) and act_TRADE and t_window < T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s5_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if(inputs->will_exceed_limit && outputs->act_BUY) {
-				//transition s4_comma_s0_comma_s0_comma_s0_comma_s0 -> violation on will_exceed_limit and act_BUY
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_violation;
-				//set expressions
-				
-				break;
-			} 
-			if((((((((inputs->is_illiquid && !(outputs->act_TRADE)) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && !(inputs->price_deviates)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && outputs->act_TRADE) && me->t_window < CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s4_comma_s0_comma_s0_comma_s0_comma_s0 -> s5_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and will_exceed_limit and not (act_BUY) and not (price_deviates) and dd_exceeded and not (act_TRADE) and act_TRADE and t_window < T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s5_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if((((((( !(inputs->is_illiquid) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && !(inputs->price_deviates)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && outputs->act_TRADE) && me->t_window < CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s4_comma_s0_comma_s0_comma_s0_comma_s0 -> s5_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and will_exceed_limit and not (act_BUY) and not (price_deviates) and dd_exceeded and not (act_TRADE) and act_TRADE and t_window < T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s5_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if(((((((inputs->is_illiquid && !(outputs->act_TRADE)) && !(inputs->will_exceed_limit)) && !(inputs->price_deviates)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && outputs->act_TRADE) && me->t_window < CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s4_comma_s0_comma_s0_comma_s0_comma_s0 -> s5_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and not (will_exceed_limit) and not (price_deviates) and dd_exceeded and not (act_TRADE) and act_TRADE and t_window < T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s5_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if(((((( !(inputs->is_illiquid) && !(inputs->will_exceed_limit)) && !(inputs->price_deviates)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && outputs->act_TRADE) && me->t_window < CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s4_comma_s0_comma_s0_comma_s0_comma_s0 -> s5_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and not (will_exceed_limit) and not (price_deviates) and dd_exceeded and not (act_TRADE) and act_TRADE and t_window < T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s5_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if(inputs->price_deviates && outputs->act_TRADE) {
-				//transition s4_comma_s0_comma_s0_comma_s0_comma_s0 -> violation on price_deviates and act_TRADE
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_violation;
-				//set expressions
-				
-				break;
-			} 
-			if((((((((inputs->is_illiquid && !(outputs->act_TRADE)) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && inputs->price_deviates) && !(outputs->act_TRADE)) && !(inputs->dd_exceeded)) && outputs->act_TRADE) && me->t_window < CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s4_comma_s0_comma_s0_comma_s0_comma_s0 -> s5_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and will_exceed_limit and not (act_BUY) and price_deviates and not (act_TRADE) and not (dd_exceeded) and act_TRADE and t_window < T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s5_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if((((((( !(inputs->is_illiquid) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && inputs->price_deviates) && !(outputs->act_TRADE)) && !(inputs->dd_exceeded)) && outputs->act_TRADE) && me->t_window < CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s4_comma_s0_comma_s0_comma_s0_comma_s0 -> s5_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and will_exceed_limit and not (act_BUY) and price_deviates and not (act_TRADE) and not (dd_exceeded) and act_TRADE and t_window < T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s5_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if(((((((inputs->is_illiquid && !(outputs->act_TRADE)) && !(inputs->will_exceed_limit)) && inputs->price_deviates) && !(outputs->act_TRADE)) && !(inputs->dd_exceeded)) && outputs->act_TRADE) && me->t_window < CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s4_comma_s0_comma_s0_comma_s0_comma_s0 -> s5_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and not (will_exceed_limit) and price_deviates and not (act_TRADE) and not (dd_exceeded) and act_TRADE and t_window < T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s5_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if(((((( !(inputs->is_illiquid) && !(inputs->will_exceed_limit)) && inputs->price_deviates) && !(outputs->act_TRADE)) && !(inputs->dd_exceeded)) && outputs->act_TRADE) && me->t_window < CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s4_comma_s0_comma_s0_comma_s0_comma_s0 -> s5_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and not (will_exceed_limit) and price_deviates and not (act_TRADE) and not (dd_exceeded) and act_TRADE and t_window < T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s5_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if(((((((inputs->is_illiquid && !(outputs->act_TRADE)) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && !(inputs->price_deviates)) && !(inputs->dd_exceeded)) && outputs->act_TRADE) && me->t_window < CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s4_comma_s0_comma_s0_comma_s0_comma_s0 -> s5_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and will_exceed_limit and not (act_BUY) and not (price_deviates) and not (dd_exceeded) and act_TRADE and t_window < T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s5_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if(((((( !(inputs->is_illiquid) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && !(inputs->price_deviates)) && !(inputs->dd_exceeded)) && outputs->act_TRADE) && me->t_window < CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s4_comma_s0_comma_s0_comma_s0_comma_s0 -> s5_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and will_exceed_limit and not (act_BUY) and not (price_deviates) and not (dd_exceeded) and act_TRADE and t_window < T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s5_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if((((((inputs->is_illiquid && !(outputs->act_TRADE)) && !(inputs->will_exceed_limit)) && !(inputs->price_deviates)) && !(inputs->dd_exceeded)) && outputs->act_TRADE) && me->t_window < CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s4_comma_s0_comma_s0_comma_s0_comma_s0 -> s5_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and not (will_exceed_limit) and not (price_deviates) and not (dd_exceeded) and act_TRADE and t_window < T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s5_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if((((( !(inputs->is_illiquid) && !(inputs->will_exceed_limit)) && !(inputs->price_deviates)) && !(inputs->dd_exceeded)) && outputs->act_TRADE) && me->t_window < CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s4_comma_s0_comma_s0_comma_s0_comma_s0 -> s5_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and not (will_exceed_limit) and not (price_deviates) and not (dd_exceeded) and act_TRADE and t_window < T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s5_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if(inputs->dd_exceeded && outputs->act_TRADE) {
-				//transition s4_comma_s0_comma_s0_comma_s0_comma_s0 -> violation on dd_exceeded and act_TRADE
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_violation;
-				//set expressions
-				
-				break;
-			} 
-			if(((((((((inputs->is_illiquid && !(outputs->act_TRADE)) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && inputs->price_deviates) && !(outputs->act_TRADE)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && outputs->act_TRADE) && me->t_window >= CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s4_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and will_exceed_limit and not (act_BUY) and price_deviates and not (act_TRADE) and dd_exceeded and not (act_TRADE) and act_TRADE and t_window >= T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
+			if(outputs->act_PLACE && me->t_window >= CONST_RateLimit_5_per_1s_T_WINDOW) {
+				//transition s4 -> s1 on ( act_PLACE and t_window >= T_WINDOW )
+				me->_policy_RateLimit_5_per_1s_state = POLICY_STATE_TradingEnforcer_RateLimit_5_per_1s_s1;
 				//set expressions
 				
 				me->t_window = 0;
 				break;
 			} 
-			if(((((((( !(inputs->is_illiquid) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && inputs->price_deviates) && !(outputs->act_TRADE)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && outputs->act_TRADE) && me->t_window >= CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s4_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and will_exceed_limit and not (act_BUY) and price_deviates and not (act_TRADE) and dd_exceeded and not (act_TRADE) and act_TRADE and t_window >= T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if((((((((inputs->is_illiquid && !(outputs->act_TRADE)) && !(inputs->will_exceed_limit)) && inputs->price_deviates) && !(outputs->act_TRADE)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && outputs->act_TRADE) && me->t_window >= CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s4_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and not (will_exceed_limit) and price_deviates and not (act_TRADE) and dd_exceeded and not (act_TRADE) and act_TRADE and t_window >= T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if((((((( !(inputs->is_illiquid) && !(inputs->will_exceed_limit)) && inputs->price_deviates) && !(outputs->act_TRADE)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && outputs->act_TRADE) && me->t_window >= CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s4_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and not (will_exceed_limit) and price_deviates and not (act_TRADE) and dd_exceeded and not (act_TRADE) and act_TRADE and t_window >= T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if((((((((inputs->is_illiquid && !(outputs->act_TRADE)) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && !(inputs->price_deviates)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && outputs->act_TRADE) && me->t_window >= CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s4_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and will_exceed_limit and not (act_BUY) and not (price_deviates) and dd_exceeded and not (act_TRADE) and act_TRADE and t_window >= T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if((((((( !(inputs->is_illiquid) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && !(inputs->price_deviates)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && outputs->act_TRADE) && me->t_window >= CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s4_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and will_exceed_limit and not (act_BUY) and not (price_deviates) and dd_exceeded and not (act_TRADE) and act_TRADE and t_window >= T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if(((((((inputs->is_illiquid && !(outputs->act_TRADE)) && !(inputs->will_exceed_limit)) && !(inputs->price_deviates)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && outputs->act_TRADE) && me->t_window >= CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s4_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and not (will_exceed_limit) and not (price_deviates) and dd_exceeded and not (act_TRADE) and act_TRADE and t_window >= T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if(((((( !(inputs->is_illiquid) && !(inputs->will_exceed_limit)) && !(inputs->price_deviates)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && outputs->act_TRADE) && me->t_window >= CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s4_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and not (will_exceed_limit) and not (price_deviates) and dd_exceeded and not (act_TRADE) and act_TRADE and t_window >= T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if((((((((inputs->is_illiquid && !(outputs->act_TRADE)) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && inputs->price_deviates) && !(outputs->act_TRADE)) && !(inputs->dd_exceeded)) && outputs->act_TRADE) && me->t_window >= CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s4_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and will_exceed_limit and not (act_BUY) and price_deviates and not (act_TRADE) and not (dd_exceeded) and act_TRADE and t_window >= T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if((((((( !(inputs->is_illiquid) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && inputs->price_deviates) && !(outputs->act_TRADE)) && !(inputs->dd_exceeded)) && outputs->act_TRADE) && me->t_window >= CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s4_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and will_exceed_limit and not (act_BUY) and price_deviates and not (act_TRADE) and not (dd_exceeded) and act_TRADE and t_window >= T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if(((((((inputs->is_illiquid && !(outputs->act_TRADE)) && !(inputs->will_exceed_limit)) && inputs->price_deviates) && !(outputs->act_TRADE)) && !(inputs->dd_exceeded)) && outputs->act_TRADE) && me->t_window >= CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s4_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and not (will_exceed_limit) and price_deviates and not (act_TRADE) and not (dd_exceeded) and act_TRADE and t_window >= T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if(((((( !(inputs->is_illiquid) && !(inputs->will_exceed_limit)) && inputs->price_deviates) && !(outputs->act_TRADE)) && !(inputs->dd_exceeded)) && outputs->act_TRADE) && me->t_window >= CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s4_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and not (will_exceed_limit) and price_deviates and not (act_TRADE) and not (dd_exceeded) and act_TRADE and t_window >= T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if(((((((inputs->is_illiquid && !(outputs->act_TRADE)) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && !(inputs->price_deviates)) && !(inputs->dd_exceeded)) && outputs->act_TRADE) && me->t_window >= CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s4_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and will_exceed_limit and not (act_BUY) and not (price_deviates) and not (dd_exceeded) and act_TRADE and t_window >= T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if(((((( !(inputs->is_illiquid) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && !(inputs->price_deviates)) && !(inputs->dd_exceeded)) && outputs->act_TRADE) && me->t_window >= CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s4_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and will_exceed_limit and not (act_BUY) and not (price_deviates) and not (dd_exceeded) and act_TRADE and t_window >= T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if((((((inputs->is_illiquid && !(outputs->act_TRADE)) && !(inputs->will_exceed_limit)) && !(inputs->price_deviates)) && !(inputs->dd_exceeded)) && outputs->act_TRADE) && me->t_window >= CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s4_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and not (will_exceed_limit) and not (price_deviates) and not (dd_exceeded) and act_TRADE and t_window >= T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if((((( !(inputs->is_illiquid) && !(inputs->will_exceed_limit)) && !(inputs->price_deviates)) && !(inputs->dd_exceeded)) && outputs->act_TRADE) && me->t_window >= CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s4_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and not (will_exceed_limit) and not (price_deviates) and not (dd_exceeded) and act_TRADE and t_window >= T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if((((((((inputs->is_illiquid && !(outputs->act_TRADE)) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && inputs->price_deviates) && !(outputs->act_TRADE)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && !(outputs->act_TRADE)) {
-				//transition s4_comma_s0_comma_s0_comma_s0_comma_s0 -> s4_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and will_exceed_limit and not (act_BUY) and price_deviates and not (act_TRADE) and dd_exceeded and not (act_TRADE) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s4_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if((((((( !(inputs->is_illiquid) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && inputs->price_deviates) && !(outputs->act_TRADE)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && !(outputs->act_TRADE)) {
-				//transition s4_comma_s0_comma_s0_comma_s0_comma_s0 -> s4_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and will_exceed_limit and not (act_BUY) and price_deviates and not (act_TRADE) and dd_exceeded and not (act_TRADE) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s4_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if(((((((inputs->is_illiquid && !(outputs->act_TRADE)) && !(inputs->will_exceed_limit)) && inputs->price_deviates) && !(outputs->act_TRADE)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && !(outputs->act_TRADE)) {
-				//transition s4_comma_s0_comma_s0_comma_s0_comma_s0 -> s4_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and not (will_exceed_limit) and price_deviates and not (act_TRADE) and dd_exceeded and not (act_TRADE) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s4_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if(((((( !(inputs->is_illiquid) && !(inputs->will_exceed_limit)) && inputs->price_deviates) && !(outputs->act_TRADE)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && !(outputs->act_TRADE)) {
-				//transition s4_comma_s0_comma_s0_comma_s0_comma_s0 -> s4_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and not (will_exceed_limit) and price_deviates and not (act_TRADE) and dd_exceeded and not (act_TRADE) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s4_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if(((((((inputs->is_illiquid && !(outputs->act_TRADE)) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && !(inputs->price_deviates)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && !(outputs->act_TRADE)) {
-				//transition s4_comma_s0_comma_s0_comma_s0_comma_s0 -> s4_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and will_exceed_limit and not (act_BUY) and not (price_deviates) and dd_exceeded and not (act_TRADE) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s4_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if(((((( !(inputs->is_illiquid) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && !(inputs->price_deviates)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && !(outputs->act_TRADE)) {
-				//transition s4_comma_s0_comma_s0_comma_s0_comma_s0 -> s4_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and will_exceed_limit and not (act_BUY) and not (price_deviates) and dd_exceeded and not (act_TRADE) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s4_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if((((((inputs->is_illiquid && !(outputs->act_TRADE)) && !(inputs->will_exceed_limit)) && !(inputs->price_deviates)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && !(outputs->act_TRADE)) {
-				//transition s4_comma_s0_comma_s0_comma_s0_comma_s0 -> s4_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and not (will_exceed_limit) and not (price_deviates) and dd_exceeded and not (act_TRADE) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s4_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if((((( !(inputs->is_illiquid) && !(inputs->will_exceed_limit)) && !(inputs->price_deviates)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && !(outputs->act_TRADE)) {
-				//transition s4_comma_s0_comma_s0_comma_s0_comma_s0 -> s4_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and not (will_exceed_limit) and not (price_deviates) and dd_exceeded and not (act_TRADE) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s4_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if(((((((inputs->is_illiquid && !(outputs->act_TRADE)) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && inputs->price_deviates) && !(outputs->act_TRADE)) && !(inputs->dd_exceeded)) && !(outputs->act_TRADE)) {
-				//transition s4_comma_s0_comma_s0_comma_s0_comma_s0 -> s4_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and will_exceed_limit and not (act_BUY) and price_deviates and not (act_TRADE) and not (dd_exceeded) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s4_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if(((((( !(inputs->is_illiquid) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && inputs->price_deviates) && !(outputs->act_TRADE)) && !(inputs->dd_exceeded)) && !(outputs->act_TRADE)) {
-				//transition s4_comma_s0_comma_s0_comma_s0_comma_s0 -> s4_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and will_exceed_limit and not (act_BUY) and price_deviates and not (act_TRADE) and not (dd_exceeded) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s4_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if((((((inputs->is_illiquid && !(outputs->act_TRADE)) && !(inputs->will_exceed_limit)) && inputs->price_deviates) && !(outputs->act_TRADE)) && !(inputs->dd_exceeded)) && !(outputs->act_TRADE)) {
-				//transition s4_comma_s0_comma_s0_comma_s0_comma_s0 -> s4_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and not (will_exceed_limit) and price_deviates and not (act_TRADE) and not (dd_exceeded) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s4_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if((((( !(inputs->is_illiquid) && !(inputs->will_exceed_limit)) && inputs->price_deviates) && !(outputs->act_TRADE)) && !(inputs->dd_exceeded)) && !(outputs->act_TRADE)) {
-				//transition s4_comma_s0_comma_s0_comma_s0_comma_s0 -> s4_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and not (will_exceed_limit) and price_deviates and not (act_TRADE) and not (dd_exceeded) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s4_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if((((((inputs->is_illiquid && !(outputs->act_TRADE)) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && !(inputs->price_deviates)) && !(inputs->dd_exceeded)) && !(outputs->act_TRADE)) {
-				//transition s4_comma_s0_comma_s0_comma_s0_comma_s0 -> s4_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and will_exceed_limit and not (act_BUY) and not (price_deviates) and not (dd_exceeded) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s4_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if((((( !(inputs->is_illiquid) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && !(inputs->price_deviates)) && !(inputs->dd_exceeded)) && !(outputs->act_TRADE)) {
-				//transition s4_comma_s0_comma_s0_comma_s0_comma_s0 -> s4_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and will_exceed_limit and not (act_BUY) and not (price_deviates) and not (dd_exceeded) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s4_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if(((((inputs->is_illiquid && !(outputs->act_TRADE)) && !(inputs->will_exceed_limit)) && !(inputs->price_deviates)) && !(inputs->dd_exceeded)) && !(outputs->act_TRADE)) {
-				//transition s4_comma_s0_comma_s0_comma_s0_comma_s0 -> s4_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and not (will_exceed_limit) and not (price_deviates) and not (dd_exceeded) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s4_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if(((( !(inputs->is_illiquid) && !(inputs->will_exceed_limit)) && !(inputs->price_deviates)) && !(inputs->dd_exceeded)) && !(outputs->act_TRADE)) {
-				//transition s4_comma_s0_comma_s0_comma_s0_comma_s0 -> s4_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and not (will_exceed_limit) and not (price_deviates) and not (dd_exceeded) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s4_comma_s0_comma_s0_comma_s0_comma_s0;
+			if( !(outputs->act_PLACE)) {
+				//transition s4 -> s4 on ( !act_PLACE )
+				me->_policy_RateLimit_5_per_1s_state = POLICY_STATE_TradingEnforcer_RateLimit_5_per_1s_s4;
 				//set expressions
 				
 				break;
 			} 
 			
 			//ensure a transition was taken in this state
-			assert(false && "TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s4_comma_s0_comma_s0_comma_s0_comma_s0 must take a transition"); //if we are still here, then no transition was taken and we are no longer satisfying liveness
+			assert(false && "TradingEnforcer_RateLimit_5_per_1s_s4 must take a transition"); //if we are still here, then no transition was taken and we are no longer satisfying liveness
 
 			break;
 
-		case POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s5_comma_s0_comma_s0_comma_s0_comma_s0:
+		case POLICY_STATE_TradingEnforcer_RateLimit_5_per_1s_s5:
 			
-			if(((((((((inputs->is_illiquid && !(outputs->act_TRADE)) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && inputs->price_deviates) && !(outputs->act_TRADE)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && outputs->act_TRADE) && me->t_window >= CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s5_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and will_exceed_limit and not (act_BUY) and price_deviates and not (act_TRADE) and dd_exceeded and not (act_TRADE) and act_TRADE and t_window >= T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
+			if(outputs->act_PLACE && me->t_window >= CONST_RateLimit_5_per_1s_T_WINDOW) {
+				//transition s5 -> s1 on ( act_PLACE and t_window >= T_WINDOW )
+				me->_policy_RateLimit_5_per_1s_state = POLICY_STATE_TradingEnforcer_RateLimit_5_per_1s_s1;
 				//set expressions
 				
 				me->t_window = 0;
 				break;
 			} 
-			if(((((((( !(inputs->is_illiquid) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && inputs->price_deviates) && !(outputs->act_TRADE)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && outputs->act_TRADE) && me->t_window >= CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s5_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and will_exceed_limit and not (act_BUY) and price_deviates and not (act_TRADE) and dd_exceeded and not (act_TRADE) and act_TRADE and t_window >= T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if(inputs->is_illiquid && outputs->act_TRADE) {
-				//transition s5_comma_s0_comma_s0_comma_s0_comma_s0 -> violation on is_illiquid and act_TRADE
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_violation;
+			if( !(outputs->act_PLACE)) {
+				//transition s5 -> s5 on ( !act_PLACE )
+				me->_policy_RateLimit_5_per_1s_state = POLICY_STATE_TradingEnforcer_RateLimit_5_per_1s_s5;
 				//set expressions
 				
 				break;
 			} 
-			if((((((((inputs->is_illiquid && !(outputs->act_TRADE)) && !(inputs->will_exceed_limit)) && inputs->price_deviates) && !(outputs->act_TRADE)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && outputs->act_TRADE) && me->t_window >= CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s5_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and not (will_exceed_limit) and price_deviates and not (act_TRADE) and dd_exceeded and not (act_TRADE) and act_TRADE and t_window >= T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if((((((( !(inputs->is_illiquid) && !(inputs->will_exceed_limit)) && inputs->price_deviates) && !(outputs->act_TRADE)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && outputs->act_TRADE) && me->t_window >= CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s5_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and not (will_exceed_limit) and price_deviates and not (act_TRADE) and dd_exceeded and not (act_TRADE) and act_TRADE and t_window >= T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if(inputs->will_exceed_limit && outputs->act_BUY) {
-				//transition s5_comma_s0_comma_s0_comma_s0_comma_s0 -> violation on will_exceed_limit and act_BUY
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_violation;
-				//set expressions
-				
-				break;
-			} 
-			if((((((((inputs->is_illiquid && !(outputs->act_TRADE)) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && !(inputs->price_deviates)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && outputs->act_TRADE) && me->t_window >= CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s5_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and will_exceed_limit and not (act_BUY) and not (price_deviates) and dd_exceeded and not (act_TRADE) and act_TRADE and t_window >= T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if((((((( !(inputs->is_illiquid) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && !(inputs->price_deviates)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && outputs->act_TRADE) && me->t_window >= CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s5_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and will_exceed_limit and not (act_BUY) and not (price_deviates) and dd_exceeded and not (act_TRADE) and act_TRADE and t_window >= T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if(((((((inputs->is_illiquid && !(outputs->act_TRADE)) && !(inputs->will_exceed_limit)) && !(inputs->price_deviates)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && outputs->act_TRADE) && me->t_window >= CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s5_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and not (will_exceed_limit) and not (price_deviates) and dd_exceeded and not (act_TRADE) and act_TRADE and t_window >= T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if(((((( !(inputs->is_illiquid) && !(inputs->will_exceed_limit)) && !(inputs->price_deviates)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && outputs->act_TRADE) && me->t_window >= CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s5_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and not (will_exceed_limit) and not (price_deviates) and dd_exceeded and not (act_TRADE) and act_TRADE and t_window >= T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if(inputs->price_deviates && outputs->act_TRADE) {
-				//transition s5_comma_s0_comma_s0_comma_s0_comma_s0 -> violation on price_deviates and act_TRADE
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_violation;
-				//set expressions
-				
-				break;
-			} 
-			if((((((((inputs->is_illiquid && !(outputs->act_TRADE)) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && inputs->price_deviates) && !(outputs->act_TRADE)) && !(inputs->dd_exceeded)) && outputs->act_TRADE) && me->t_window >= CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s5_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and will_exceed_limit and not (act_BUY) and price_deviates and not (act_TRADE) and not (dd_exceeded) and act_TRADE and t_window >= T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if((((((( !(inputs->is_illiquid) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && inputs->price_deviates) && !(outputs->act_TRADE)) && !(inputs->dd_exceeded)) && outputs->act_TRADE) && me->t_window >= CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s5_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and will_exceed_limit and not (act_BUY) and price_deviates and not (act_TRADE) and not (dd_exceeded) and act_TRADE and t_window >= T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if(((((((inputs->is_illiquid && !(outputs->act_TRADE)) && !(inputs->will_exceed_limit)) && inputs->price_deviates) && !(outputs->act_TRADE)) && !(inputs->dd_exceeded)) && outputs->act_TRADE) && me->t_window >= CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s5_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and not (will_exceed_limit) and price_deviates and not (act_TRADE) and not (dd_exceeded) and act_TRADE and t_window >= T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if(((((( !(inputs->is_illiquid) && !(inputs->will_exceed_limit)) && inputs->price_deviates) && !(outputs->act_TRADE)) && !(inputs->dd_exceeded)) && outputs->act_TRADE) && me->t_window >= CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s5_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and not (will_exceed_limit) and price_deviates and not (act_TRADE) and not (dd_exceeded) and act_TRADE and t_window >= T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if(((((((inputs->is_illiquid && !(outputs->act_TRADE)) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && !(inputs->price_deviates)) && !(inputs->dd_exceeded)) && outputs->act_TRADE) && me->t_window >= CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s5_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and will_exceed_limit and not (act_BUY) and not (price_deviates) and not (dd_exceeded) and act_TRADE and t_window >= T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if(((((( !(inputs->is_illiquid) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && !(inputs->price_deviates)) && !(inputs->dd_exceeded)) && outputs->act_TRADE) && me->t_window >= CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s5_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and will_exceed_limit and not (act_BUY) and not (price_deviates) and not (dd_exceeded) and act_TRADE and t_window >= T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if((((((inputs->is_illiquid && !(outputs->act_TRADE)) && !(inputs->will_exceed_limit)) && !(inputs->price_deviates)) && !(inputs->dd_exceeded)) && outputs->act_TRADE) && me->t_window >= CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s5_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and not (will_exceed_limit) and not (price_deviates) and not (dd_exceeded) and act_TRADE and t_window >= T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if((((( !(inputs->is_illiquid) && !(inputs->will_exceed_limit)) && !(inputs->price_deviates)) && !(inputs->dd_exceeded)) && outputs->act_TRADE) && me->t_window >= CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s5_comma_s0_comma_s0_comma_s0_comma_s0 -> s1_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and not (will_exceed_limit) and not (price_deviates) and not (dd_exceeded) and act_TRADE and t_window >= T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s1_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				me->t_window = 0;
-				break;
-			} 
-			if(inputs->dd_exceeded && outputs->act_TRADE) {
-				//transition s5_comma_s0_comma_s0_comma_s0_comma_s0 -> violation on dd_exceeded and act_TRADE
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_violation;
-				//set expressions
-				
-				break;
-			} 
-			if((((((((inputs->is_illiquid && !(outputs->act_TRADE)) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && inputs->price_deviates) && !(outputs->act_TRADE)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && !(outputs->act_TRADE)) {
-				//transition s5_comma_s0_comma_s0_comma_s0_comma_s0 -> s5_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and will_exceed_limit and not (act_BUY) and price_deviates and not (act_TRADE) and dd_exceeded and not (act_TRADE) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s5_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if((((((( !(inputs->is_illiquid) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && inputs->price_deviates) && !(outputs->act_TRADE)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && !(outputs->act_TRADE)) {
-				//transition s5_comma_s0_comma_s0_comma_s0_comma_s0 -> s5_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and will_exceed_limit and not (act_BUY) and price_deviates and not (act_TRADE) and dd_exceeded and not (act_TRADE) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s5_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if(((((((inputs->is_illiquid && !(outputs->act_TRADE)) && !(inputs->will_exceed_limit)) && inputs->price_deviates) && !(outputs->act_TRADE)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && !(outputs->act_TRADE)) {
-				//transition s5_comma_s0_comma_s0_comma_s0_comma_s0 -> s5_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and not (will_exceed_limit) and price_deviates and not (act_TRADE) and dd_exceeded and not (act_TRADE) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s5_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if(((((( !(inputs->is_illiquid) && !(inputs->will_exceed_limit)) && inputs->price_deviates) && !(outputs->act_TRADE)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && !(outputs->act_TRADE)) {
-				//transition s5_comma_s0_comma_s0_comma_s0_comma_s0 -> s5_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and not (will_exceed_limit) and price_deviates and not (act_TRADE) and dd_exceeded and not (act_TRADE) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s5_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if(((((((inputs->is_illiquid && !(outputs->act_TRADE)) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && !(inputs->price_deviates)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && !(outputs->act_TRADE)) {
-				//transition s5_comma_s0_comma_s0_comma_s0_comma_s0 -> s5_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and will_exceed_limit and not (act_BUY) and not (price_deviates) and dd_exceeded and not (act_TRADE) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s5_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if(((((( !(inputs->is_illiquid) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && !(inputs->price_deviates)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && !(outputs->act_TRADE)) {
-				//transition s5_comma_s0_comma_s0_comma_s0_comma_s0 -> s5_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and will_exceed_limit and not (act_BUY) and not (price_deviates) and dd_exceeded and not (act_TRADE) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s5_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if((((((inputs->is_illiquid && !(outputs->act_TRADE)) && !(inputs->will_exceed_limit)) && !(inputs->price_deviates)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && !(outputs->act_TRADE)) {
-				//transition s5_comma_s0_comma_s0_comma_s0_comma_s0 -> s5_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and not (will_exceed_limit) and not (price_deviates) and dd_exceeded and not (act_TRADE) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s5_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if((((( !(inputs->is_illiquid) && !(inputs->will_exceed_limit)) && !(inputs->price_deviates)) && inputs->dd_exceeded) && !(outputs->act_TRADE)) && !(outputs->act_TRADE)) {
-				//transition s5_comma_s0_comma_s0_comma_s0_comma_s0 -> s5_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and not (will_exceed_limit) and not (price_deviates) and dd_exceeded and not (act_TRADE) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s5_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if(((((((inputs->is_illiquid && !(outputs->act_TRADE)) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && inputs->price_deviates) && !(outputs->act_TRADE)) && !(inputs->dd_exceeded)) && !(outputs->act_TRADE)) {
-				//transition s5_comma_s0_comma_s0_comma_s0_comma_s0 -> s5_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and will_exceed_limit and not (act_BUY) and price_deviates and not (act_TRADE) and not (dd_exceeded) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s5_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if(((((( !(inputs->is_illiquid) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && inputs->price_deviates) && !(outputs->act_TRADE)) && !(inputs->dd_exceeded)) && !(outputs->act_TRADE)) {
-				//transition s5_comma_s0_comma_s0_comma_s0_comma_s0 -> s5_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and will_exceed_limit and not (act_BUY) and price_deviates and not (act_TRADE) and not (dd_exceeded) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s5_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if((((((inputs->is_illiquid && !(outputs->act_TRADE)) && !(inputs->will_exceed_limit)) && inputs->price_deviates) && !(outputs->act_TRADE)) && !(inputs->dd_exceeded)) && !(outputs->act_TRADE)) {
-				//transition s5_comma_s0_comma_s0_comma_s0_comma_s0 -> s5_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and not (will_exceed_limit) and price_deviates and not (act_TRADE) and not (dd_exceeded) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s5_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if((((( !(inputs->is_illiquid) && !(inputs->will_exceed_limit)) && inputs->price_deviates) && !(outputs->act_TRADE)) && !(inputs->dd_exceeded)) && !(outputs->act_TRADE)) {
-				//transition s5_comma_s0_comma_s0_comma_s0_comma_s0 -> s5_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and not (will_exceed_limit) and price_deviates and not (act_TRADE) and not (dd_exceeded) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s5_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if((((((inputs->is_illiquid && !(outputs->act_TRADE)) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && !(inputs->price_deviates)) && !(inputs->dd_exceeded)) && !(outputs->act_TRADE)) {
-				//transition s5_comma_s0_comma_s0_comma_s0_comma_s0 -> s5_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and will_exceed_limit and not (act_BUY) and not (price_deviates) and not (dd_exceeded) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s5_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if((((( !(inputs->is_illiquid) && inputs->will_exceed_limit) && !(outputs->act_BUY)) && !(inputs->price_deviates)) && !(inputs->dd_exceeded)) && !(outputs->act_TRADE)) {
-				//transition s5_comma_s0_comma_s0_comma_s0_comma_s0 -> s5_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and will_exceed_limit and not (act_BUY) and not (price_deviates) and not (dd_exceeded) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s5_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if(((((inputs->is_illiquid && !(outputs->act_TRADE)) && !(inputs->will_exceed_limit)) && !(inputs->price_deviates)) && !(inputs->dd_exceeded)) && !(outputs->act_TRADE)) {
-				//transition s5_comma_s0_comma_s0_comma_s0_comma_s0 -> s5_comma_s0_comma_s0_comma_s0_comma_s0 on is_illiquid and not (act_TRADE) and not (will_exceed_limit) and not (price_deviates) and not (dd_exceeded) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s5_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if(((( !(inputs->is_illiquid) && !(inputs->will_exceed_limit)) && !(inputs->price_deviates)) && !(inputs->dd_exceeded)) && !(outputs->act_TRADE)) {
-				//transition s5_comma_s0_comma_s0_comma_s0_comma_s0 -> s5_comma_s0_comma_s0_comma_s0_comma_s0 on not (is_illiquid) and not (will_exceed_limit) and not (price_deviates) and not (dd_exceeded) and not (act_TRADE)
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s5_comma_s0_comma_s0_comma_s0_comma_s0;
-				//set expressions
-				
-				break;
-			} 
-			if(outputs->act_TRADE && me->t_window < CONST_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_T_WINDOW) {
-				//transition s5_comma_s0_comma_s0_comma_s0_comma_s0 -> violation on act_TRADE and t_window < T_WINDOW
-				me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_violation;
+			if(outputs->act_PLACE && me->t_window < CONST_RateLimit_5_per_1s_T_WINDOW) {
+				//transition s5 -> violation on ( act_PLACE and t_window < T_WINDOW )
+				me->_policy_RateLimit_5_per_1s_state = POLICY_STATE_TradingEnforcer_RateLimit_5_per_1s_violation;
 				//set expressions
 				
 				break;
 			} 
 			
 			//ensure a transition was taken in this state
-			assert(false && "TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_s5_comma_s0_comma_s0_comma_s0_comma_s0 must take a transition"); //if we are still here, then no transition was taken and we are no longer satisfying liveness
+			assert(false && "TradingEnforcer_RateLimit_5_per_1s_s5 must take a transition"); //if we are still here, then no transition was taken and we are no longer satisfying liveness
 
 			break;
 
@@ -2612,10 +524,660 @@ void TradingEnforcer_run_output_enforcer_Product_of_Product_of_Product_of_Produc
 	}
 
 	//ensure we did not violate (i.e. we did not enter violation state)
-	assert(me->_policy_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_state != POLICY_STATE_TradingEnforcer_Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade_violation);
+	assert(me->_policy_RateLimit_5_per_1s_state != POLICY_STATE_TradingEnforcer_RateLimit_5_per_1s_violation);
 }
 
-//OUTPUT POLICY Product_of_Product_of_Product_of_Product_of_RateLimit_5_per_1s_and_LatchingKillSwitch_and_RejectDeviantPrice_and_BlockConcentratedBuy_and_BlockIlliquidTrade END
+//OUTPUT POLICY RateLimit_5_per_1s END
+
+//OUTPUT POLICY LatchingKillSwitch BEGIN
+//This will run the input enforcer for TradingEnforcer's policy LatchingKillSwitch
+void TradingEnforcer_run_output_enforcer_LatchingKillSwitch(enforcervars_TradingEnforcer_t* me, inputs_TradingEnforcer_t* inputs, outputs_TradingEnforcer_t* outputs) {
+	//advance timers
+	
+	
+	//run enforcer
+	switch(me->_policy_LatchingKillSwitch_state) {
+		case POLICY_STATE_TradingEnforcer_LatchingKillSwitch_s0:
+			
+			if(inputs->dd_exceeded && outputs->act_PLACE) {
+				//transition s0 -> violation on ( dd_exceeded and act_PLACE )
+				//select a transition to solve the problem
+				
+				//Recovery instructions manually provided.
+				outputs->act_PLACE = 0;
+				
+			} 
+
+			break;
+
+		
+	}
+
+	//select transition to advance state
+	switch(me->_policy_LatchingKillSwitch_state) {
+		case POLICY_STATE_TradingEnforcer_LatchingKillSwitch_s0:
+			
+			if(inputs->dd_exceeded && !(outputs->act_PLACE)) {
+				//transition s0 -> s0 on ( dd_exceeded and !act_PLACE )
+				me->_policy_LatchingKillSwitch_state = POLICY_STATE_TradingEnforcer_LatchingKillSwitch_s0;
+				//set expressions
+				
+				break;
+			} 
+			if( !(inputs->dd_exceeded)) {
+				//transition s0 -> s0 on ( !dd_exceeded )
+				me->_policy_LatchingKillSwitch_state = POLICY_STATE_TradingEnforcer_LatchingKillSwitch_s0;
+				//set expressions
+				
+				break;
+			} 
+			if(inputs->dd_exceeded && outputs->act_PLACE) {
+				//transition s0 -> violation on ( dd_exceeded and act_PLACE )
+				me->_policy_LatchingKillSwitch_state = POLICY_STATE_TradingEnforcer_LatchingKillSwitch_violation;
+				//set expressions
+				
+				break;
+			} 
+			
+			//ensure a transition was taken in this state
+			assert(false && "TradingEnforcer_LatchingKillSwitch_s0 must take a transition"); //if we are still here, then no transition was taken and we are no longer satisfying liveness
+
+			break;
+
+		
+	}
+
+	//ensure we did not violate (i.e. we did not enter violation state)
+	assert(me->_policy_LatchingKillSwitch_state != POLICY_STATE_TradingEnforcer_LatchingKillSwitch_violation);
+}
+
+//OUTPUT POLICY LatchingKillSwitch END
+
+//OUTPUT POLICY RejectDeviantPrice BEGIN
+//This will run the input enforcer for TradingEnforcer's policy RejectDeviantPrice
+void TradingEnforcer_run_output_enforcer_RejectDeviantPrice(enforcervars_TradingEnforcer_t* me, inputs_TradingEnforcer_t* inputs, outputs_TradingEnforcer_t* outputs) {
+	//advance timers
+	
+	
+	//run enforcer
+	switch(me->_policy_RejectDeviantPrice_state) {
+		case POLICY_STATE_TradingEnforcer_RejectDeviantPrice_s0:
+			
+			if(inputs->price_deviates && outputs->act_PLACE) {
+				//transition s0 -> violation on ( price_deviates and act_PLACE )
+				//select a transition to solve the problem
+				
+				//Recovery instructions manually provided.
+				outputs->act_PLACE = 0;
+				
+			} 
+
+			break;
+
+		
+	}
+
+	//select transition to advance state
+	switch(me->_policy_RejectDeviantPrice_state) {
+		case POLICY_STATE_TradingEnforcer_RejectDeviantPrice_s0:
+			
+			if(inputs->price_deviates && !(outputs->act_PLACE)) {
+				//transition s0 -> s0 on ( price_deviates and !act_PLACE )
+				me->_policy_RejectDeviantPrice_state = POLICY_STATE_TradingEnforcer_RejectDeviantPrice_s0;
+				//set expressions
+				
+				break;
+			} 
+			if( !(inputs->price_deviates)) {
+				//transition s0 -> s0 on ( !price_deviates )
+				me->_policy_RejectDeviantPrice_state = POLICY_STATE_TradingEnforcer_RejectDeviantPrice_s0;
+				//set expressions
+				
+				break;
+			} 
+			if(inputs->price_deviates && outputs->act_PLACE) {
+				//transition s0 -> violation on ( price_deviates and act_PLACE )
+				me->_policy_RejectDeviantPrice_state = POLICY_STATE_TradingEnforcer_RejectDeviantPrice_violation;
+				//set expressions
+				
+				break;
+			} 
+			
+			//ensure a transition was taken in this state
+			assert(false && "TradingEnforcer_RejectDeviantPrice_s0 must take a transition"); //if we are still here, then no transition was taken and we are no longer satisfying liveness
+
+			break;
+
+		
+	}
+
+	//ensure we did not violate (i.e. we did not enter violation state)
+	assert(me->_policy_RejectDeviantPrice_state != POLICY_STATE_TradingEnforcer_RejectDeviantPrice_violation);
+}
+
+//OUTPUT POLICY RejectDeviantPrice END
+
+//OUTPUT POLICY BlockConcentratedBuy BEGIN
+//This will run the input enforcer for TradingEnforcer's policy BlockConcentratedBuy
+void TradingEnforcer_run_output_enforcer_BlockConcentratedBuy(enforcervars_TradingEnforcer_t* me, inputs_TradingEnforcer_t* inputs, outputs_TradingEnforcer_t* outputs) {
+	//advance timers
+	
+	
+	//run enforcer
+	switch(me->_policy_BlockConcentratedBuy_state) {
+		case POLICY_STATE_TradingEnforcer_BlockConcentratedBuy_s0:
+			
+			if(inputs->will_exceed_limit && outputs->act_BUY) {
+				//transition s0 -> violation on ( will_exceed_limit and act_BUY )
+				//select a transition to solve the problem
+				
+				//Recovery instructions manually provided.
+				outputs->act_BUY = 0;
+				
+			} 
+
+			break;
+
+		
+	}
+
+	//select transition to advance state
+	switch(me->_policy_BlockConcentratedBuy_state) {
+		case POLICY_STATE_TradingEnforcer_BlockConcentratedBuy_s0:
+			
+			if(inputs->will_exceed_limit && !(outputs->act_BUY)) {
+				//transition s0 -> s0 on ( will_exceed_limit and !act_BUY )
+				me->_policy_BlockConcentratedBuy_state = POLICY_STATE_TradingEnforcer_BlockConcentratedBuy_s0;
+				//set expressions
+				
+				break;
+			} 
+			if( !(inputs->will_exceed_limit)) {
+				//transition s0 -> s0 on ( !will_exceed_limit )
+				me->_policy_BlockConcentratedBuy_state = POLICY_STATE_TradingEnforcer_BlockConcentratedBuy_s0;
+				//set expressions
+				
+				break;
+			} 
+			if(inputs->will_exceed_limit && outputs->act_BUY) {
+				//transition s0 -> violation on ( will_exceed_limit and act_BUY )
+				me->_policy_BlockConcentratedBuy_state = POLICY_STATE_TradingEnforcer_BlockConcentratedBuy_violation;
+				//set expressions
+				
+				break;
+			} 
+			
+			//ensure a transition was taken in this state
+			assert(false && "TradingEnforcer_BlockConcentratedBuy_s0 must take a transition"); //if we are still here, then no transition was taken and we are no longer satisfying liveness
+
+			break;
+
+		
+	}
+
+	//ensure we did not violate (i.e. we did not enter violation state)
+	assert(me->_policy_BlockConcentratedBuy_state != POLICY_STATE_TradingEnforcer_BlockConcentratedBuy_violation);
+}
+
+//OUTPUT POLICY BlockConcentratedBuy END
+
+//OUTPUT POLICY BlockIlliquidTrade BEGIN
+//This will run the input enforcer for TradingEnforcer's policy BlockIlliquidTrade
+void TradingEnforcer_run_output_enforcer_BlockIlliquidTrade(enforcervars_TradingEnforcer_t* me, inputs_TradingEnforcer_t* inputs, outputs_TradingEnforcer_t* outputs) {
+	//advance timers
+	
+	
+	//run enforcer
+	switch(me->_policy_BlockIlliquidTrade_state) {
+		case POLICY_STATE_TradingEnforcer_BlockIlliquidTrade_s0:
+			
+			if(inputs->is_illiquid && outputs->act_PLACE) {
+				//transition s0 -> violation on ( is_illiquid and act_PLACE )
+				//select a transition to solve the problem
+				
+				//Recovery instructions manually provided.
+				outputs->act_PLACE = 0;
+				
+			} 
+
+			break;
+
+		
+	}
+
+	//select transition to advance state
+	switch(me->_policy_BlockIlliquidTrade_state) {
+		case POLICY_STATE_TradingEnforcer_BlockIlliquidTrade_s0:
+			
+			if(inputs->is_illiquid && !(outputs->act_PLACE)) {
+				//transition s0 -> s0 on ( is_illiquid and !act_PLACE )
+				me->_policy_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_BlockIlliquidTrade_s0;
+				//set expressions
+				
+				break;
+			} 
+			if( !(inputs->is_illiquid)) {
+				//transition s0 -> s0 on ( !is_illiquid )
+				me->_policy_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_BlockIlliquidTrade_s0;
+				//set expressions
+				
+				break;
+			} 
+			if(inputs->is_illiquid && outputs->act_PLACE) {
+				//transition s0 -> violation on ( is_illiquid and act_PLACE )
+				me->_policy_BlockIlliquidTrade_state = POLICY_STATE_TradingEnforcer_BlockIlliquidTrade_violation;
+				//set expressions
+				
+				break;
+			} 
+			
+			//ensure a transition was taken in this state
+			assert(false && "TradingEnforcer_BlockIlliquidTrade_s0 must take a transition"); //if we are still here, then no transition was taken and we are no longer satisfying liveness
+
+			break;
+
+		
+	}
+
+	//ensure we did not violate (i.e. we did not enter violation state)
+	assert(me->_policy_BlockIlliquidTrade_state != POLICY_STATE_TradingEnforcer_BlockIlliquidTrade_violation);
+}
+
+//OUTPUT POLICY BlockIlliquidTrade END
+
+//OUTPUT POLICY OTR_Policy BEGIN
+//This will run the input enforcer for TradingEnforcer's policy OTR_Policy
+void TradingEnforcer_run_output_enforcer_OTR_Policy(enforcervars_TradingEnforcer_t* me, inputs_TradingEnforcer_t* inputs, outputs_TradingEnforcer_t* outputs) {
+	//advance timers
+	
+	
+	//run enforcer
+	switch(me->_policy_OTR_Policy_state) {
+		case POLICY_STATE_TradingEnforcer_OTR_Policy_s_normal:
+			
+
+			break;
+
+		case POLICY_STATE_TradingEnforcer_OTR_Policy_s_throttled:
+			
+			if(outputs->act_MSG) {
+				//transition s_throttled -> violation on act_MSG
+				//select a transition to solve the problem
+				
+				//Recovery instructions manually provided.
+				outputs->act_MSG = 0;
+				
+			} 
+
+			break;
+
+		
+	}
+
+	//select transition to advance state
+	switch(me->_policy_OTR_Policy_state) {
+		case POLICY_STATE_TradingEnforcer_OTR_Policy_s_normal:
+			
+			if((inputs->act_EXEC && !(outputs->act_MSG)) && me->tokens + CONST_OTR_Policy_Reward <= CONST_OTR_Policy_Max_Cap) {
+				//transition s_normal -> s_normal on act_EXEC and !act_MSG and ( me->tokens + CONST_OTR_Policy_Reward <= CONST_OTR_Policy_Max_Cap )
+				me->_policy_OTR_Policy_state = POLICY_STATE_TradingEnforcer_OTR_Policy_s_normal;
+				//set expressions
+				
+				me->tokens = me->tokens + CONST_OTR_Policy_Reward;
+				break;
+			} 
+			if((inputs->act_EXEC && !(outputs->act_MSG)) && me->tokens + CONST_OTR_Policy_Reward > CONST_OTR_Policy_Max_Cap) {
+				//transition s_normal -> s_normal on act_EXEC and !act_MSG and ( me->tokens + CONST_OTR_Policy_Reward > CONST_OTR_Policy_Max_Cap )
+				me->_policy_OTR_Policy_state = POLICY_STATE_TradingEnforcer_OTR_Policy_s_normal;
+				//set expressions
+				
+				me->tokens = CONST_OTR_Policy_Max_Cap;
+				break;
+			} 
+			if((inputs->act_EXEC && outputs->act_MSG) && (me->tokens + CONST_OTR_Policy_Reward) - CONST_OTR_Policy_Cost <= CONST_OTR_Policy_Max_Cap) {
+				//transition s_normal -> s_normal on act_EXEC and act_MSG and ( me->tokens + CONST_OTR_Policy_Reward - CONST_OTR_Policy_Cost <= CONST_OTR_Policy_Max_Cap )
+				me->_policy_OTR_Policy_state = POLICY_STATE_TradingEnforcer_OTR_Policy_s_normal;
+				//set expressions
+				
+				me->tokens = me->tokens + CONST_OTR_Policy_Reward - CONST_OTR_Policy_Cost;
+				break;
+			} 
+			if((inputs->act_EXEC && outputs->act_MSG) && (me->tokens + CONST_OTR_Policy_Reward) - CONST_OTR_Policy_Cost > CONST_OTR_Policy_Max_Cap) {
+				//transition s_normal -> s_normal on act_EXEC and act_MSG and ( me->tokens + CONST_OTR_Policy_Reward - CONST_OTR_Policy_Cost > CONST_OTR_Policy_Max_Cap )
+				me->_policy_OTR_Policy_state = POLICY_STATE_TradingEnforcer_OTR_Policy_s_normal;
+				//set expressions
+				
+				me->tokens = CONST_OTR_Policy_Max_Cap;
+				break;
+			} 
+			if(( !(inputs->act_EXEC) && outputs->act_MSG) && me->tokens - CONST_OTR_Policy_Cost > 0) {
+				//transition s_normal -> s_normal on !act_EXEC and act_MSG and ( me->tokens - CONST_OTR_Policy_Cost > 0 )
+				me->_policy_OTR_Policy_state = POLICY_STATE_TradingEnforcer_OTR_Policy_s_normal;
+				//set expressions
+				
+				me->tokens = me->tokens - CONST_OTR_Policy_Cost;
+				break;
+			} 
+			if(( !(inputs->act_EXEC) && outputs->act_MSG) && me->tokens - CONST_OTR_Policy_Cost <= 0) {
+				//transition s_normal -> s_throttled on !act_EXEC and act_MSG and ( me->tokens - CONST_OTR_Policy_Cost <= 0 )
+				me->_policy_OTR_Policy_state = POLICY_STATE_TradingEnforcer_OTR_Policy_s_throttled;
+				//set expressions
+				
+				me->tokens = me->tokens - CONST_OTR_Policy_Cost;
+				break;
+			} 
+			if( !(inputs->act_EXEC) && !(outputs->act_MSG)) {
+				//transition s_normal -> s_normal on !act_EXEC and !act_MSG
+				me->_policy_OTR_Policy_state = POLICY_STATE_TradingEnforcer_OTR_Policy_s_normal;
+				//set expressions
+				
+				break;
+			} 
+			
+			//ensure a transition was taken in this state
+			assert(false && "TradingEnforcer_OTR_Policy_s_normal must take a transition"); //if we are still here, then no transition was taken and we are no longer satisfying liveness
+
+			break;
+
+		case POLICY_STATE_TradingEnforcer_OTR_Policy_s_throttled:
+			
+			if(inputs->act_EXEC && me->tokens + CONST_OTR_Policy_Reward <= CONST_OTR_Policy_Resume_Threshold) {
+				//transition s_throttled -> s_throttled on act_EXEC and ( me->tokens + CONST_OTR_Policy_Reward <= Resume_Threshold )
+				me->_policy_OTR_Policy_state = POLICY_STATE_TradingEnforcer_OTR_Policy_s_throttled;
+				//set expressions
+				
+				me->tokens = me->tokens + CONST_OTR_Policy_Reward;
+				break;
+			} 
+			if(inputs->act_EXEC && me->tokens + CONST_OTR_Policy_Reward > CONST_OTR_Policy_Resume_Threshold) {
+				//transition s_throttled -> s_normal on act_EXEC and ( me->tokens + CONST_OTR_Policy_Reward > Resume_Threshold )
+				me->_policy_OTR_Policy_state = POLICY_STATE_TradingEnforcer_OTR_Policy_s_normal;
+				//set expressions
+				
+				me->tokens = me->tokens + CONST_OTR_Policy_Reward;
+				break;
+			} 
+			if( !(inputs->act_EXEC)) {
+				//transition s_throttled -> s_throttled on !act_EXEC
+				me->_policy_OTR_Policy_state = POLICY_STATE_TradingEnforcer_OTR_Policy_s_throttled;
+				//set expressions
+				
+				break;
+			} 
+			if(outputs->act_MSG) {
+				//transition s_throttled -> violation on act_MSG
+				me->_policy_OTR_Policy_state = POLICY_STATE_TradingEnforcer_OTR_Policy_violation;
+				//set expressions
+				
+				break;
+			} 
+			
+			//ensure a transition was taken in this state
+			assert(false && "TradingEnforcer_OTR_Policy_s_throttled must take a transition"); //if we are still here, then no transition was taken and we are no longer satisfying liveness
+
+			break;
+
+		
+	}
+
+	//ensure we did not violate (i.e. we did not enter violation state)
+	assert(me->_policy_OTR_Policy_state != POLICY_STATE_TradingEnforcer_OTR_Policy_violation);
+}
+
+//OUTPUT POLICY OTR_Policy END
+
+//OUTPUT POLICY MQL_Policy BEGIN
+//This will run the input enforcer for TradingEnforcer's policy MQL_Policy
+void TradingEnforcer_run_output_enforcer_MQL_Policy(enforcervars_TradingEnforcer_t* me, inputs_TradingEnforcer_t* inputs, outputs_TradingEnforcer_t* outputs) {
+	//advance timers
+	
+	me->c_age++;
+	
+	//run enforcer
+	switch(me->_policy_MQL_Policy_state) {
+		case POLICY_STATE_TradingEnforcer_MQL_Policy_empty:
+			
+
+			break;
+
+		case POLICY_STATE_TradingEnforcer_MQL_Policy_resting:
+			
+			if(outputs->act_CANCEL && me->c_age < CONST_MQL_Policy_T_MQL) {
+				//transition resting -> violation on act_CANCEL and c_age < T_MQL
+				//select a transition to solve the problem
+				
+				//Recovery instructions manually provided.
+				outputs->act_CANCEL = 0;
+				
+			} 
+
+			break;
+
+		
+	}
+
+	//select transition to advance state
+	switch(me->_policy_MQL_Policy_state) {
+		case POLICY_STATE_TradingEnforcer_MQL_Policy_empty:
+			
+			if(outputs->act_PLACE) {
+				//transition empty -> resting on act_PLACE
+				me->_policy_MQL_Policy_state = POLICY_STATE_TradingEnforcer_MQL_Policy_resting;
+				//set expressions
+				
+				me->c_age = 0;
+				break;
+			} 
+			if( !(outputs->act_PLACE)) {
+				//transition empty -> empty on !act_PLACE
+				me->_policy_MQL_Policy_state = POLICY_STATE_TradingEnforcer_MQL_Policy_empty;
+				//set expressions
+				
+				break;
+			} 
+			
+			//ensure a transition was taken in this state
+			assert(false && "TradingEnforcer_MQL_Policy_empty must take a transition"); //if we are still here, then no transition was taken and we are no longer satisfying liveness
+
+			break;
+
+		case POLICY_STATE_TradingEnforcer_MQL_Policy_resting:
+			
+			if(outputs->act_CANCEL && me->c_age >= CONST_MQL_Policy_T_MQL) {
+				//transition resting -> empty on act_CANCEL and c_age >= T_MQL
+				me->_policy_MQL_Policy_state = POLICY_STATE_TradingEnforcer_MQL_Policy_empty;
+				//set expressions
+				
+				break;
+			} 
+			if( !(outputs->act_CANCEL)) {
+				//transition resting -> resting on !act_CANCEL
+				me->_policy_MQL_Policy_state = POLICY_STATE_TradingEnforcer_MQL_Policy_resting;
+				//set expressions
+				
+				break;
+			} 
+			if(outputs->act_CANCEL && me->c_age < CONST_MQL_Policy_T_MQL) {
+				//transition resting -> violation on act_CANCEL and c_age < T_MQL
+				me->_policy_MQL_Policy_state = POLICY_STATE_TradingEnforcer_MQL_Policy_violation;
+				//set expressions
+				
+				break;
+			} 
+			
+			//ensure a transition was taken in this state
+			assert(false && "TradingEnforcer_MQL_Policy_resting must take a transition"); //if we are still here, then no transition was taken and we are no longer satisfying liveness
+
+			break;
+
+		
+	}
+
+	//ensure we did not violate (i.e. we did not enter violation state)
+	assert(me->_policy_MQL_Policy_state != POLICY_STATE_TradingEnforcer_MQL_Policy_violation);
+}
+
+//OUTPUT POLICY MQL_Policy END
+
+//OUTPUT POLICY NoWash BEGIN
+//This will run the input enforcer for TradingEnforcer's policy NoWash
+void TradingEnforcer_run_output_enforcer_NoWash(enforcervars_TradingEnforcer_t* me, inputs_TradingEnforcer_t* inputs, outputs_TradingEnforcer_t* outputs) {
+	//advance timers
+	
+	
+	//run enforcer
+	switch(me->_policy_NoWash_state) {
+		case POLICY_STATE_TradingEnforcer_NoWash_s0:
+			
+
+			break;
+
+		case POLICY_STATE_TradingEnforcer_NoWash_s1:
+			
+			if(outputs->act_SELL && outputs->price <= me->last_bid) {
+				//transition s1 -> violation on ( act_SELL and price <= last_bid )
+				//select a transition to solve the problem
+				
+				//Recovery instructions manually provided.
+				outputs->act_SELL = 0;
+				
+			} 
+
+			break;
+
+		case POLICY_STATE_TradingEnforcer_NoWash_s2:
+			
+			if(outputs->act_BUY && outputs->price >= me->last_ask) {
+				//transition s2 -> violation on ( act_BUY and price >= last_ask )
+				//select a transition to solve the problem
+				
+				//Recovery instructions manually provided.
+				outputs->act_BUY = 0;
+				
+			} 
+
+			break;
+
+		
+	}
+
+	//select transition to advance state
+	switch(me->_policy_NoWash_state) {
+		case POLICY_STATE_TradingEnforcer_NoWash_s0:
+			
+			if(outputs->act_BUY) {
+				//transition s0 -> s1 on act_BUY
+				me->_policy_NoWash_state = POLICY_STATE_TradingEnforcer_NoWash_s1;
+				//set expressions
+				
+				me->last_bid = outputs->price;
+				break;
+			} 
+			if(outputs->act_SELL) {
+				//transition s0 -> s2 on act_SELL
+				me->_policy_NoWash_state = POLICY_STATE_TradingEnforcer_NoWash_s2;
+				//set expressions
+				
+				me->last_ask = outputs->price;
+				break;
+			} 
+			if( !(outputs->act_BUY) && !(outputs->act_SELL)) {
+				//transition s0 -> s0 on ( !act_BUY and !act_SELL )
+				me->_policy_NoWash_state = POLICY_STATE_TradingEnforcer_NoWash_s0;
+				//set expressions
+				
+				break;
+			} 
+			
+			//ensure a transition was taken in this state
+			assert(false && "TradingEnforcer_NoWash_s0 must take a transition"); //if we are still here, then no transition was taken and we are no longer satisfying liveness
+
+			break;
+
+		case POLICY_STATE_TradingEnforcer_NoWash_s1:
+			
+			if(outputs->act_BUY) {
+				//transition s1 -> s1 on act_BUY
+				me->_policy_NoWash_state = POLICY_STATE_TradingEnforcer_NoWash_s1;
+				//set expressions
+				
+				me->last_bid = outputs->price;
+				break;
+			} 
+			if(outputs->act_SELL && outputs->price > me->last_bid) {
+				//transition s1 -> s2 on ( act_SELL and price > last_bid )
+				me->_policy_NoWash_state = POLICY_STATE_TradingEnforcer_NoWash_s2;
+				//set expressions
+				
+				me->last_ask = outputs->price;
+				break;
+			} 
+			if( !(outputs->act_BUY) && !(outputs->act_SELL)) {
+				//transition s1 -> s1 on ( !act_BUY and !act_SELL )
+				me->_policy_NoWash_state = POLICY_STATE_TradingEnforcer_NoWash_s1;
+				//set expressions
+				
+				break;
+			} 
+			if(outputs->act_SELL && outputs->price <= me->last_bid) {
+				//transition s1 -> violation on ( act_SELL and price <= last_bid )
+				me->_policy_NoWash_state = POLICY_STATE_TradingEnforcer_NoWash_violation;
+				//set expressions
+				
+				break;
+			} 
+			
+			//ensure a transition was taken in this state
+			assert(false && "TradingEnforcer_NoWash_s1 must take a transition"); //if we are still here, then no transition was taken and we are no longer satisfying liveness
+
+			break;
+
+		case POLICY_STATE_TradingEnforcer_NoWash_s2:
+			
+			if(outputs->act_SELL) {
+				//transition s2 -> s2 on act_SELL
+				me->_policy_NoWash_state = POLICY_STATE_TradingEnforcer_NoWash_s2;
+				//set expressions
+				
+				me->last_ask = outputs->price;
+				break;
+			} 
+			if(outputs->act_BUY && outputs->price < me->last_ask) {
+				//transition s2 -> s1 on ( act_BUY and price < last_ask )
+				me->_policy_NoWash_state = POLICY_STATE_TradingEnforcer_NoWash_s1;
+				//set expressions
+				
+				me->last_bid = outputs->price;
+				break;
+			} 
+			if( !(outputs->act_BUY) && !(outputs->act_SELL)) {
+				//transition s2 -> s2 on ( !act_BUY and !act_SELL )
+				me->_policy_NoWash_state = POLICY_STATE_TradingEnforcer_NoWash_s2;
+				//set expressions
+				
+				break;
+			} 
+			if(outputs->act_BUY && outputs->price >= me->last_ask) {
+				//transition s2 -> violation on ( act_BUY and price >= last_ask )
+				me->_policy_NoWash_state = POLICY_STATE_TradingEnforcer_NoWash_violation;
+				//set expressions
+				
+				break;
+			} 
+			
+			//ensure a transition was taken in this state
+			assert(false && "TradingEnforcer_NoWash_s2 must take a transition"); //if we are still here, then no transition was taken and we are no longer satisfying liveness
+
+			break;
+
+		
+	}
+
+	//ensure we did not violate (i.e. we did not enter violation state)
+	assert(me->_policy_NoWash_state != POLICY_STATE_TradingEnforcer_NoWash_violation);
+}
+
+//OUTPUT POLICY NoWash END
 
 
 

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EnforcedFunction Name="MQL">
+	<Interface>
+		<Output Name="act_PLACE" Type="bool" Constant="false" Comment=""></Output>
+		<Output Name="act_CANCEL" Type="bool" Constant="false" Comment=""></Output>
+	</Interface>
+	<Policy Name="MQL_Policy">
+		<InternalVars>
+			<VarDeclaration Name="c_age" Type="dtimer_t" Constant="false" Comment=""></VarDeclaration>
+			<VarDeclaration Name="T_MQL" Type="int64_t" Constant="true" InitialValue="100" Comment=""></VarDeclaration>
+		</InternalVars>
+		<Machine>
+			<PState>empty</PState>
+			<PState>resting</PState>
+			<PTransition>
+				<Source>empty</Source>
+				<Destination>resting</Destination>
+				<Condition>act_PLACE</Condition>
+				<Expressions>
+					<VarName>c_age</VarName>
+					<Value>0</Value>
+				</Expressions>
+			</PTransition>
+			<PTransition>
+				<Source>empty</Source>
+				<Destination>empty</Destination>
+				<Condition>!act_PLACE</Condition>
+			</PTransition>
+			<PTransition>
+				<Source>resting</Source>
+				<Destination>empty</Destination>
+				<Condition>act_CANCEL and c_age &gt;= T_MQL</Condition>
+			</PTransition>
+			<PTransition>
+				<Source>resting</Source>
+				<Destination>resting</Destination>
+				<Condition>!act_CANCEL</Condition>
+			</PTransition>
+			<PTransition>
+				<Source>resting</Source>
+				<Destination>violation</Destination>
+				<Condition>act_CANCEL and c_age &lt; T_MQL</Condition>
+				<Recover>
+					<VarName>act_CANCEL</VarName>
+					<Value>0</Value>
+				</Recover>
+			</PTransition>
+		</Machine>
+	</Policy>
+</EnforcedFunction>
