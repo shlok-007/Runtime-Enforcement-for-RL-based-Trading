@@ -1,0 +1,82 @@
+MODULE main
+
+IVAR
+  -- Environment inputs
+  act_PLACE     : boolean;
+  act_CANCEL_in : boolean;
+
+VAR
+  -- Policy control location
+  loc   : {empty, resting, violation};
+
+  -- Minimum quote life timer (saturated at T_MQL)
+  c_age : 0..100;
+
+  tick          : boolean;
+
+DEFINE
+  T_MQL := 100;
+
+  -- Violation trigger in resting mode
+  viol := (loc = resting) & act_CANCEL_in & (c_age < T_MQL);
+
+  -- Enforced output after recovery
+  act_CANCEL := case
+    viol : FALSE;
+    TRUE : act_CANCEL_in;
+  esac;
+
+ASSIGN
+  init(loc)   := empty;
+  init(c_age) := 0;
+
+--------------------------------------------------
+-- Transition relation
+--------------------------------------------------
+TRANS
+
+(
+  --------------------------------------------------
+  -- LOCATION TRANSITIONS
+  --------------------------------------------------
+
+  -- empty
+  (loc = empty   &  act_PLACE                          & next(loc) = resting) |
+  (loc = empty   & !act_PLACE                          & next(loc) = empty) |
+
+  -- resting
+  (loc = resting &  act_CANCEL & (c_age <  T_MQL)  & next(loc) = violation) |
+  (loc = resting &  act_CANCEL    & (c_age >= T_MQL)  & next(loc) = empty) |
+  (loc = resting & !act_CANCEL                          & next(loc) = resting) |
+
+  -- violation trap
+  (loc = violation & next(loc) = violation)
+)
+
+&
+(
+  --------------------------------------------------
+  -- CLOCK TRANSITIONS
+  --------------------------------------------------
+
+  (loc = violation & next(c_age) = c_age) |
+  (loc = empty & act_PLACE & next(c_age) = 0) |
+  (loc = resting & tick & (c_age < T_MQL) & next(c_age) = c_age + 1) |
+  ( !( (loc = empty & act_PLACE) |
+       (loc = resting & tick & (c_age < T_MQL)) )
+    & next(c_age) = c_age )
+);
+
+--------------------------------------------------
+-- Definitions
+--------------------------------------------------
+DEFINE
+  trap := (loc = violation);
+
+--------------------------------------------------
+-- Properties
+--------------------------------------------------
+SPEC AG (!trap -> EG !trap)
+SPEC AG (!trap -> EF !trap)
+SPEC AG (!trap -> EX !trap)
+SPEC AG (!trap -> AG !trap)

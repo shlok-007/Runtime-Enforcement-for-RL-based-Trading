@@ -1,0 +1,72 @@
+MODULE main
+VAR
+  act_EXEC   : boolean;
+  act_MSG_in : boolean;
+
+  -- Explicit violation state added
+  st : {s_normal, s_throttled, violation};
+
+  tokens : -1..500;
+
+DEFINE
+  Max_Cap          := 500;
+  Reward           := 50;
+  Cost             := 1;
+  Resume_Threshold := 10;
+
+  -- Violation signal still useful for formulas/output recovery
+  viol := (st = s_throttled) & act_MSG_in;
+
+  -- Enforced output (recovery on violating transition)
+  act_MSG := case
+    viol : FALSE;
+    TRUE : act_MSG_in;
+  esac;
+
+ASSIGN
+  init(act_EXEC)   := FALSE;
+  next(act_EXEC)   := {TRUE, FALSE};
+
+  init(act_MSG_in) := FALSE;
+  next(act_MSG_in) := {TRUE, FALSE};
+
+  init(st)         := s_normal;
+  init(tokens)     := 500;
+
+  next(st) := case
+    -- normal -> throttled when tokens depleted by message without execution
+    st = s_normal & !act_EXEC & act_MSG_in & (tokens - Cost <= 0) : s_throttled;
+
+    -- throttled -> explicit violation state on forbidden message
+    st = s_throttled & act_MSG_in : violation;
+
+    -- throttled -> normal when enough refill by execution
+    st = s_throttled & act_EXEC & (tokens + Reward > Resume_Threshold) : s_normal;
+
+    -- all other cases: remain
+    TRUE : st;
+  esac;
+
+  next(tokens) := case
+    st = s_normal & act_EXEC & !act_MSG_in & (tokens + Reward <= Max_Cap) : tokens + Reward;
+    st = s_normal & act_EXEC & !act_MSG_in & (tokens + Reward >  Max_Cap) : Max_Cap;
+
+    st = s_normal & act_EXEC & act_MSG_in & (tokens + Reward - Cost <= Max_Cap) : tokens + Reward - Cost;
+    st = s_normal & act_EXEC & act_MSG_in & (tokens + Reward - Cost >  Max_Cap) : Max_Cap;
+
+    st = s_normal & !act_EXEC & act_MSG_in & (tokens - Cost > 0) : tokens - Cost;
+    st = s_normal & !act_EXEC & act_MSG_in & (tokens - Cost <= 0) : tokens - Cost;
+
+    st = s_throttled & act_EXEC : tokens + Reward;
+
+    -- keep tokens fixed in violation sink (explicitly)
+    st = violation : tokens;
+
+    TRUE : tokens;
+  esac;
+
+-- Your intended property with explicit violation state:
+-- CTLSPEC AG (st != violation -> EG (st != violation))
+
+-- Optional one-step safety possibility:
+-- CTLSPEC AG (st != violation -> EX (st != violation))

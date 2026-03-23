@@ -1,0 +1,114 @@
+MODULE main
+
+IVAR
+  -- Environment inputs
+  act_BUY_in  : boolean;
+  act_SELL_in : boolean;
+  price       : 0..400;
+
+VAR
+  -- Policy control location
+  loc      : {s0, s1, s2, violation};
+
+  -- Last seen bid and ask
+  last_bid : 0..400;
+  last_ask : 0..400;
+
+DEFINE
+  -- Violation triggers
+  viol_sell := (loc = s1) & act_SELL_in & (price <= last_bid);
+  viol_buy  := (loc = s2) & act_BUY_in  & (price >= last_ask);
+  viol      := viol_sell | viol_buy;
+
+  -- Enforced outputs after recovery
+  act_SELL := case
+    viol_sell : FALSE;
+    TRUE      : act_SELL_in;
+  esac;
+
+  act_BUY := case
+    viol_buy : FALSE;
+    TRUE     : act_BUY_in;
+  esac;
+
+ASSIGN
+  init(loc)      := s0;
+  init(last_bid) := 0;
+  init(last_ask) := 400;
+
+--------------------------------------------------
+-- Transition relation
+--------------------------------------------------
+TRANS
+
+(
+  --------------------------------------------------
+  -- LOCATION TRANSITIONS
+  --------------------------------------------------
+
+  -- s0
+  (loc = s0 &  act_BUY                       & next(loc) = s1) |
+  (loc = s0 &  act_SELL                      & next(loc) = s2) |
+  (loc = s0 & !act_BUY & !act_SELL           & next(loc) = s0) |
+
+  -- s1
+  (loc = s1 &  act_BUY                       & next(loc) = s1) |
+  (loc = s1 &  act_SELL & (price >  last_bid)& next(loc) = s2) |
+  (loc = s1 &  act_SELL & (price <= last_bid) & next(loc) = violation) |
+  (loc = s1 & !act_BUY & !act_SELL           & next(loc) = s1) |
+
+  -- s2
+  (loc = s2 &  act_SELL                      & next(loc) = s2) |
+  (loc = s2 &  act_BUY & (price <  last_ask) & next(loc) = s1) |
+  (loc = s2 &  act_BUY & (price >= last_ask) & next(loc) = violation) |
+  (loc = s2 & !act_BUY & !act_SELL           & next(loc) = s2) |
+
+  -- violation trap
+  (loc = violation & next(loc) = violation)
+)
+
+&
+(
+  --------------------------------------------------
+  -- last_bid transitions
+  --------------------------------------------------
+
+  (loc = violation & next(last_bid) = last_bid) |
+  (loc = s0 & act_BUY & next(last_bid) = price) |
+  (loc = s1 & act_BUY & next(last_bid) = price) |
+  (loc = s2 & act_BUY & (price < last_ask) & next(last_bid) = price) |
+  ( !( (loc = s0 & act_BUY) |
+       (loc = s1 & act_BUY) |
+       (loc = s2 & act_BUY & (price < last_ask)) )
+    & next(last_bid) = last_bid )
+)
+
+&
+(
+  --------------------------------------------------
+  -- last_ask transitions
+  --------------------------------------------------
+
+  (loc = violation & next(last_ask) = last_ask) |
+  (loc = s0 & act_SELL & next(last_ask) = price) |
+  (loc = s2 & act_SELL & next(last_ask) = price) |
+  (loc = s1 & act_SELL & (price > last_bid) & next(last_ask) = price) |
+  ( !( (loc = s0 & act_SELL) |
+       (loc = s2 & act_SELL) |
+       (loc = s1 & act_SELL & (price > last_bid)) )
+    & next(last_ask) = last_ask )
+);
+
+--------------------------------------------------
+-- Definitions
+--------------------------------------------------
+DEFINE
+  trap := (loc = violation);
+
+--------------------------------------------------
+-- Properties
+--------------------------------------------------
+SPEC AG (!trap -> EG !trap)
+SPEC AG (!trap -> EF !trap)
+SPEC AG (!trap -> EX !trap)
+SPEC AG (!trap -> AG !trap)

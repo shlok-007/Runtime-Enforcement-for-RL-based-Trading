@@ -1,0 +1,48 @@
+MODULE main
+VAR
+  -- Inputs
+  dd_exceeded  : boolean;
+  act_PLACE_in : boolean;
+
+  -- Policy state (explicit violation state)
+  st : {s0, violation};
+
+DEFINE
+  -- Violation condition from the policy
+  viol := (st = s0) & dd_exceeded & act_PLACE_in;
+
+  -- Recovery: block trade when violating
+  act_PLACE := case
+    viol : FALSE;
+    TRUE : act_PLACE_in;
+  esac;
+
+ASSIGN
+  -- Environment is nondeterministic
+  init(dd_exceeded)  := FALSE;
+  next(dd_exceeded)  := {TRUE, FALSE};
+
+  init(act_PLACE_in) := FALSE;
+  next(act_PLACE_in) := {TRUE, FALSE};
+
+  -- Initial state
+  init(st) := s0;
+
+  -- State transitions
+  next(st) := case
+    st = s0 & dd_exceeded & act_PLACE : violation;
+    st = s0 & dd_exceeded & !act_PLACE : s0;
+    st = s0 & !dd_exceeded : s0;
+
+    -- make violation absorbing
+    st = violation : violation;
+
+    TRUE : st;
+  esac;
+
+-- Requested-style property:
+-- from every non-violation state, there exists a path that stays non-violation forever
+CTLSPEC AG (st != violation -> EG (st != violation))
+
+-- Optional one-step version
+-- CTLSPEC AG (st != violation -> EX (st != violation))

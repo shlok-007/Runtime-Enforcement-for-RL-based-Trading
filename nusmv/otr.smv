@@ -1,0 +1,90 @@
+MODULE main
+
+IVAR
+  -- Environment inputs
+  act_EXEC   : boolean;
+  act_MSG_in : boolean;
+
+VAR
+  -- Policy control location
+  loc    : {s_normal, s_throttled, violation};
+
+  -- OTR token bucket
+  -- Lower bound includes the policy step where tokens := tokens - 1 when tokens <= 0
+  tokens : -1..500;
+
+DEFINE
+  Max_Cap          := 500;
+  Reward           := 50;
+  Cost             := 1;
+  Resume_Threshold := 10;
+
+  -- Violation trigger in throttled mode
+  viol := (loc = s_throttled) & act_MSG_in;
+
+  -- Enforced output after recovery
+  act_MSG := case
+    viol : FALSE;
+    TRUE : act_MSG_in;
+  esac;
+
+ASSIGN
+  init(loc)    := s_normal;
+  init(tokens) := 5;
+
+--------------------------------------------------
+-- Transition relation
+--------------------------------------------------
+TRANS
+
+(
+  --------------------------------------------------
+  -- LOCATION TRANSITIONS
+  --------------------------------------------------
+
+  -- s_normal
+  (loc = s_normal &  act_EXEC & !act_MSG                             & next(loc) = s_normal) |
+  (loc = s_normal &  act_EXEC &  act_MSG                             & next(loc) = s_normal) |
+  (loc = s_normal & !act_EXEC &  act_MSG & (tokens - Cost > 0)       & next(loc) = s_normal) |
+  (loc = s_normal & !act_EXEC &  act_MSG & (tokens - Cost <= 0)      & next(loc) = s_throttled) |
+  (loc = s_normal & !act_EXEC & !act_MSG                             & next(loc) = s_normal) |
+
+  -- s_throttled
+  (loc = s_throttled &  act_MSG                                       & next(loc) = violation) |
+  (loc = s_throttled & !act_MSG & act_EXEC & (tokens + Reward <= Resume_Threshold) & next(loc) = s_throttled) |
+  (loc = s_throttled & !act_MSG & act_EXEC & (tokens + Reward >  Resume_Threshold) & next(loc) = s_normal) |
+  (loc = s_throttled & !act_MSG & !act_EXEC                           & next(loc) = s_throttled) |
+
+  -- violation trap
+  (loc = violation & next(loc) = violation)
+)
+
+&
+(
+  --------------------------------------------------
+  -- TOKEN TRANSITIONS
+  --------------------------------------------------
+  ( loc = violation & next(tokens) = tokens ) | 
+  ( act_EXEC & !act_MSG & ((tokens + Reward) <= Max_Cap) & next(tokens) = tokens + Reward ) |
+  ( act_EXEC & !act_MSG & ((tokens + Reward) > Max_Cap) & next(tokens) = Max_Cap ) |
+
+  ( act_EXEC & act_MSG & ((tokens + Reward - Cost) <= Max_Cap) & next(tokens) = tokens + Reward - Cost ) |
+  ( act_EXEC & act_MSG & ((tokens + Reward - Cost) > Max_Cap) & next(tokens) = Max_Cap ) |
+
+  ( !act_EXEC & act_MSG & next(tokens) = tokens - Cost ) | 
+  ( !act_EXEC & !act_MSG & next(tokens) = tokens )
+);
+
+--------------------------------------------------
+-- Definitions
+--------------------------------------------------
+DEFINE
+  trap      := (loc = violation);
+
+--------------------------------------------------
+-- Properties
+--------------------------------------------------
+
+SPEC AG (!trap -> EG !trap)
+SPEC  AG (!trap -> EF !trap)
+SPEC  AG (!trap -> EX !trap)

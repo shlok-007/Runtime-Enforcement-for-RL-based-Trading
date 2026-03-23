@@ -1,0 +1,106 @@
+MODULE main
+
+IVAR
+  -- Environment inputs
+  act_PLACE_in : boolean;
+  tick         : boolean;
+
+VAR
+  -- Policy control location
+  loc      : {s0, s1, s2, s3, s4, s5, violation};
+
+  -- Sliding window timer (saturated at T_WINDOW)
+  t_window : 0..5;
+
+DEFINE
+  T_WINDOW := 5;
+
+  -- Violation trigger at s5: 6th placement inside active window
+  viol := (loc = s5) & act_PLACE_in & (t_window < T_WINDOW);
+
+  -- Enforced output after recovery
+  act_PLACE := case
+    viol : FALSE;
+    TRUE : act_PLACE_in;
+  esac;
+
+  -- Places that reset the window timer
+  reset_window :=
+    (loc = s0 & act_PLACE) |
+    (loc = s1 & act_PLACE & (t_window >= T_WINDOW)) |
+    (loc = s2 & act_PLACE & (t_window >= T_WINDOW)) |
+    (loc = s3 & act_PLACE & (t_window >= T_WINDOW)) |
+    (loc = s4 & act_PLACE & (t_window >= T_WINDOW)) |
+    (loc = s5 & act_PLACE & (t_window >= T_WINDOW));
+
+ASSIGN
+  init(loc)      := s0;
+  init(t_window) := 0;
+
+--------------------------------------------------
+-- Transition relation
+--------------------------------------------------
+TRANS
+
+(
+  --------------------------------------------------
+  -- LOCATION TRANSITIONS
+  --------------------------------------------------
+
+  -- s0
+  (loc = s0 &  act_PLACE                               & next(loc) = s1) |
+  (loc = s0 & !act_PLACE                               & next(loc) = s0) |
+
+  -- s1
+  (loc = s1 &  act_PLACE & (t_window <  T_WINDOW)     & next(loc) = s2) |
+  (loc = s1 &  act_PLACE & (t_window >= T_WINDOW)     & next(loc) = s1) |
+  (loc = s1 & !act_PLACE                              & next(loc) = s1) |
+
+  -- s2
+  (loc = s2 &  act_PLACE & (t_window <  T_WINDOW)     & next(loc) = s3) |
+  (loc = s2 &  act_PLACE & (t_window >= T_WINDOW)     & next(loc) = s1) |
+  (loc = s2 & !act_PLACE                               & next(loc) = s2) |
+
+  -- s3
+  (loc = s3 &  act_PLACE & (t_window <  T_WINDOW)     & next(loc) = s4) |
+  (loc = s3 &  act_PLACE & (t_window >= T_WINDOW)     & next(loc) = s1) |
+  (loc = s3 & !act_PLACE                               & next(loc) = s3) |
+
+  -- s4
+  (loc = s4 &  act_PLACE & (t_window <  T_WINDOW)     & next(loc) = s5) |
+  (loc = s4 &  act_PLACE & (t_window >= T_WINDOW)     & next(loc) = s1) |
+  (loc = s4 & !act_PLACE                               & next(loc) = s4) |
+
+  -- s5
+  (loc = s5 &  act_PLACE & (t_window <  T_WINDOW)  & next(loc) = violation) |
+  (loc = s5 &  act_PLACE    & (t_window >= T_WINDOW)  & next(loc) = s1) |
+  (loc = s5 & !act_PLACE                               & next(loc) = s5) |
+
+  -- violation trap
+  (loc = violation & next(loc) = violation)
+)
+
+&
+(
+  --------------------------------------------------
+  -- TIMER TRANSITIONS
+  --------------------------------------------------
+
+  (loc = violation & next(t_window) = t_window) |
+  (reset_window   & next(t_window) = 0) |
+  (!reset_window & tick & (t_window < T_WINDOW) & next(t_window) = t_window + 1) |
+  (!reset_window & !(tick & (t_window < T_WINDOW)) & next(t_window) = t_window)
+);
+
+--------------------------------------------------
+-- Definitions
+--------------------------------------------------
+DEFINE
+  trap := (loc = violation);
+
+--------------------------------------------------
+-- Properties
+--------------------------------------------------
+SPEC AG (!trap -> AG !trap)
+SPEC AG (!trap -> EF !trap)
+SPEC AG (!trap -> EX !trap)

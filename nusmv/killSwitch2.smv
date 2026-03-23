@@ -1,0 +1,54 @@
+MODULE main
+
+IVAR
+  -- Environment inputs
+  dd_exceeded  : boolean;
+  act_PLACE_in : boolean;
+
+VAR
+  -- Policy control location
+  loc : {s0, violation};
+
+DEFINE
+  -- Violation trigger
+  viol := (loc = s0) & dd_exceeded & act_PLACE_in;
+
+  -- Enforced output after recovery
+  act_PLACE := case
+    viol : FALSE;
+    TRUE : act_PLACE_in;
+  esac;
+
+ASSIGN
+  init(loc) := s0;
+
+--------------------------------------------------
+-- Transition relation
+--------------------------------------------------
+TRANS
+
+(
+  --------------------------------------------------
+  -- LOCATION TRANSITIONS
+  --------------------------------------------------
+
+  (loc = s0 &  dd_exceeded &  act_PLACE & next(loc) = violation) |
+  (loc = s0 &  dd_exceeded & !act_PLACE    & next(loc) = s0) |
+  (loc = s0 & !dd_exceeded                  & next(loc) = s0) |
+
+  -- violation trap
+  (loc = violation & next(loc) = violation)
+);
+
+--------------------------------------------------
+-- Definitions
+--------------------------------------------------
+DEFINE
+  trap := (loc = violation);
+
+--------------------------------------------------
+-- Properties
+--------------------------------------------------
+SPEC AG (!trap -> AG !trap)
+SPEC AG (!trap -> EF !trap)
+SPEC AG (!trap -> EX !trap)

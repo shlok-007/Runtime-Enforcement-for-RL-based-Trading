@@ -1,0 +1,60 @@
+MODULE main
+VAR
+  act_EXEC   : boolean;
+  act_MSG_in : boolean;
+
+  -- Explicit violation state added
+  st : {s_normal, s_throttled, violation};
+
+  tokens : -5000..500;
+
+DEFINE
+  Max_Cap          := 500;
+  Reward           := 50;
+  Cost             := 1;
+  Resume_Threshold := 10;
+
+  -- Violation signal still useful for formulas/output recovery
+  viol := (st = s_throttled) & act_MSG_in;
+
+  -- Enforced output (recovery on violating transition)
+  act_MSG := case
+    viol : FALSE;
+    TRUE : act_MSG_in;
+  esac;
+
+ASSIGN
+  init(act_EXEC)   := FALSE;
+  next(act_EXEC)   := {TRUE, FALSE};
+
+  init(act_MSG_in) := FALSE;
+  next(act_MSG_in) := {TRUE, FALSE};
+
+  init(st)         := s_normal;
+  init(tokens)     := 500;
+
+  next(tokens) := case
+
+    act_EXEC & !act_MSG & ((tokens + Reward) <= Max_Cap) : tokens + Reward;
+    act_EXEC & !act_MSG & ((tokens + Reward) > Max_Cap) : Max_Cap;
+
+    act_EXEC & act_MSG & ((tokens + Reward - Cost) <= Max_Cap) : tokens + Reward - Cost;
+    act_EXEC & act_MSG & ((tokens + Reward - Cost) > Max_Cap) : Max_Cap;
+
+    !act_EXEC & act_MSG & (st = s_normal) : tokens - Cost;
+
+    TRUE : tokens;
+  esac;
+
+  next(st) := case
+    (st = s_normal) & !act_EXEC & act_MSG & ((tokens - Cost) <= 0) : s_throttled;
+
+    (st = s_throttled) & act_MSG : violation;
+
+    (st = s_throttled) & act_EXEC & ((tokens + Reward) > Resume_Threshold) : s_normal;
+
+    TRUE : st;
+  esac;
+
+
+-- SPEC AG (st != violation -> EG (st != violation))

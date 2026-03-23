@@ -1,0 +1,72 @@
+MODULE main
+
+IVAR
+  -- input events
+  inA  : boolean;
+  inB  : boolean;
+
+VAR
+  tick : boolean;
+  loc  : {l0, l1, l2};
+  v1   : 0..50000;
+
+ASSIGN
+  init(loc) := l0;
+  init(v1)  := 0;
+
+--------------------------------------------------
+-- Transition relation
+--------------------------------------------------
+TRANS
+
+(
+  --------------------------------------------------
+  -- LOCATION TRANSITIONS
+  --------------------------------------------------
+
+  -- l0
+  (loc = l0 & inA & !inB & next(loc) = l1) |
+  (loc = l0 & !inA & !inB & next(loc) = l0) |
+  (loc = l0 & (inA & inB) & next(loc) = l2) |
+  (loc = l0 & (!inA & inB) & next(loc) = l2) |
+
+  -- l1
+  (loc = l1 & !inA & inB & v1 < 5 & next(loc) = l0) |
+  (loc = l1 & v1 = 5 & next(loc) = l2) |
+  (loc = l1 & inA & next(loc) = l2) |
+  (loc = l1 & !( (!inA & inB & v1 < 5) | v1 = 5 | inA ) & next(loc) = l1) |
+
+  -- trap
+  (loc = l2 & next(loc) = l2)
+)
+
+&
+(
+  --------------------------------------------------
+  -- CLOCK TRANSITIONS
+  --------------------------------------------------
+
+  -- reset when A in l0
+  (loc = l0 & inA & !inB & next(v1) = 0) |
+
+  -- increment on tick in l1
+  (loc = l1 & tick & v1 < 5 & next(v1) = v1 + 1) |
+
+  -- otherwise unchanged
+  ( !( (loc = l0 & inA & !inB) |
+       (loc = l1 & tick & v1 < 5) )
+    & next(v1) = v1 )
+);
+
+--------------------------------------------------
+-- Definitions
+--------------------------------------------------
+DEFINE
+  trap := (loc = l2);
+  accepting := (loc = l0);
+
+--------------------------------------------------
+-- Property
+--------------------------------------------------
+SPEC
+  AG ((loc !=l2) -> EF (loc != l2))
