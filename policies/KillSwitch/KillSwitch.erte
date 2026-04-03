@@ -1,27 +1,28 @@
+// function definition
 function KillSwitch;
-
+// interface definition
 interface of KillSwitch {
-    // True if portfolio drawdown has exceeded the limit.
+    // Input- From the market: True if portfolio drawdown has exceeded the limit.
     in bool dd_exceeded;
 
-    // True if the agent wants to execute a trade.
-    out bool act_TRADE;
+    // Output- From the agent: True if the agent wants to place an order.
+    out bool act_PLACE;
 }
-
+// policy definition
 policy LatchingKillSwitch of KillSwitch {
 
     states {
         s0 {
-            // 1. Agent tries to trade (act_TRADE) WHILE drawdown is exceeded.
-            // Action: Block the trade (act_TRADE := 0).
-            -> violation on (dd_exceeded and act_TRADE) recover act_TRADE := 0;
+            // 1. Agent tries to trade (act_PLACE) WHILE drawdown is exceeded.
+            // Action: Block the trade (act_PLACE := 0).
+            -> violation on (dd_exceeded and act_PLACE) recover act_PLACE := 0;
 
-            // 2. Agent holds (!act_TRADE) but drawdown is exceeded.
-            // Action: Allow the hold, but trip the switch (goto violation) to prevent future trades.
-            -> violation on (dd_exceeded and !act_TRADE);
+            // 2. Agent holds (!act_PLACE) but drawdown is exceeded.
+            // Action: Allow the hold, but go to violation to prevent future trades.
+            -> violation on (dd_exceeded and !act_PLACE);
 
             // Drawdown is NOT exceeded. Stay in s0.
-            // The agent is free to trade (act_TRADE) or hold (!act_TRADE).
+            // The agent is free to trade (act_PLACE) or hold (!act_PLACE).
             -> s0 on (!dd_exceeded);
         }
     }

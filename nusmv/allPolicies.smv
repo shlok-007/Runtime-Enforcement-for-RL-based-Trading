@@ -1,0 +1,393 @@
+MODULE RateLimit(act_PLACE_in, tick)
+VAR
+  loc      : {s0, s1, s2, s3, s4, s5, violation};
+  t_window : 0..500;
+
+DEFINE
+  T_WINDOW := 100;
+  viol := (loc = s5) & act_PLACE_in & (t_window < T_WINDOW);
+
+  -- Recovered output
+  act_PLACE := case
+    viol : FALSE;
+    TRUE : act_PLACE_in;
+  esac;
+
+  reset_window :=
+    (loc = s0 & act_PLACE_in) |
+    (loc = s1 & act_PLACE_in & (t_window >= T_WINDOW)) |
+    (loc = s2 & act_PLACE_in & (t_window >= T_WINDOW)) |
+    (loc = s3 & act_PLACE_in & (t_window >= T_WINDOW)) |
+    (loc = s4 & act_PLACE_in & (t_window >= T_WINDOW)) |
+    (loc = s5 & act_PLACE_in & (t_window >= T_WINDOW));
+
+  trap := (loc = violation);
+
+ASSIGN
+  init(loc)      := s0;
+  init(t_window) := 0;
+
+TRANS
+(
+  -- s0
+  (loc = s0 &  act_PLACE_in                           & next(loc) = s1) |
+  (loc = s0 & !act_PLACE_in                           & next(loc) = s0) |
+
+  -- s1
+  (loc = s1 &  act_PLACE_in & (t_window <  T_WINDOW) & next(loc) = s2) |
+  (loc = s1 &  act_PLACE_in & (t_window >= T_WINDOW) & next(loc) = s1) |
+  (loc = s1 & !act_PLACE_in                           & next(loc) = s1) |
+
+  -- s2
+  (loc = s2 &  act_PLACE_in & (t_window <  T_WINDOW) & next(loc) = s3) |
+  (loc = s2 &  act_PLACE_in & (t_window >= T_WINDOW) & next(loc) = s1) |
+  (loc = s2 & !act_PLACE_in                           & next(loc) = s2) |
+
+  -- s3
+  (loc = s3 &  act_PLACE_in & (t_window <  T_WINDOW) & next(loc) = s4) |
+  (loc = s3 &  act_PLACE_in & (t_window >= T_WINDOW) & next(loc) = s1) |
+  (loc = s3 & !act_PLACE_in                           & next(loc) = s3) |
+
+  -- s4
+  (loc = s4 &  act_PLACE_in & (t_window <  T_WINDOW) & next(loc) = s5) |
+  (loc = s4 &  act_PLACE_in & (t_window >= T_WINDOW) & next(loc) = s1) |
+  (loc = s4 & !act_PLACE_in                           & next(loc) = s4) |
+
+  -- s5
+  (loc = s5 &  act_PLACE_in & (t_window <  T_WINDOW) & next(loc) = violation) |
+  (loc = s5 &  act_PLACE_in & (t_window >= T_WINDOW) & next(loc) = s1) |
+  (loc = s5 & !act_PLACE_in                           & next(loc) = s5) |
+
+  (loc = violation & next(loc) = violation)
+)
+&
+(
+  (loc = violation & next(t_window) = t_window) |
+  (reset_window & next(t_window) = 0) |
+  (!reset_window & tick & (t_window < T_WINDOW) & next(t_window) = t_window + 1) |
+  (!reset_window & !(tick & (t_window < T_WINDOW)) & next(t_window) = t_window)
+);
+
+MODULE KillSwitch(dd_exceeded, act_PLACE_in)
+VAR
+  loc : {s0, violation};
+
+DEFINE
+  viol := (loc = s0) & dd_exceeded & act_PLACE_in;
+
+  act_PLACE := case
+    viol : FALSE;
+    TRUE : act_PLACE_in;
+  esac;
+
+  trap := (loc = violation);
+
+ASSIGN
+  init(loc) := s0;
+
+TRANS
+(
+  (loc = s0 &  dd_exceeded &  act_PLACE_in & next(loc) = violation) |
+  (loc = s0 &  dd_exceeded & !act_PLACE_in & next(loc) = s0) |
+  (loc = s0 & !dd_exceeded                 & next(loc) = s0) |
+  (loc = violation & next(loc) = violation)
+);
+
+MODULE PriceCollar(price_deviates, act_PLACE_in)
+VAR
+  loc : {s0, violation};
+
+DEFINE
+  viol := (loc = s0) & price_deviates & act_PLACE_in;
+
+  act_PLACE := case
+    viol : FALSE;
+    TRUE : act_PLACE_in;
+  esac;
+
+  trap := (loc = violation);
+
+ASSIGN
+  init(loc) := s0;
+
+TRANS
+(
+  (loc = s0 &  price_deviates &  act_PLACE_in & next(loc) = violation) |
+  (loc = s0 &  price_deviates & !act_PLACE_in & next(loc) = s0) |
+  (loc = s0 & !price_deviates                 & next(loc) = s0) |
+  (loc = violation & next(loc) = violation)
+);
+
+MODULE Illiquid(is_illiquid, act_PLACE_in)
+VAR
+  loc : {s0, violation};
+
+DEFINE
+  viol := (loc = s0) & is_illiquid & act_PLACE_in;
+
+  act_PLACE := case
+    viol : FALSE;
+    TRUE : act_PLACE_in;
+  esac;
+
+  trap := (loc = violation);
+
+ASSIGN
+  init(loc) := s0;
+
+TRANS
+(
+  (loc = s0 &  is_illiquid &  act_PLACE_in & next(loc) = violation) |
+  (loc = s0 &  is_illiquid & !act_PLACE_in & next(loc) = s0) |
+  (loc = s0 & !is_illiquid                & next(loc) = s0) |
+  (loc = violation & next(loc) = violation)
+);
+
+MODULE PositionConc(will_exceed_limit, act_BUY_in)
+VAR
+  loc : {s0, violation};
+
+DEFINE
+  viol := (loc = s0) & will_exceed_limit & act_BUY_in;
+
+  act_BUY := case
+    viol : FALSE;
+    TRUE : act_BUY_in;
+  esac;
+
+  trap := (loc = violation);
+
+ASSIGN
+  init(loc) := s0;
+
+TRANS
+(
+  (loc = s0 &  will_exceed_limit &  act_BUY_in & next(loc) = violation) |
+  (loc = s0 &  will_exceed_limit & !act_BUY_in & next(loc) = s0) |
+  (loc = s0 & !will_exceed_limit               & next(loc) = s0) |
+  (loc = violation & next(loc) = violation)
+);
+
+
+MODULE OTR(act_EXEC, act_MSG_in)
+VAR
+  loc    : {s_normal, s_throttled, violation};
+  tokens : -1..500;
+
+DEFINE
+  Max_Cap          := 500;
+  Reward           := 50;
+  Cost             := 1;
+  Resume_Threshold := 10;
+
+  viol := (loc = s_throttled) & act_MSG_in;
+
+  act_MSG := case
+    viol : FALSE;
+    TRUE : act_MSG_in;
+  esac;
+
+  trap := (loc = violation);
+
+ASSIGN
+  init(loc)    := s_normal;
+  init(tokens) := 500;
+
+TRANS
+(
+  -- s_normal
+  (loc = s_normal &  act_EXEC & !act_MSG                          & next(loc) = s_normal) |
+  (loc = s_normal &  act_EXEC &  act_MSG                          & next(loc) = s_normal) |
+  (loc = s_normal & !act_EXEC &  act_MSG & (tokens - Cost > 0)   & next(loc) = s_normal) |
+  (loc = s_normal & !act_EXEC &  act_MSG & (tokens - Cost <= 0)  & next(loc) = s_throttled) |
+  (loc = s_normal & !act_EXEC & !act_MSG                          & next(loc) = s_normal) |
+
+  -- s_throttled
+  (loc = s_throttled &  act_MSG                                   & next(loc) = violation) |
+  (loc = s_throttled & !act_MSG & act_EXEC & (tokens + Reward <= Resume_Threshold) & next(loc) = s_throttled) |
+  (loc = s_throttled & !act_MSG & act_EXEC & (tokens + Reward >  Resume_Threshold) & next(loc) = s_normal) |
+  (loc = s_throttled & !act_MSG & !act_EXEC                       & next(loc) = s_throttled) |
+
+  (loc = violation & next(loc) = violation)
+)
+&
+(
+  (loc = violation & next(tokens) = tokens) |
+  (act_EXEC & !act_MSG & ((tokens + Reward) <= Max_Cap) & next(tokens) = tokens + Reward) |
+  (act_EXEC & !act_MSG & ((tokens + Reward) >  Max_Cap) & next(tokens) = Max_Cap) |
+
+  (act_EXEC & act_MSG & ((tokens + Reward - Cost) <= Max_Cap) & next(tokens) = tokens + Reward - Cost) |
+  (act_EXEC & act_MSG & ((tokens + Reward - Cost) >  Max_Cap) & next(tokens) = Max_Cap) |
+
+  (!act_EXEC & act_MSG & next(tokens) = tokens - Cost) |
+  (!act_EXEC & !act_MSG & next(tokens) = tokens)
+);
+
+
+MODULE MQL(act_PLACE_in, act_CANCEL_in, tick)
+VAR
+  loc   : {empty, resting, violation};
+  c_age : 0..500;
+
+DEFINE
+  T_MQL := 100;
+  viol := (loc = resting) & act_CANCEL_in & (c_age < T_MQL);
+
+  act_PLACE := act_PLACE_in;
+
+  act_CANCEL := case
+    viol : FALSE;
+    TRUE : act_CANCEL_in;
+  esac;
+
+  trap := (loc = violation);
+
+ASSIGN
+  init(loc)   := empty;
+  init(c_age) := 0;
+
+TRANS
+(
+  -- empty
+  (loc = empty   &  act_PLACE_in                         & next(loc) = resting) |
+  (loc = empty   & !act_PLACE_in                         & next(loc) = empty) |
+
+  -- resting
+  (loc = resting &  act_CANCEL_in & (c_age <  T_MQL)    & next(loc) = violation) |
+  (loc = resting &  act_CANCEL_in & (c_age >= T_MQL)    & next(loc) = empty) |
+  (loc = resting & !act_CANCEL_in                        & next(loc) = resting) |
+
+  (loc = violation & next(loc) = violation)
+)
+&
+(
+  (loc = violation & next(c_age) = c_age) |
+  (loc = empty & act_PLACE_in & next(c_age) = 0) |
+  (loc = resting & tick & (c_age < T_MQL) & next(c_age) = c_age + 1) |
+  ( !( (loc = empty & act_PLACE_in) |
+       (loc = resting & tick & (c_age < T_MQL)) )
+    & next(c_age) = c_age )
+);
+
+MODULE NoWash(act_BUY_in, act_SELL_in, price)
+VAR
+  loc      : {s0, s1, s2, violation};
+  last_bid : 0..10000;
+  last_ask : 0..10000;
+
+DEFINE
+  viol_sell := (loc = s1) & act_SELL_in & (price <= last_bid);
+  viol_buy  := (loc = s2) & act_BUY_in  & (price >= last_ask);
+  viol      := viol_sell | viol_buy;
+
+  act_SELL := case
+    viol_sell : FALSE;
+    TRUE      : act_SELL_in;
+  esac;
+
+  act_BUY := case
+    viol_buy : FALSE;
+    TRUE     : act_BUY_in;
+  esac;
+
+  trap := (loc = violation);
+
+ASSIGN
+  init(loc)      := s0;
+  init(last_bid) := 0;
+  init(last_ask) := 10000;
+
+TRANS
+(
+  -- s0
+  (loc = s0 &  act_BUY_in                     & next(loc) = s1) |
+  (loc = s0 &  act_SELL_in                    & next(loc) = s2) |
+  (loc = s0 & !act_BUY_in & !act_SELL_in      & next(loc) = s0) |
+
+  -- s1
+  (loc = s1 &  act_BUY_in                     & next(loc) = s1) |
+  (loc = s1 &  act_SELL_in & (price >  last_bid) & next(loc) = s2) |
+  (loc = s1 &  act_SELL_in & (price <= last_bid) & next(loc) = violation) |
+  (loc = s1 & !act_BUY_in & !act_SELL_in      & next(loc) = s1) |
+
+  -- s2
+  (loc = s2 &  act_SELL_in                    & next(loc) = s2) |
+  (loc = s2 &  act_BUY_in & (price <  last_ask)  & next(loc) = s1) |
+  (loc = s2 &  act_BUY_in & (price >= last_ask)  & next(loc) = violation) |
+  (loc = s2 & !act_BUY_in & !act_SELL_in      & next(loc) = s2) |
+
+  (loc = violation & next(loc) = violation)
+)
+&
+(
+  (loc = violation & next(last_bid) = last_bid) |
+  (loc = s0 & act_BUY_in & next(last_bid) = price) |
+  (loc = s1 & act_BUY_in & next(last_bid) = price) |
+  (loc = s2 & act_BUY_in & (price < last_ask) & next(last_bid) = price) |
+  ( !( (loc = s0 & act_BUY_in) |
+       (loc = s1 & act_BUY_in) |
+       (loc = s2 & act_BUY_in & (price < last_ask)) )
+    & next(last_bid) = last_bid )
+)
+&
+(
+  (loc = violation & next(last_ask) = last_ask) |
+  (loc = s0 & act_SELL_in & next(last_ask) = price) |
+  (loc = s2 & act_SELL_in & next(last_ask) = price) |
+  (loc = s1 & act_SELL_in & (price > last_bid) & next(last_ask) = price) |
+  ( !( (loc = s0 & act_SELL_in) |
+       (loc = s2 & act_SELL_in) |
+       (loc = s1 & act_SELL_in & (price > last_bid)) )
+    & next(last_ask) = last_ask )
+);
+
+MODULE main
+IVAR
+  dd_exceeded       : boolean;
+  is_illiquid       : boolean;
+  will_exceed_limit : boolean;
+  price_deviates    : boolean;
+  act_EXEC          : boolean;
+  tick              : boolean;
+
+  act_PLACE_in      : boolean;
+  act_BUY_in        : boolean;
+  act_MSG_in        : boolean;
+  act_CANCEL_in     : boolean;
+  act_SELL_in       : boolean;
+  price             : 0..10000;
+
+VAR
+  p_rate  : RateLimit(act_PLACE_in, tick);
+  p_kill  : KillSwitch(dd_exceeded, p_rate.act_PLACE);
+  p_pcol  : PriceCollar(price_deviates, p_kill.act_PLACE);
+  p_illiq : Illiquid(is_illiquid, p_pcol.act_PLACE);
+
+  p_pos   : PositionConc(will_exceed_limit, act_BUY_in);
+  p_mql   : MQL(p_illiq.act_PLACE, act_CANCEL_in, tick);
+  p_wash  : NoWash(p_pos.act_BUY, act_SELL_in, price);
+  p_otr   : OTR(act_EXEC, act_MSG_in);
+
+DEFINE
+  act_PLACE_out  := p_mql.act_PLACE;
+  act_CANCEL_out := p_mql.act_CANCEL;
+  act_BUY_out    := p_wash.act_BUY;
+  act_SELL_out   := p_wash.act_SELL;
+  act_MSG_out    := p_otr.act_MSG;
+
+  trap :=
+    p_rate.trap |
+    p_kill.trap |
+    p_pcol.trap |
+    p_illiq.trap |
+    p_pos.trap |
+    p_mql.trap |
+    p_wash.trap |
+    p_otr.trap;
+
+
+
+SPEC AG (!trap -> EF !trap)
+-- SPEC AG (!trap -> EG !trap)
+-- SPEC AG (!trap -> EX !trap)
+-- SPEC AG (!trap -> AG !trap)

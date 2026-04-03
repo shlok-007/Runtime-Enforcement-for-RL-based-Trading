@@ -1,0 +1,30 @@
+*** This is NuSMV 2.7.1 (compiled on Mon Sep 29 16:07:59 2025)
+*** Enabled addons are: compass
+*** For more information on NuSMV see <http://nusmv.fbk.eu>
+*** or email to <nusmv-users@list.fbk.eu>.
+*** Please report bugs to <Please report bugs to <nusmv-users@fbk.eu>>
+
+*** Copyright (c) 2010-2025, Fondazione Bruno Kessler
+
+*** This version of NuSMV is linked to the CUDD library version 2.4.1
+*** Copyright (c) 1995-2004, Regents of the University of Colorado
+
+*** This version of NuSMV is linked to the MiniSat SAT solver.
+*** See http://minisat.se/MiniSat.html
+*** Copyright (c) 2003-2006, Niklas Een, Niklas Sorensson
+*** Copyright (c) 2007-2010, Niklas Sorensson
+
+-- specification AG (!trap -> EF !trap)  is true
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 6
+Seconds           : 12
+Milliseconds      : 731
+Ticks             : 3727319881
+TotalDays         : 0.0043140276400463
+TotalHours        : 0.103536663361111
+TotalMinutes      : 6.21219980166667
+TotalSeconds      : 372.7319881
+TotalMilliseconds : 372731.9881

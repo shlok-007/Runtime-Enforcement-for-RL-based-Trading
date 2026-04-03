@@ -8,7 +8,7 @@ interface of TradingEnforcer {
     in bool price_deviates; // True if the proposed limit price is too far from market price.
     in bool act_EXEC;   // True if the agent's order was executed.
 
-    out bool act_PLACE; // True if the agent wants to execute a trade.
+    out bool act_PLACE; // True if the agent wants to place an order.
     out bool act_BUY;   // True if agent wants to BUY (subset of act_PLACE).
     out bool act_MSG;   // True if agent sends an order message(buy/sell/cancel).
     out bool act_CANCEL;    // True if agent wants to CANCEL an order.
