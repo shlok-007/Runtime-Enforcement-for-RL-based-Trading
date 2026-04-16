@@ -25,6 +25,7 @@ class RLAgent(ExampleExperimentalAgentTemplate):
         self.alpha = alpha       # Learning rate
         self.gamma = gamma       # Discount factor
         self.epsilon = epsilon   # Exploration rate
+        self.intervention_penalty_perc = 0.05  # Penalty percentage for Enforcer interventions
         
         # Action Space
         self.price_offsets = [0, -1, -2]  # at best available price, 1 tick more aggressive, 2 ticks more aggressive
@@ -154,17 +155,6 @@ class RLAgent(ExampleExperimentalAgentTemplate):
         # Get current state and reward
         current_state = self.get_current_state()
         current_portfolio_value = self.markToMarket(self.holdings)
-        
-        # Q-Learning Update Rule
-        if self.last_state is not None and self.last_action is not None:
-            reward = current_portfolio_value - self.last_portfolio_value
-            
-            old_q = self.q_table[(self.last_state, self.last_action)]
-            next_max_q = max([self.q_table[(current_state, a)] for a in self.actions])
-            
-            # Bellman Equation
-            new_q = old_q + self.alpha * (reward + self.gamma * next_max_q - old_q)
-            self.q_table[(self.last_state, self.last_action)] = new_q
 
         # Select and Execute Action
         action = self.choose_action(current_state)
@@ -174,7 +164,7 @@ class RLAgent(ExampleExperimentalAgentTemplate):
         bid_price = self.current_bids[0][0] + offset * self.tick_size # should change if the agent decides to trade at a different price level
         ask_price = self.current_asks[0][0] - offset * self.tick_size # should change if the agent decides to trade at a different price level
 
-
+        intervention = False
         if(self.enforcer_enabled):
             # Passing the action through the Enforcer first
             portfolio_value = self.markToMarket(self.holdings)
@@ -218,6 +208,21 @@ class RLAgent(ExampleExperimentalAgentTemplate):
                 offset = 0  # If the action is overridden, we will place at best price (offset=0) to ensure it goes through
                 action = self.actions_map_reverse[(direction, offset)]
                 self.enforcer_interventions += 1
+                intervention = True
+
+        # Q-Learning Update Rule
+        if self.last_state is not None and self.last_action is not None:
+            reward = current_portfolio_value - self.last_portfolio_value
+            # Apply penalty if there was an Enforcer intervention
+            if intervention:
+                reward = reward * (1 - self.intervention_penalty_perc)
+            
+            old_q = self.q_table[(self.last_state, self.last_action)]
+            next_max_q = max([self.q_table[(current_state, a)] for a in self.actions])
+            
+            # Bellman Equation
+            new_q = old_q + self.alpha * (reward + self.gamma * next_max_q - old_q)
+            self.q_table[(self.last_state, self.last_action)] = new_q
 
         if direction == "BUY":
             self.placeLimitOrder(self.order_size, True, bid_price)
