@@ -29,14 +29,19 @@ def extract_marked_to_market(log_path):
     return values
 
 # Load both logs
-no_enf = extract_marked_to_market('log/rmsc_trade_test_wo_enf/RL_AGENT.bz2')
-with_enf = extract_marked_to_market('log/rmsc_trade_test_w_enf/RL_AGENT.bz2')
+# no_enf = extract_marked_to_market('log/rmsc_trade_test_wo_enf/RL_AGENT.bz2')
+# with_enf = extract_marked_to_market('log/rmsc_trade_test_w_enf/RL_AGENT.bz2')
 # with_enf_complex = extract_marked_to_market('log/rmsc_trade_w_enf_complex/RL_AGENT.bz2')
+
+no_enf = extract_marked_to_market('log/rmsc_trade_enf_pen/RL_AGENT_wo_ENF.bz2')
+with_enf_wo_pen = extract_marked_to_market('log/rmsc_trade_enf_pen/RL_AGENT_w_ENF_wo_penalty.bz2')
+with_enf_w_pen = extract_marked_to_market('log/rmsc_trade_enf_pen/RL_AGENT_w_ENF_5_percent_penalty.bz2')
 
 # Plot
 fig, ax = plt.subplots(figsize=(12, 6))
 no_enf.plot(ax=ax, label='Without Enforcer')
-with_enf.plot(ax=ax, label='With Enforcer')
+with_enf_wo_pen.plot(ax=ax, label='With Enforcer (No Penalty)')
+with_enf_w_pen.plot(ax=ax, label='With Enforcer (5% Penalty)')
 # with_enf_complex.plot(ax=ax, label='With Enforcer (Complex)')
 ax.set_xlabel('Time')
 ax.set_ylabel('Portfolio Value ($)')

@@ -12,8 +12,9 @@ class RLAgent(ExampleExperimentalAgentTemplate):
     def __init__(self, id, name, type, symbol, starting_cash, 
                  levels=1, subscription_freq=1000000000, log_orders=False, random_state=None,
                  wake_freq='10s', order_size=100, 
-                 alpha=0.1, gamma=0.9, epsilon=0.2,
-                 enable_enforcer=True):
+                 alpha=0.1, gamma=0.9, epsilon=0.2, intervention_penalty_perc=0.05,
+                 q_table_path=None,
+                 enable_enforcer=True, only_complex_policies=False):
 
         super().__init__(id, name, type, symbol, starting_cash, levels, subscription_freq, 
                          log_orders=log_orders, random_state=random_state)
@@ -25,8 +26,10 @@ class RLAgent(ExampleExperimentalAgentTemplate):
         self.alpha = alpha       # Learning rate
         self.gamma = gamma       # Discount factor
         self.epsilon = epsilon   # Exploration rate
-        self.intervention_penalty_perc = 0.05  # Penalty percentage for Enforcer interventions
         
+        self.intervention_penalty_perc = intervention_penalty_perc  # Penalty percentage for Enforcer interventions
+        self.only_complex_policies = only_complex_policies  # If True, only apply Enforcer to complex policies (e.g. risk checks), not simple ones (e.g. price validation)
+
         # Action Space
         self.price_offsets = [0, -1, -2]  # at best available price, 1 tick more aggressive, 2 ticks more aggressive
         self.actions = []
@@ -57,7 +60,10 @@ class RLAgent(ExampleExperimentalAgentTemplate):
 
         self.tick_size = 50
 
-        self.q_table_path = f"q_table_{self.name}.pkl"
+        if q_table_path:
+            self.q_table_path = q_table_path
+        else:
+            self.q_table_path = f"q_table_{self.name}.pkl"
         if self.q_table_path and os.path.exists(self.q_table_path):
             with open(self.q_table_path, 'rb') as f:
                 self.q_table = pickle.load(f)
@@ -182,20 +188,22 @@ class RLAgent(ExampleExperimentalAgentTemplate):
             price = bid_price if act_BUY else ask_price
 
             start_time = time.perf_counter_ns()
-            new_direction_code = self.enforcer.validate(action=direction_code,
-                                                bid_price=bid_price,
-                                                ask_price=ask_price,
-                                                portfolio_value=portfolio_value,
-                                                liquidity=liquidity,
-                                                stock_price=stock_price )
-            
+
+            if(not self.only_complex_policies):
+                new_direction_code = self.enforcer.validate(action=direction_code,
+                                                            bid_price=bid_price,
+                                                            ask_price=ask_price,
+                                                            portfolio_value=portfolio_value,
+                                                            liquidity=liquidity,
+                                                            stock_price=stock_price )
+            else:
             # Testing the enforcer for only complex policies
-            # new_direction_code = self.enforcer.run_via_enforcer(act_BUY=act_BUY,
-            #                                                     act_SELL=act_SELL,
-            #                                                     act_CANCEL=act_CANCEL,
-            #                                                     act_PLACE=act_PLACE,
-            #                                                     act_MSG=act_MSG,
-            #                                                     price=price)
+                new_direction_code = self.enforcer.run_via_enforcer(act_BUY=act_BUY,
+                                                                    act_SELL=act_SELL,
+                                                                    act_CANCEL=act_CANCEL,
+                                                                    act_PLACE=act_PLACE,
+                                                                    act_MSG=act_MSG,
+                                                                    price=price)
             
             self.enforcer_latency += time.perf_counter_ns() - start_time
 

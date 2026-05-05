@@ -296,37 +296,12 @@ agents.extend([MomentumAgent(id=j,
 agent_count += num_momentum_agents
 agent_types.extend("MomentumAgent")
 
-# 6) RL Agent without Enforcer
 
-rl_agent1 = RLAgent(
-    id=agent_count,
-    name="RL_AGENT_wo_ENF",
-    type="RLAgent",
-    symbol=symbol,
-    starting_cash=starting_cash,
-    levels=5,
-    wake_freq='10s',
-    order_size=100,
-    alpha=0.1,    # Learning Rate
-    gamma=0.9,    # Future Reward Discount
-    epsilon=0.2,  # 20% random exploration
-    intervention_penalty_perc=0.0,  # penalty on reward for Enforcer interventions
-    q_table_path= "q_table_RL_AGENT1.pkl",
-    only_complex_policies=False,
-    random_state=np.random.RandomState(seed=np.random.randint(low=0, high=2 ** 32, dtype='uint64')),
-    enable_enforcer=False
-)
-
-agents.extend([rl_agent1])
-agent_types.extend("RLAgent")
-agent_count += 1
-
-
-# 7) RL Agent with Enforcer without penalty for interventions
+# RL Agents with Enforcer and no penalty for interventions
 
 rl_agent2 = RLAgent(
     id=agent_count,
-    name="RL_AGENT_w_ENF_wo_penalty",
+    name="RL_AGENT_w_ENF_0_percent_penalty",
     type="RLAgent",
     symbol=symbol,
     starting_cash=starting_cash,
@@ -337,7 +312,7 @@ rl_agent2 = RLAgent(
     gamma=0.9,    # Future Reward Discount
     epsilon=0.2,  # 20% random exploration
     intervention_penalty_perc=0.0,  # penalty on reward for Enforcer interventions
-    q_table_path= "q_table_RL_AGENT2.pkl",
+    q_table_path= "q_table_RL_AGENT_trained_w_0_perc_enf_pen.pkl",
     only_complex_policies=False,
     random_state=np.random.RandomState(seed=np.random.randint(low=0, high=2 ** 32, dtype='uint64')),
     enable_enforcer=True
@@ -348,9 +323,34 @@ agent_types.extend("RLAgent")
 agent_count += 1
 
 
-# 8) RL Agent with Enforcer and 5 percent penalty for interventions
+# 6) RL Agent with Enforcer and 1 percent penalty for interventions
 
 rl_agent3 = RLAgent(
+    id=agent_count,
+    name="RL_AGENT_w_ENF_1_percent_penalty",
+    type="RLAgent",
+    symbol=symbol,
+    starting_cash=starting_cash,
+    levels=5,
+    wake_freq='10s',
+    order_size=100,
+    alpha=0.1,    # Learning Rate
+    gamma=0.9,    # Future Reward Discount
+    epsilon=0.2,  # 20% random exploration
+    intervention_penalty_perc=0.01,  # penalty on reward for Enforcer interventions
+    q_table_path= "q_table_RL_AGENT_trained_w_1_perc_enf_pen.pkl",
+    only_complex_policies=False,
+    random_state=np.random.RandomState(seed=np.random.randint(low=0, high=2 ** 32, dtype='uint64')),
+    enable_enforcer=True
+)
+
+agents.extend([rl_agent3])
+agent_types.extend("RLAgent")
+agent_count += 1
+
+
+# 7) RL Agent with Enforcer and 5 percent penalty for interventions
+rl_agent4 = RLAgent(
     id=agent_count,
     name="RL_AGENT_w_ENF_5_percent_penalty",
     type="RLAgent",
@@ -363,13 +363,162 @@ rl_agent3 = RLAgent(
     gamma=0.9,    # Future Reward Discount
     epsilon=0.2,  # 20% random exploration
     intervention_penalty_perc=0.05,  # penalty on reward for Enforcer interventions
-    q_table_path= "q_table_RL_AGENT_trained_w_enf_pen.pkl",
+    q_table_path= "q_table_RL_AGENT_trained_w_5_perc_enf_pen.pkl",
     only_complex_policies=False,
     random_state=np.random.RandomState(seed=np.random.randint(low=0, high=2 ** 32, dtype='uint64')),
     enable_enforcer=True
 )
 
-agents.extend([rl_agent3])
+agents.extend([rl_agent4])
+agent_types.extend("RLAgent")
+agent_count += 1
+
+# 8) RL Agent with Enforcer and 10 percent penalty for interventions
+rl_agent5 = RLAgent(
+    id=agent_count,
+    name="RL_AGENT_w_ENF_10_percent_penalty",
+    type="RLAgent",
+    symbol=symbol,
+    starting_cash=starting_cash,
+    levels=5,
+    wake_freq='10s',
+    order_size=100,
+    alpha=0.1,    # Learning Rate
+    gamma=0.9,    # Future Reward Discount
+    epsilon=0.2,  # 20% random exploration
+    intervention_penalty_perc=0.10,  # penalty on reward for Enforcer interventions
+    q_table_path= "q_table_RL_AGENT_trained_w_10_perc_enf_pen.pkl",
+    only_complex_policies=False,
+    random_state=np.random.RandomState(seed=np.random.randint(low=0, high=2 ** 32, dtype='uint64')),
+    enable_enforcer=True
+)
+
+agents.extend([rl_agent5])
+agent_types.extend("RLAgent")
+agent_count += 1
+
+
+# 9) RL Agent with Enforcer and 20 percent penalty for interventions
+rl_agent6 = RLAgent(
+    id=agent_count,
+    name="RL_AGENT_w_ENF_20_percent_penalty",
+    type="RLAgent",
+    symbol=symbol,
+    starting_cash=starting_cash,
+    levels=5,
+    wake_freq='10s',
+    order_size=100,
+    alpha=0.1,    # Learning Rate
+    gamma=0.9,    # Future Reward Discount
+    epsilon=0.2,  # 20% random exploration
+    intervention_penalty_perc=0.20,  # penalty on reward for Enforcer interventions
+    q_table_path= "q_table_RL_AGENT_trained_w_20_perc_enf_pen.pkl",
+    only_complex_policies=False,
+    random_state=np.random.RandomState(seed=np.random.randint(low=0, high=2 ** 32, dtype='uint64')),
+    enable_enforcer=True
+)
+
+agents.extend([rl_agent6])
+agent_types.extend("RLAgent")
+agent_count += 1
+
+
+# 10) RL Agent with Enforcer and 30 percent penalty for interventions
+rl_agent7 = RLAgent(
+    id=agent_count,
+    name="RL_AGENT_w_ENF_30_percent_penalty",
+    type="RLAgent",
+    symbol=symbol,
+    starting_cash=starting_cash,
+    levels=5,
+    wake_freq='10s',
+    order_size=100,
+    alpha=0.1,    # Learning Rate
+    gamma=0.9,    # Future Reward Discount
+    epsilon=0.2,  # 20% random exploration
+    intervention_penalty_perc=0.30,  # penalty on reward for Enforcer interventions
+    q_table_path= "q_table_RL_AGENT_trained_w_30_perc_enf_pen.pkl",
+    only_complex_policies=False,
+    random_state=np.random.RandomState(seed=np.random.randint(low=0, high=2 ** 32, dtype='uint64')),
+    enable_enforcer=True
+)
+
+agents.extend([rl_agent7])
+agent_types.extend("RLAgent")
+agent_count += 1
+
+
+# 11) RL Agent with Enforcer and 50 percent penalty for interventions
+rl_agent8 = RLAgent(
+    id=agent_count,
+    name="RL_AGENT_w_ENF_50_percent_penalty",
+    type="RLAgent",
+    symbol=symbol,
+    starting_cash=starting_cash,
+    levels=5,
+    wake_freq='10s',
+    order_size=100,
+    alpha=0.1,    # Learning Rate
+    gamma=0.9,    # Future Reward Discount
+    epsilon=0.2,  # 20% random exploration
+    intervention_penalty_perc=0.50,  # penalty on reward for Enforcer interventions
+    q_table_path= "q_table_RL_AGENT_trained_w_50_perc_enf_pen.pkl",
+    only_complex_policies=False,
+    random_state=np.random.RandomState(seed=np.random.randint(low=0, high=2 ** 32, dtype='uint64')),
+    enable_enforcer=True
+)
+
+agents.extend([rl_agent8])
+agent_types.extend("RLAgent")
+agent_count += 1
+
+
+# 12) RL Agent with Enforcer and 70 percent penalty for interventions
+rl_agent9 = RLAgent(
+    id=agent_count,
+    name="RL_AGENT_w_ENF_70_percent_penalty",
+    type="RLAgent",
+    symbol=symbol,
+    starting_cash=starting_cash,
+    levels=5,
+    wake_freq='10s',
+    order_size=100,
+    alpha=0.1,    # Learning Rate
+    gamma=0.9,    # Future Reward Discount
+    epsilon=0.2,  # 20% random exploration
+    intervention_penalty_perc=0.70,  # penalty on reward for Enforcer interventions
+    q_table_path= "q_table_RL_AGENT_trained_w_70_perc_enf_pen.pkl",
+    only_complex_policies=False,
+    random_state=np.random.RandomState(seed=np.random.randint(low=0, high=2 ** 32, dtype='uint64')),
+    enable_enforcer=True
+)
+
+agents.extend([rl_agent9])
+agent_types.extend("RLAgent")
+agent_count += 1
+
+
+# 13) RL Agent with Enforcer and 90 percent penalty for interventions
+rl_agent10 = RLAgent(
+    id=agent_count,
+    name="RL_AGENT_w_ENF_90_percent_penalty",
+    type="RLAgent",
+    symbol=symbol,
+    starting_cash=starting_cash,
+    levels=5,
+    wake_freq='10s',
+    order_size=100,
+    alpha=0.1,    # Learning Rate
+    gamma=0.9,    # Future Reward Discount
+    epsilon=0.2,  # 20% random exploration
+    intervention_penalty_perc=0.90,  # penalty on reward for Enforcer interventions
+    q_table_path= "q_table_RL_AGENT_trained_w_90_perc_enf_pen.pkl",
+    only_complex_policies=False,
+    random_state=np.random.RandomState(seed=np.random.randint(low=0, high=2 ** 32, dtype='uint64')),
+    enable_enforcer=True
+)
+
+agents.extend([rl_agent10])
 agent_types.extend("RLAgent")
 agent_count += 1
 
