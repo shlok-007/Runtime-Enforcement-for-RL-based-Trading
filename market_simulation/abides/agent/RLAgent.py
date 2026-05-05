@@ -90,7 +90,8 @@ class RLAgent(ExampleExperimentalAgentTemplate):
 
         if(self.enforcer_enabled):
             self.enforcer = TradingEnforcer(
-                lib_path="/home/shlok/Runtime-Enforcement-for-RL-based-Trading/policies/TradingEnforcer/lib_TradingEnforcer_2.so",
+                # lib_path="/home/shlok/Runtime-Enforcement-for-RL-based-Trading/policies/TradingEnforcer/lib_TradingEnforcer_2.so",
+                lib_path="../../policies/TradingEnforcer/lib_TradingEnforcer.so",
                 starting_cash=starting_cash,
             )
 
